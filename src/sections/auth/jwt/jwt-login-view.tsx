@@ -3,7 +3,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
+import Card from '@mui/material/Card';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import IconButton from '@mui/material/IconButton';
@@ -11,8 +13,6 @@ import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
 import { useRouter, useSearchParams } from 'src/routes/hooks';
 
 import { useBoolean } from 'src/hooks/use-boolean';
@@ -20,6 +20,7 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { useAuthContext } from 'src/auth/hooks';
 import { PATH_AFTER_LOGIN } from 'src/config-global';
 
+import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
@@ -74,14 +75,19 @@ export default function JwtLoginView() {
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5 }}>
-      <Typography variant="h4">Sign in to iOrder</Typography>
+      <Stack direction="row" alignItems="center" justifyContent="center" spacing={1}>
+        <Logo />
+        <Typography fontWeight={600} variant="subtitle1">
+          iOrder
+        </Typography>
+      </Stack>
+
+      <Typography variant="h4" mt={5}>
+        Login form
+      </Typography>
 
       <Stack direction="row" spacing={0.5}>
-        <Typography variant="body2">New user?</Typography>
-
-        <Link component={RouterLink} href={paths.auth.jwt.register} variant="subtitle2">
-          Create an account
-        </Link>
+        Lorem Ipsum has been the industrys standard dummy text ever since.
       </Stack>
     </Stack>
   );
@@ -90,16 +96,28 @@ export default function JwtLoginView() {
     <Stack spacing={2.5}>
       {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
-      <RHFTextField name="email" label="Email address" />
+      <RHFTextField
+        name="email"
+        label="Username"
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <IconButton edge="start">
+                <Iconify icon="eva:person-outline" />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
 
       <RHFTextField
         name="password"
         label="Password"
         type={password.value ? 'text' : 'password'}
         InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton onClick={password.onToggle} edge="end">
+          startAdornment: (
+            <InputAdornment position="start">
+              <IconButton onClick={password.onToggle} edge="start">
                 <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
               </IconButton>
             </InputAdornment>
@@ -107,32 +125,63 @@ export default function JwtLoginView() {
         }}
       />
 
-      <Link variant="body2" color="inherit" underline="always" sx={{ alignSelf: 'flex-end' }}>
+      <Link variant="subtitle2" color="primary" fontWeight={600} sx={{ alignSelf: 'flex-start' }}>
         Forgot password?
       </Link>
 
       <LoadingButton
         fullWidth
-        color="inherit"
+        color="primary"
         size="large"
         type="submit"
         variant="contained"
         loading={isSubmitting}
+        style={{ borderRadius: 58 }}
       >
-        Login
+        Running order
       </LoadingButton>
+      <Typography variant="body2">End user agreement</Typography>
     </Stack>
   );
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
-      {renderHead}
+      <Box
+        component="main"
+        sx={{
+          py: 5,
+          display: 'flex',
+          minHeight: '100vh',
+          textAlign: 'center',
+          px: { xs: 2, md: 0 },
+          position: 'relative',
+          alignItems: 'center',
+          justifyContent: 'center',
+          '&:before': {
+            width: 1,
+            height: 1,
+            zIndex: -1,
+            content: "''",
+            position: 'absolute',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center center',
+            backgroundImage: 'url(/assets/background/overlay_5.png)',
+          },
+        }}
+      >
+        <Card
+          sx={{
+            py: 6,
+            px: 10,
+            maxWidth: 520,
+          }}
+        >
+          {renderHead}
 
-      <Alert severity="info" sx={{ mb: 3 }}>
-        Use email : <strong>info@iorder.ch</strong> / password :<strong> password</strong>
-      </Alert>
-
-      {renderForm}
+          {renderForm}
+        </Card>
+      </Box>
     </FormProvider>
   );
 }
