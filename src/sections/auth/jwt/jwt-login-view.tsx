@@ -86,9 +86,9 @@ export default function JwtLoginView() {
         Login form
       </Typography>
 
-      <Stack direction="row" spacing={0.5}>
+      <Typography variant="subtitle1" fontWeight={400}>
         Lorem Ipsum has been the industrys standard dummy text ever since.
-      </Stack>
+      </Typography>
     </Stack>
   );
 
@@ -96,36 +96,56 @@ export default function JwtLoginView() {
     <Stack spacing={2.5}>
       {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
-      <RHFTextField
-        name="email"
-        label="Username"
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <IconButton edge="start">
-                <Iconify icon="eva:person-outline" />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
+      <Stack spacing={0.1} direction="column">
+        <Typography
+          variant="caption"
+          sx={{ color: 'text.secondary', alignSelf: 'start', mb: -0.1 }}
+        >
+          Username
+        </Typography>
+        <RHFTextField
+          name="email"
+          placeholder="Enter username"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton edge="start">
+                  <Iconify icon="eva:person-outline" />
+                </IconButton>
+              </InputAdornment>
+            ),
+            style: { borderRadius: '58px' },
+          }}
+        />
+      </Stack>
 
-      <RHFTextField
-        name="password"
-        label="Password"
-        type={password.value ? 'text' : 'password'}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <IconButton onClick={password.onToggle} edge="start">
-                <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
+      <Stack spacing={0.1} direction="column">
+        <Typography
+          variant="caption"
+          sx={{ color: 'text.secondary', alignSelf: 'start', mb: -0.1 }}
+        >
+          Password
+        </Typography>
+        <RHFTextField
+          name="password"
+          placeholder="Enter password"
+          type={password.value ? 'text' : 'password'}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton onClick={password.onToggle} edge="start">
+                  <Iconify
+                    icon={password.value ? 'zondicons:lock-open' : 'zondicons:lock-closed'}
+                  />
+                </IconButton>
+              </InputAdornment>
+            ),
+            style: { borderRadius: '58px' },
+          }}
+        />
+      </Stack>
 
-      <Link variant="subtitle2" color="primary" fontWeight={600} sx={{ alignSelf: 'flex-start' }}>
+      <Link variant="subtitle2" color="primary" sx={{ alignSelf: 'flex-start' }}>
         Forgot password?
       </Link>
 
@@ -175,6 +195,11 @@ export default function JwtLoginView() {
             py: 6,
             px: 10,
             maxWidth: 520,
+            // overflow: 'hidden',
+            // py: 6,
+            // px: 10,
+            // maxWidth: '100%',
+            // margin: 'auto',
           }}
         >
           {renderHead}
