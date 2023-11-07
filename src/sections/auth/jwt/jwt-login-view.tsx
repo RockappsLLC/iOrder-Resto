@@ -195,11 +195,6 @@ export default function JwtLoginView() {
             py: 6,
             px: 10,
             maxWidth: 520,
-            // overflow: 'hidden',
-            // py: 6,
-            // px: 10,
-            // maxWidth: '100%',
-            // margin: 'auto',
           }}
         >
           {renderHead}
