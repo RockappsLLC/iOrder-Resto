@@ -158,7 +158,7 @@ export default function JwtLoginView() {
         loading={isSubmitting}
         style={{ borderRadius: 58 }}
       >
-        Running order
+        Log in
       </LoadingButton>
       <Typography variant="body2">End user agreement</Typography>
     </Stack>
