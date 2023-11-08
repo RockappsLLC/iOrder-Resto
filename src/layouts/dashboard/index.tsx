@@ -1,4 +1,3 @@
-
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import Main from './main';
@@ -11,15 +10,13 @@ type Props = {
 };
 
 export default function DashboardLayout({ children }: Props) {
-
   const nav = useBoolean();
 
-    return (
-      <>
-        <Header onOpenNav={nav.onTrue} />
+  return (
+    <>
+      <Header onOpenNav={nav.onTrue} />
 
-        <Main>{children}</Main>
-      </>
-    );
-
+      <Main>{children}</Main>
+    </>
+  );
 }

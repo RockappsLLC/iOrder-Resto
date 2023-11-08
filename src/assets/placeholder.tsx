@@ -7,7 +7,12 @@ const PlaceholderIcon = (props: SVGProps<SVGSVGElement>) => (
       <stop offset={0} stopColor="#fff" stopOpacity={0} />
       <stop offset={1} stopColor="#919eab" stopOpacity={0.48} />
     </radialGradient>
-    <path fill="url(#prefix__a)" fillRule="evenodd" d="M88 86h512v512H88z" transform="translate(-88 -86)" />
+    <path
+      fill="url(#prefix__a)"
+      fillRule="evenodd"
+      d="M88 86h512v512H88z"
+      transform="translate(-88 -86)"
+    />
   </svg>
 );
 export default PlaceholderIcon;

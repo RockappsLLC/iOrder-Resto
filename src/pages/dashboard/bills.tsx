@@ -5,13 +5,13 @@ import BillsView from 'src/sections/bills/view';
 // ----------------------------------------------------------------------
 
 export default function Page() {
-    return (
-        <>
-            <Helmet>
-                <title> Dashboard: Bills</title>
-            </Helmet>
+  return (
+    <>
+      <Helmet>
+        <title> Dashboard: Bills</title>
+      </Helmet>
 
-            <BillsView />
-        </>
-    );
+      <BillsView />
+    </>
+  );
 }

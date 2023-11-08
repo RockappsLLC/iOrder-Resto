@@ -138,9 +138,8 @@ const StyledNavItem = styled(ListItemButton, {
       color: theme.palette.text.secondary,
       '&:hover': {
         backgroundColor: 'transparent',
-        color: theme.palette.primary.main
+        color: theme.palette.primary.main,
       },
-      
     },
     icon: {
       width: 24,

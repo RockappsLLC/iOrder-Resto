@@ -79,7 +79,14 @@ const IcPaymentIcon = (props: SVGProps<SVGSVGElement>) => (
       />
     </g>
     <defs>
-      <linearGradient id="prefix__b" x1={43.841} x2={70.198} y1={68.401} y2={12.921} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="prefix__b"
+        x1={43.841}
+        x2={70.198}
+        y1={68.401}
+        y2={12.921}
+        gradientUnits="userSpaceOnUse"
+      >
         <stop />
         <stop offset={1} stopOpacity={0.01} />
       </linearGradient>

@@ -10,7 +10,10 @@ const IcRadioButtonIcon = (props: SVGProps<SVGSVGElement>) => (
       clipRule="evenodd"
       opacity={0.24}
     />
-    <path fill="#919EAB" d="M100 120c11.046 0 20-8.954 20-20s-8.954-20-20-20-20 8.954-20 20 8.954 20 20 20Z" />
+    <path
+      fill="#919EAB"
+      d="M100 120c11.046 0 20-8.954 20-20s-8.954-20-20-20-20 8.954-20 20 8.954 20 20 20Z"
+    />
   </svg>
 );
 export default IcRadioButtonIcon;

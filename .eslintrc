@@ -7,14 +7,17 @@
   "plugins": [
     "perfectionist",
     "unused-imports",
-    "@typescript-eslint",
+    "@typescript-eslint", 
+    "react", 
     "prettier"
   ],
   "extends": [
     "airbnb",
     "airbnb-typescript",
     "airbnb/hooks",
-    "prettier"
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:prettier/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -160,6 +163,29 @@
           "src/**"
         ]
       }
-    ]
+    ],
+    "import/no-unresolved": 0,
+    "react/jsx-filename-extension": [0, {
+      "extensions": [
+        ".ts",
+        ".tsx"
+      ]
+    }],
+    "no-use-before-define": "off",
+    "import/extensions": ["error", "never"],
+    "react/prop-types": 0,
+    "no-shadow": "off",
+    "react/no-unescaped-entities": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "printWidth": 100,
+        "singleQuote": true,
+        "trailingComma": "es5",
+        "tabWidth": 2
+      }
+    ],
+    "@typescript-eslint/no-shadow": ["error"],
+    "@typescript-eslint/no-explicit-any": 1
   }
 }

@@ -35,7 +35,11 @@ const IcPtsIcon = (props: SVGProps<SVGSVGElement>) => (
         filterUnits="userSpaceOnUse"
       >
         <feFlood floodOpacity={0} result="BackgroundImageFix" />
-        <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+        <feColorMatrix
+          in="SourceAlpha"
+          result="hardAlpha"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+        />
         <feOffset dy={2} />
         <feGaussianBlur stdDeviation={1} />
         <feComposite in2="hardAlpha" operator="out" />

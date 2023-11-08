@@ -33,7 +33,11 @@ const IcFolderEmptyIcon = (props: SVGProps<SVGSVGElement>) => (
       d="M105.924 54.29a1.869 1.869 0 0 0-.24-2.385 1.876 1.876 0 0 0-.735-.446L71.207 40.496a1.875 1.875 0 0 0-2.13.728L60 54.574l37.5 12.208 8.424-12.491Z"
       opacity={0.64}
     />
-    <path fill="#C4CDD5" d="M97.5 66.782 60 54.574 22.5 66.782 60 78.949l37.5-12.167Z" opacity={0.48} />
+    <path
+      fill="#C4CDD5"
+      d="M97.5 66.782 60 54.574 22.5 66.782 60 78.949l37.5-12.167Z"
+      opacity={0.48}
+    />
     <path fill="#C4CDD5" d="M60 66.676V55L22.5 67.208 60 79.375V66.676Z" opacity={0.48} />
     <path
       fill="#919EAB"
@@ -46,19 +50,47 @@ const IcFolderEmptyIcon = (props: SVGProps<SVGSVGElement>) => (
       d="M52.466 59.959a16.413 16.413 0 0 1-2.107-1.628 1.876 1.876 0 0 0-2.535 2.762 20.01 20.01 0 0 0 2.591 2.004 1.875 1.875 0 0 0 2.051-3.138Zm-5.842-5.76a16.293 16.293 0 0 1-1.414-2.275 1.875 1.875 0 1 0-3.343 1.701c.476.934 1.054 1.87 1.738 2.797a1.875 1.875 0 0 0 3.019-2.223Zm-2.741-7.652c.018-.756.129-1.489.331-2.192a1.875 1.875 0 1 0-3.605-1.033c-.29 1.02-.45 2.072-.476 3.131a1.876 1.876 0 1 0 3.75.094Zm2.883-6.263a11.076 11.076 0 0 1 1.613-1.231 1.876 1.876 0 0 0-2-3.173 14.723 14.723 0 0 0-2.16 1.654 1.875 1.875 0 0 0 2.547 2.75Zm6.974-3.234c.99-.18 1.99-.291 2.996-.33a1.877 1.877 0 0 0-.16-3.748 25.313 25.313 0 0 0-3.519.39 1.875 1.875 0 0 0 .682 3.688Zm9.772-.11a44.95 44.95 0 0 0 4.47-.16 1.875 1.875 0 0 0-.332-3.735c-1.266.11-2.629.163-4.095.144a1.875 1.875 0 1 0-.043 3.75Zm10.633-1.31c1.856-.568 3.424-1.295 4.736-2.13a1.874 1.874 0 0 0 .068-3.117 1.876 1.876 0 0 0-2.083-.046 15.567 15.567 0 0 1-3.818 1.707 1.875 1.875 0 0 0 1.097 3.587Zm9.544-7.378a11.643 11.643 0 0 0 1.138-5.63 1.875 1.875 0 1 0-3.746.174 7.903 7.903 0 0 1-.769 3.825 1.877 1.877 0 0 0 3.377 1.632Zm-1.194-12.26c-1.367-1.847-3.222-3.133-5.243-3.548a1.877 1.877 0 0 0-.754 3.675c1.166.239 2.194 1.04 2.983 2.106a1.874 1.874 0 1 0 3.014-2.233ZM57.83 16.157h12.556a1.875 1.875 0 0 0 0-3.75H57.83a1.877 1.877 0 0 0 0 3.75Z"
     />
     <defs>
-      <linearGradient id="prefix__a" x1={22.749} x2={27.991} y1={66.767} y2={101.442} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="prefix__a"
+        x1={22.749}
+        x2={27.991}
+        y1={66.767}
+        y2={101.442}
+        gradientUnits="userSpaceOnUse"
+      >
         <stop stopColor="#F4F6F8" />
         <stop offset={1} stopColor="#C4CDD5" />
       </linearGradient>
-      <linearGradient id="prefix__b" x1={60.152} x2={99.684} y1={78.821} y2={101.557} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="prefix__b"
+        x1={60.152}
+        x2={99.684}
+        y1={78.821}
+        y2={101.557}
+        gradientUnits="userSpaceOnUse"
+      >
         <stop stopColor="#F4F6F8" />
         <stop offset={1} stopColor="#C4CDD5" />
       </linearGradient>
-      <linearGradient id="prefix__c" x1={17.588} x2={23.245} y1={60.101} y2={33.434} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="prefix__c"
+        x1={17.588}
+        x2={23.245}
+        y1={60.101}
+        y2={33.434}
+        gradientUnits="userSpaceOnUse"
+      >
         <stop stopColor="#F4F6F8" />
         <stop offset={1} stopColor="#C4CDD5" />
       </linearGradient>
-      <linearGradient id="prefix__d" x1={70.039} x2={72.061} y1={40.044} y2={72.96} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="prefix__d"
+        x1={70.039}
+        x2={72.061}
+        y1={40.044}
+        y2={72.96}
+        gradientUnits="userSpaceOnUse"
+      >
         <stop stopColor="#F4F6F8" />
         <stop offset={1} stopColor="#C4CDD5" />
       </linearGradient>

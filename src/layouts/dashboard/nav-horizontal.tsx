@@ -23,19 +23,19 @@ function NavHorizontal() {
     <AppBar
       component="div"
       sx={{
-        position:'relative',
+        position: 'relative',
         flexShrink: 1,
       }}
     >
-          <NavSectionHorizontal
-            data={navData}
-            slotProps={{
-              currentRole: user?.role,
-            }}
-            sx={{
-              ...theme.mixins.toolbar,
-            }}
-          />
+      <NavSectionHorizontal
+        data={navData}
+        slotProps={{
+          currentRole: user?.role,
+        }}
+        sx={{
+          ...theme.mixins.toolbar,
+        }}
+      />
 
       <HeaderShadow />
     </AppBar>

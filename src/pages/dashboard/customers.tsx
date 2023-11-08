@@ -5,13 +5,13 @@ import CustomersView from 'src/sections/customers/view';
 // ----------------------------------------------------------------------
 
 export default function Page() {
-    return (
-        <>
-            <Helmet>
-                <title> Dashboard: Customers</title>
-            </Helmet>
+  return (
+    <>
+      <Helmet>
+        <title> Dashboard: Customers</title>
+      </Helmet>
 
-            <CustomersView />
-        </>
-    );
+      <CustomersView />
+    </>
+  );
 }

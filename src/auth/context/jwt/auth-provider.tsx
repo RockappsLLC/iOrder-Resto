@@ -133,20 +133,20 @@ export function AuthProvider({ children }: Props) {
     };
 
     const res = await axios.post(endpoints.auth.login, data);
-    const {data:accessToken} = res.data;
+    const { data: accessToken } = res.data;
     await setSession(accessToken);
 
     const response = await axios.get(endpoints.auth.me);
 
-    const {data: profile} = response.data;
+    const { data: profile } = response.data;
 
     dispatch({
       type: Types.LOGIN,
       payload: {
         user: {
           ...profile,
-          displayName: [profile.firstName||"", profile.lastName||""].join(" "),
-          photoURL:"",
+          displayName: [profile.firstName || '', profile.lastName || ''].join(' '),
+          photoURL: '',
           accessToken,
         },
       },

@@ -118,11 +118,25 @@ const IcEmailSelectedIcon = (props: SVGProps<SVGSVGElement>) => (
       </g>
     </g>
     <defs>
-      <linearGradient id="prefix__e" x1={16} x2={66.713} y1={61.198} y2={106.113} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="prefix__e"
+        x1={16}
+        x2={66.713}
+        y1={61.198}
+        y2={106.113}
+        gradientUnits="userSpaceOnUse"
+      >
         <stop stopColor="#61F3F3" />
         <stop offset={1} stopColor="#00B8D9" />
       </linearGradient>
-      <linearGradient id="prefix__g" x1={16.643} x2={43.539} y1={61.061} y2={97.859} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="prefix__g"
+        x1={16.643}
+        x2={43.539}
+        y1={61.061}
+        y2={97.859}
+        gradientUnits="userSpaceOnUse"
+      >
         <stop stopColor="#61F3F3" />
         <stop offset={1} stopColor="#00B8D9" />
       </linearGradient>

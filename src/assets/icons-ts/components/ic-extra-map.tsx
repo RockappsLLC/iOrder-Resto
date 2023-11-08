@@ -41,13 +41,21 @@ const IcExtraMapIcon = (props: SVGProps<SVGSVGElement>) => (
         filterUnits="userSpaceOnUse"
       >
         <feFlood floodOpacity={0} result="BackgroundImageFix" />
-        <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+        <feColorMatrix
+          in="SourceAlpha"
+          result="hardAlpha"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+        />
         <feOffset dx={8} dy={8} />
         <feGaussianBlur stdDeviation={8} />
         <feColorMatrix values="0 0 0 0 0.770709 0 0 0 0 0.792653 0 0 0 0 0.818587 0 0 0 0.16 0" />
         <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_1587_120562" />
         <feBlend in="SourceGraphic" in2="effect1_dropShadow_1587_120562" result="shape" />
-        <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+        <feColorMatrix
+          in="SourceAlpha"
+          result="hardAlpha"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+        />
         <feOffset dx={-2} dy={-2} />
         <feGaussianBlur stdDeviation={2} />
         <feComposite in2="hardAlpha" k2={-1} k3={1} operator="arithmetic" />
@@ -64,13 +72,21 @@ const IcExtraMapIcon = (props: SVGProps<SVGSVGElement>) => (
         filterUnits="userSpaceOnUse"
       >
         <feFlood floodOpacity={0} result="BackgroundImageFix" />
-        <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+        <feColorMatrix
+          in="SourceAlpha"
+          result="hardAlpha"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+        />
         <feOffset dx={8} dy={8} />
         <feGaussianBlur stdDeviation={8} />
         <feColorMatrix values="0 0 0 0 0 0 0 0 0 0.470588 0 0 0 0 0.403922 0 0 0 0.16 0" />
         <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_1587_120562" />
         <feBlend in="SourceGraphic" in2="effect1_dropShadow_1587_120562" result="shape" />
-        <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+        <feColorMatrix
+          in="SourceAlpha"
+          result="hardAlpha"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+        />
         <feOffset dx={-2} dy={-2} />
         <feGaussianBlur stdDeviation={2} />
         <feComposite in2="hardAlpha" k2={-1} k3={1} operator="arithmetic" />
@@ -87,13 +103,21 @@ const IcExtraMapIcon = (props: SVGProps<SVGSVGElement>) => (
         filterUnits="userSpaceOnUse"
       >
         <feFlood floodOpacity={0} result="BackgroundImageFix" />
-        <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+        <feColorMatrix
+          in="SourceAlpha"
+          result="hardAlpha"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+        />
         <feOffset dx={8} dy={8} />
         <feGaussianBlur stdDeviation={8} />
         <feColorMatrix values="0 0 0 0 0.717647 0 0 0 0 0.431373 0 0 0 0 0 0 0 0 0.16 0" />
         <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_1587_120562" />
         <feBlend in="SourceGraphic" in2="effect1_dropShadow_1587_120562" result="shape" />
-        <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+        <feColorMatrix
+          in="SourceAlpha"
+          result="hardAlpha"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+        />
         <feOffset dx={-2} dy={-2} />
         <feGaussianBlur stdDeviation={2} />
         <feComposite in2="hardAlpha" k2={-1} k3={1} operator="arithmetic" />

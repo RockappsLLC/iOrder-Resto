@@ -33,18 +33,18 @@ export default function DiningOptionsPopover() {
           ...(popover.open && {
             bgcolor: (theme) => theme.palette.action.selected,
           }),
-          bgcolor: (theme)=> theme.palette.primary.light,
-          color: (theme)=> theme.palette.primary.main,
-          borderRadius:58,
-          width:144,
-          height:36,
-          marginLeft:3,
+          bgcolor: (theme) => theme.palette.primary.light,
+          color: (theme) => theme.palette.primary.main,
+          borderRadius: 58,
+          width: 144,
+          height: 36,
+          marginLeft: 3,
         }}
       >
         <Typography variant="body2" fontWeight={600}>
           Dining Options
         </Typography>
-        
+
         {/* <Iconify icon="solar:users-group-rounded-bold-duotone" width={24} /> */}
       </IconButton>
 

@@ -24,11 +24,25 @@ const IcChatIcon = (props: SVGProps<SVGSVGElement>) => (
       <path d="M6.604 10.198a1.495 1.495 0 1 1-2.99 0 1.495 1.495 0 0 1 2.99 0ZM10.831 10.198a1.495 1.495 0 1 1-2.99 0 1.495 1.495 0 0 1 2.99 0ZM15.06 10.198a1.495 1.495 0 1 1-2.99 0 1.495 1.495 0 0 1 2.99 0Z" />
     </g>
     <defs>
-      <linearGradient id="prefix__a" x1={8.156} x2={24} y1={7.271} y2={23.115} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="prefix__a"
+        x1={8.156}
+        x2={24}
+        y1={7.271}
+        y2={23.115}
+        gradientUnits="userSpaceOnUse"
+      >
         <stop stopColor="#77ED8B" />
         <stop offset={1} stopColor="#22C55E" />
       </linearGradient>
-      <linearGradient id="prefix__b" x1={0} x2={19.302} y1={0.041} y2={19.344} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="prefix__b"
+        x1={0}
+        x2={19.302}
+        y1={0.041}
+        y2={19.344}
+        gradientUnits="userSpaceOnUse"
+      >
         <stop stopColor="#00B8D9" />
         <stop offset={1} stopColor="#006C9C" />
       </linearGradient>

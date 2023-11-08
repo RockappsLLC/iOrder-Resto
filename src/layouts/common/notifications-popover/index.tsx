@@ -144,23 +144,22 @@ export default function NotificationsPopover() {
         color={drawer.value ? 'primary' : 'default'}
         onClick={drawer.onTrue}
         sx={{
-          width: 150, padding: 1,
-          fontSize: 16, bgcolor: 'transparent', borderRadius: 58,
+          width: 150,
+          padding: 1,
+          fontSize: 16,
+          bgcolor: 'transparent',
+          borderRadius: 58,
           marginLeft: 3,
           '&:hover': {
-            backgroundColor: "transparent",
-            color: theme => theme.palette.primary.main,
+            backgroundColor: 'transparent',
+            color: (theme) => theme.palette.primary.main,
           },
         }}
       >
         <Badge badgeContent={totalUnRead} color="error">
           <SvgColor src="/assets/icons/navbar/notification.svg" sx={{ width: 24, height: 24 }} />
-          <Typography marginLeft={0.5}>
-          Notifications
-        </Typography>
+          <Typography marginLeft={0.5}>Notifications</Typography>
         </Badge>
-        
-
       </IconButton>
 
       <Drawer

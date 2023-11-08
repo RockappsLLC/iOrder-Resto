@@ -7,3 +7,10 @@ public/*
 
 package-lock.json
 yarn.lock
+
+
+node_modules/*
+.log
+package.json
+.eslintrc.js
+babel.config.js

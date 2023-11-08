@@ -71,10 +71,20 @@ const IcAssurancesIcon = (props: SVGProps<SVGSVGElement>) => (
         fill="#007867"
         d="M31.868 33.51a.604.604 0 0 1-.483-.242l-1.812-2.415.966-.725 1.329 1.771 4.95-6.6.967.724-5.434 7.245a.603.603 0 0 1-.483.241Z"
       />
-      <path fill="#FFAB00" d="M25.227 37.736h3.018v1.207h-3.018v-1.207ZM25.227 40.151h4.226v1.207h-4.226v-1.207Z" />
+      <path
+        fill="#FFAB00"
+        d="M25.227 37.736h3.018v1.207h-3.018v-1.207ZM25.227 40.151h4.226v1.207h-4.226v-1.207Z"
+      />
     </g>
     <defs>
-      <linearGradient id="prefix__b" x1={43.841} x2={70.198} y1={68.401} y2={12.921} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="prefix__b"
+        x1={43.841}
+        x2={70.198}
+        y1={68.401}
+        y2={12.921}
+        gradientUnits="userSpaceOnUse"
+      >
         <stop />
         <stop offset={1} stopOpacity={0.01} />
       </linearGradient>

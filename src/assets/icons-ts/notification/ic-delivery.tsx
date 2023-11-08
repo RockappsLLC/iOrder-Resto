@@ -34,7 +34,14 @@ const IcDeliveryIcon = (props: SVGProps<SVGSVGElement>) => (
       clipRule="evenodd"
     />
     <defs>
-      <linearGradient id="prefix__a" x1={15.111} x2={25.442} y1={9.3} y2={18.053} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="prefix__a"
+        x1={15.111}
+        x2={25.442}
+        y1={9.3}
+        y2={18.053}
+        gradientUnits="userSpaceOnUse"
+      >
         <stop stopColor="#FFD666" />
         <stop offset={1} stopColor="#FFAB00" />
       </linearGradient>

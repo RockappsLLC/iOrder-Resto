@@ -12,11 +12,25 @@ const IcViteIcon = (props: SVGProps<SVGSVGElement>) => (
       d="m16.698 1.505-7.294 1.43a.268.268 0 0 0-.216.246L8.74 10.76a.268.268 0 0 0 .327.277l2.031-.468a.268.268 0 0 1 .323.314l-.604 2.954a.268.268 0 0 0 .34.31l1.255-.38a.268.268 0 0 1 .34.31l-.959 4.64c-.06.29.326.45.487.2l.108-.166 5.943-11.861a.268.268 0 0 0-.29-.383l-2.09.403a.268.268 0 0 1-.308-.337l1.364-4.73a.268.268 0 0 0-.309-.337Z"
     />
     <defs>
-      <linearGradient id="prefix__a" x1={1.326} x2={13.593} y1={3.188} y2={19.847} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="prefix__a"
+        x1={1.326}
+        x2={13.593}
+        y1={3.188}
+        y2={19.847}
+        gradientUnits="userSpaceOnUse"
+      >
         <stop stopColor="#41D1FF" />
         <stop offset={1} stopColor="#BD34FE" />
       </linearGradient>
-      <linearGradient id="prefix__b" x1={11.431} x2={13.65} y1={1.893} y2={17.115} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="prefix__b"
+        x1={11.431}
+        x2={13.65}
+        y1={1.893}
+        y2={17.115}
+        gradientUnits="userSpaceOnUse"
+      >
         <stop stopColor="#FFEA83" />
         <stop offset={0.083} stopColor="#FFDD35" />
         <stop offset={1} stopColor="#FFA800" />

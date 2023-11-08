@@ -14,7 +14,12 @@ const Overlay1Icon = (props: SVGProps<SVGSVGElement>) => (
       <stop offset={0.499} stopColor="#161c24" stopOpacity={0.8} />
       <stop offset={1} stopColor="#161c24" />
     </radialGradient>
-    <path fill="url(#prefix__a)" fillRule="evenodd" d="M0 0h1440v1024H0z" transform="matrix(-1 0 0 1 1440 0)" />
+    <path
+      fill="url(#prefix__a)"
+      fillRule="evenodd"
+      d="M0 0h1440v1024H0z"
+      transform="matrix(-1 0 0 1 1440 0)"
+    />
   </svg>
 );
 export default Overlay1Icon;

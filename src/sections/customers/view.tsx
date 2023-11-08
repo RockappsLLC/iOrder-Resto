@@ -8,22 +8,22 @@ import { useSettingsContext } from 'src/components/settings';
 // ----------------------------------------------------------------------
 
 export default function CustomersView() {
-    const settings = useSettingsContext();
+  const settings = useSettingsContext();
 
-    return (
-        <Container maxWidth={settings.themeStretch ? false : 'xl'}>
-            <Typography variant="h4"> Page Customers </Typography>
+  return (
+    <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+      <Typography variant="h4"> Page Customers </Typography>
 
-            <Box
-                sx={{
-                    mt: 5,
-                    width: 1,
-                    height: 320,
-                    borderRadius: 2,
-                    bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04),
-                    border: (theme) => `dashed 1px ${theme.palette.divider}`,
-                }}
-            />
-        </Container>
-    );
+      <Box
+        sx={{
+          mt: 5,
+          width: 1,
+          height: 320,
+          borderRadius: 2,
+          bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04),
+          border: (theme) => `dashed 1px ${theme.palette.divider}`,
+        }}
+      />
+    </Container>
+  );
 }
