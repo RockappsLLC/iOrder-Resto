@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useReducer, useCallback } from 'react';
 
-import axios, { endpoints } from 'src/utils/axios';
+import { postLogin } from 'src/api/auth';
+import { getMe, createUser } from 'src/api/users';
 
 import { AuthContext } from './auth-context';
 import { setSession, isValidToken } from './utils';
@@ -89,15 +90,17 @@ export function AuthProvider({ children }: Props) {
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
 
-        const res = await axios.get(endpoints.auth.me);
+        const response = await getMe();
 
-        const { user } = res.data;
+        const { data: profile } = response.data;
 
         dispatch({
           type: Types.INITIAL,
           payload: {
             user: {
-              ...user,
+              ...profile,
+              displayName: [profile?.firstName || '', profile?.lastName || ''].join(' '),
+              photoURL: '',
               accessToken,
             },
           },
@@ -132,11 +135,12 @@ export function AuthProvider({ children }: Props) {
       password,
     };
 
-    const res = await axios.post(endpoints.auth.login, data);
-    const { data: accessToken } = res.data;
-    await setSession(accessToken);
+    const res = await postLogin(data);
 
-    const response = await axios.get(endpoints.auth.me);
+    const { data: accessToken } = res.data;
+    if (accessToken) await setSession(accessToken);
+
+    const response = await getMe();
 
     const { data: profile } = response.data;
 
@@ -145,7 +149,7 @@ export function AuthProvider({ children }: Props) {
       payload: {
         user: {
           ...profile,
-          displayName: [profile.firstName || '', profile.lastName || ''].join(' '),
+          displayName: [profile?.firstName || '', profile?.lastName || ''].join(' '),
           photoURL: '',
           accessToken,
         },
@@ -155,29 +159,44 @@ export function AuthProvider({ children }: Props) {
 
   // REGISTER
   const register = useCallback(
-    async (email: string, password: string, firstName: string, lastName: string) => {
+    async (
+      email: string,
+      password: string,
+      firstName: string,
+      lastName: string,
+      restaurantId: string,
+      role: string
+    ) => {
       const data = {
         email,
         password,
         firstName,
         lastName,
+        restaurantId,
+        role,
       };
 
-      const res = await axios.post(endpoints.auth.register, data);
+      const {
+        data: { data: user },
+      } = await createUser(data);
 
-      const { accessToken, user } = res.data;
+      const {
+        data: { data: accessToken },
+      } = await postLogin(data);
 
-      sessionStorage.setItem(STORAGE_KEY, accessToken);
-
-      dispatch({
-        type: Types.REGISTER,
-        payload: {
-          user: {
-            ...user,
-            accessToken,
+      if (accessToken) {
+        await setSession(accessToken);
+        sessionStorage.setItem(STORAGE_KEY, accessToken);
+        dispatch({
+          type: Types.REGISTER,
+          payload: {
+            user: {
+              ...user,
+              accessToken,
+            },
           },
-        },
-      });
+        });
+      }
     },
     []
   );

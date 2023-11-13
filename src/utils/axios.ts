@@ -20,7 +20,7 @@ export default axiosInstance;
 
 // ----------------------------------------------------------------------
 
-export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
+export const fetcher: any = async (args: string | [string, AxiosRequestConfig]) => {
   const [url, config] = Array.isArray(args) ? args : [args];
 
   const res = await axiosInstance.get(url, { ...config });
@@ -29,30 +29,109 @@ export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
 };
 
 // ----------------------------------------------------------------------
-
 export const endpoints = {
-  chat: '/chat',
-  kanban: '/kanban',
-  calendar: '/calendar',
   auth: {
-    me: '/users/me',
-    login: '/auth/login',
-    register: '/auth/register',
+    login: { post: '/auth/login' },
+    forgotPassword: { post: '/auth/forgot-password' },
+    resetPassword: { post: '/auth/reset-password' },
   },
-  mail: {
-    list: '/mail/list',
-    details: '/mail/details',
-    labels: '/mail/labels',
+  users: {
+    post: '/users',
+    get: '/users',
+    me: { get: '/users/me' },
+    getById: '/users/{id}',
+    put: '/users/{id}',
+    delete: '/users/{id}',
   },
-  post: {
-    list: '/post/list',
-    details: '/post/details',
-    latest: '/post/latest',
-    search: '/post/search',
+  categories: {
+    post: '/categories',
+    get: '/categories',
+    getById: '/categories/{id}',
+    put: '/categories/{id}',
+    delete: '/categories/{id}',
   },
-  product: {
-    list: '/product/list',
-    details: '/product/details',
-    search: '/product/search',
+  restaurants: {
+    post: '/restaurants',
+    get: '/restaurants',
+    getById: '/restaurants/{id}',
+    put: '/restaurants/{id}',
+    delete: '/restaurants/{id}',
+  },
+  menuCategories: {
+    post: '/menu-categories',
+    get: '/menu-categories',
+    getById: '/menu-categories/{id}',
+    put: '/menu-categories/{id}',
+    delete: '/menu-categories/{id}',
+  },
+  menuItems: {
+    post: '/menu-items',
+    get: '/menu-items',
+    getById: '/menu-items/{id}',
+    put: '/menu-items/{id}',
+    delete: '/menu-items/{id}',
+  },
+  tables: {
+    post: '/tables',
+    get: '/tables',
+    getById: '/tables/{id}',
+    put: '/tables/{id}',
+    delete: '/tables/{id}',
+  },
+  customers: {
+    post: '/customers',
+    get: '/customers',
+    getById: '/customers/{id}',
+    put: '/customers/{id}',
+    delete: '/customers/{id}',
+  },
+  reservations: {
+    post: '/reservations',
+    get: '/reservations',
+    getById: '/reservations/{id}',
+    put: '/reservations/{id}',
+    delete: '/reservations/{id}',
+  },
+  devices: {
+    post: '/devices',
+    get: '/devices',
+    getById: '/devices/{id}',
+    put: '/devices/{id}',
+    delete: '/devices/{id}',
+  },
+  tasks: {
+    post: '/tasks',
+    get: '/tasks',
+    getById: '/tasks/{id}',
+    put: '/tasks/{id}',
+    delete: '/tasks/{id}',
+  },
+  leads: {
+    post: '/leads',
+    get: '/leads',
+    getById: '/leads/{id}',
+    put: '/leads/{id}',
+    delete: '/leads/{id}',
+  },
+  appointments: {
+    post: '/appointments',
+    get: '/appointments',
+    getById: '/appointments/{id}',
+    put: '/appointments/{id}',
+    delete: '/appointments/{id}',
+  },
+  packages: {
+    post: '/packages',
+    get: '/packages',
+    getById: '/packages/{id}',
+    put: '/packages/{id}',
+    delete: '/packages/{id}',
+  },
+  orders: {
+    post: '/orders',
+    get: '/orders',
+    getById: '/orders/{id}',
+    put: '/orders/{id}',
+    delete: '/orders/{id}',
   },
 };

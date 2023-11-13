@@ -64,8 +64,17 @@ export default function JwtRegisterView() {
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
+    const restaurantId = '';
+    const role = '1';
     try {
-      await register?.(data.email, data.password, data.firstName, data.lastName);
+      await register?.(
+        data.email,
+        data.password,
+        data.firstName,
+        data.lastName,
+        restaurantId,
+        role
+      );
 
       router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
