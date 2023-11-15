@@ -27,10 +27,12 @@ export default function Main({ children, sx, ...other }: BoxProps) {
           minHeight: 1,
           display: 'flex',
           flexDirection: 'column',
-          pt: `${HEADER.H_MOBILE + 24}px`,
+          // pt: `${HEADER.H_MOBILE + 24}px`,
+          pt: 10,
           pb: 10,
           ...(lgUp && {
-            pt: `${HEADER.H_MOBILE * 2 + 40}px`,
+            // pt: `${HEADER.H_MOBILE * 2 + 40}px`,
+            pt: 10,
             pb: 15,
           }),
         }}
