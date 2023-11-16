@@ -23,9 +23,9 @@ const FoodList = () => {
 
   const fetcher = async () => {
     try {
-      const response = await getMenuItems();
+      await getMenuItems();
       // setMenuItems(response.data.data?.menuItems);
-      console.log(response.data.data?.menuItems);
+      // console.log(response.data.data?.menuItems);
     } catch (error) {
       console.warn(error);
     }
@@ -36,7 +36,7 @@ const FoodList = () => {
   }, []);
 
   return (
-    <Grid container spacing={{ xs: 2, md: 3 }}>
+    <Grid container spacing={{ xs: 2, md: 3 }} sx={{ pl: 0 }}>
       {dummy_data.map((food: any) => (
         <Grid key={food.id} item xs={12} sm={6} md={4} lg={3}>
           <FoodItem food={food} />
