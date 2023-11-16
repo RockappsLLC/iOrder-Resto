@@ -3,6 +3,7 @@ import axios, { endpoints } from 'src/utils/axios';
 import {
   LoginRequest,
   LoginReponse,
+  ErrorResponse,
   ForgotPaswordRequest,
   ResetPasswordRequest,
   ResetPaswordResponse,
@@ -11,7 +12,9 @@ import {
 
 // ----------------------------------------------------------------------
 
-export async function postLogin(data: LoginRequest): Promise<{ data: LoginReponse }> {
+export async function postLogin(
+  data: LoginRequest
+): Promise<{ data: LoginReponse } | ErrorResponse> {
   const URL = endpoints.auth.login.post;
   return axios.post(URL, data);
 }
@@ -20,7 +23,7 @@ export async function postLogin(data: LoginRequest): Promise<{ data: LoginRepons
 
 export async function postForgotPassword(
   data: ForgotPaswordRequest
-): Promise<{ data: ForgotPaswordResponse }> {
+): Promise<{ data: ForgotPaswordResponse } | ErrorResponse> {
   const URL = endpoints.auth.forgotPassword.post;
   return axios.post(URL, data);
 }
@@ -29,7 +32,7 @@ export async function postForgotPassword(
 
 export async function postResetPassword(
   data: ResetPasswordRequest
-): Promise<{ data: ResetPaswordResponse }> {
+): Promise<{ data: ResetPaswordResponse } | ErrorResponse> {
   const URL = endpoints.auth.resetPassword.post;
   return axios.post(URL, data);
 }

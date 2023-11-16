@@ -1,6 +1,7 @@
 export interface LoginRequest {
   email: string;
-  password: string;
+  password?: string;
+  pin?: string;
 }
 export interface LoginReponse {
   success?: boolean;
@@ -29,7 +30,8 @@ export interface CreateUserRequestSchema {
   contactNumber?: string;
   restaurantId: string;
   password: string;
-  role: string;
+  pin?: string;
+  role: 0 | 1 | 2 | 3;
 }
 export interface UpdateUserRequestSchema {
   firstName?: string;
@@ -37,7 +39,7 @@ export interface UpdateUserRequestSchema {
   email?: string;
   contactNumber?: string;
   restaurantId?: string;
-  role?: string;
+  role?: 0 | 1 | 2 | 3;
 }
 export interface UserResponseSchema {
   _id?: string;
@@ -47,7 +49,7 @@ export interface UserResponseSchema {
   contactNumber?: string;
   restaurantId?: string;
   password?: string;
-  role?: string;
+  role?: 0 | 1 | 2 | 3;
 }
 export interface UsersResponseSchema {
   users?: UserResponseSchema[];
@@ -545,4 +547,9 @@ export interface OrdersResponseSchema {
 export interface GetOrdersResponse {
   success?: boolean;
   data?: OrdersResponseSchema;
+}
+export interface ErrorResponse {
+  success?: boolean;
+  message?: string;
+  data?: any;
 }

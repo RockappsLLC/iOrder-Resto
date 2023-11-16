@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
 import {
+  ErrorResponse,
   GetCategoriesResponse,
   GetCategoryByIdResponse,
   CreateCategoryRequestSchema,
@@ -13,7 +14,7 @@ import {
 
 export async function createCategory(
   data: CreateCategoryRequestSchema
-): Promise<{ data: GetCategoryByIdResponse }> {
+): Promise<{ data: GetCategoryByIdResponse } | ErrorResponse> {
   const URL = endpoints.categories.post;
   return axios.post(URL, data);
 }
@@ -47,7 +48,7 @@ export function useGetCategories(params?: IGetCategoriesQueryParams) {
 
 export function getCategories(
   params?: IGetCategoriesQueryParams
-): Promise<{ data: GetCategoriesResponse }> {
+): Promise<{ data: GetCategoriesResponse } | ErrorResponse> {
   const URL = endpoints.categories.get;
   return axios.get(URL, { params });
 }
@@ -73,7 +74,9 @@ export function useGetCategory(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getCategory(id: string): Promise<{ data: GetCategoryByIdResponse }> {
+export function getCategory(
+  id: string
+): Promise<{ data: GetCategoryByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.categories.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -83,7 +86,7 @@ export function getCategory(id: string): Promise<{ data: GetCategoryByIdResponse
 export async function updateCategoryById(
   id: string,
   data: CreateCategoryRequestSchema
-): Promise<{ data: GetCategoryByIdResponse }> {
+): Promise<{ data: GetCategoryByIdResponse } | ErrorResponse> {
   const URL = endpoints.categories.put.replace('{id}', id);
   return axios.put(URL, data);
 }

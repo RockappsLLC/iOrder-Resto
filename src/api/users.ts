@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
 import {
+  ErrorResponse,
   GetUsersResponse,
   GetUserByIdResponse,
   CreateUserRequestSchema,
@@ -14,7 +15,7 @@ import {
 
 export async function createUser(
   data: CreateUserRequestSchema
-): Promise<{ data: GetUserByIdResponse }> {
+): Promise<{ data: GetUserByIdResponse } | ErrorResponse> {
   const URL = endpoints.users.post;
   return axios.post(URL, data);
 }
@@ -47,7 +48,9 @@ export function useGetUsers(params?: IGetUsersQueryParams) {
 
 // ----------------------------------------------------------------------
 
-export function getUsers(params?: IGetUsersQueryParams): Promise<{ data: GetUsersResponse }> {
+export function getUsers(
+  params?: IGetUsersQueryParams
+): Promise<{ data: GetUsersResponse } | ErrorResponse> {
   const URL = endpoints.users.get;
   return axios.get(URL, { params });
 }
@@ -73,7 +76,7 @@ export function useGetMe() {
 
 // ----------------------------------------------------------------------
 
-export function getMe(): Promise<{ data: GetUserByIdResponse }> {
+export function getMe(): Promise<{ data: GetUserByIdResponse } | ErrorResponse> {
   const URL = endpoints.users.me.get;
   return axios.get(URL);
 }
@@ -99,7 +102,7 @@ export function useGetUser(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getUser(id: string): Promise<{ data: GetUserByIdResponse }> {
+export function getUser(id: string): Promise<{ data: GetUserByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.users.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -109,7 +112,7 @@ export function getUser(id: string): Promise<{ data: GetUserByIdResponse }> {
 export async function updateUserById(
   id: string,
   data: UpdateUserRequestSchema
-): Promise<{ data: GetUserByIdResponse }> {
+): Promise<{ data: GetUserByIdResponse } | ErrorResponse> {
   const URL = endpoints.users.put.replace('{id}', id);
   return axios.put(URL, data);
 }

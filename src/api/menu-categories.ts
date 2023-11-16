@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
 import {
+  ErrorResponse,
   GetMenuCategoriesResponse,
   GetMenuCategoryByIdResponse,
   CreateMenuCategoryRequestSchema,
@@ -14,7 +15,7 @@ import {
 
 export async function createMenuCategory(
   data: CreateMenuCategoryRequestSchema
-): Promise<{ data: GetMenuCategoryByIdResponse }> {
+): Promise<{ data: GetMenuCategoryByIdResponse } | ErrorResponse> {
   const URL = endpoints.menuCategories.post;
   return axios.post(URL, data);
 }
@@ -49,7 +50,7 @@ export function useGetMenuCategories(params?: IGetMenuCategoriesQueryParams) {
 
 export function getMenuCategories(
   params?: IGetMenuCategoriesQueryParams
-): Promise<{ data: GetMenuCategoriesResponse }> {
+): Promise<{ data: GetMenuCategoriesResponse } | ErrorResponse> {
   const URL = endpoints.menuCategories.get;
   return axios.get(URL, { params });
 }
@@ -75,7 +76,9 @@ export function useGetMenuCategory(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getMenuCategory(id: string): Promise<{ data: GetMenuCategoryByIdResponse }> {
+export function getMenuCategory(
+  id: string
+): Promise<{ data: GetMenuCategoryByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.menuCategories.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -85,7 +88,7 @@ export function getMenuCategory(id: string): Promise<{ data: GetMenuCategoryById
 export async function updateMenuCategoryById(
   id: string,
   data: UpdateMenuCategoryRequestSchema
-): Promise<{ data: GetMenuCategoryByIdResponse }> {
+): Promise<{ data: GetMenuCategoryByIdResponse } | ErrorResponse> {
   const URL = endpoints.menuCategories.put.replace('{id}', id);
   return axios.put(URL, data);
 }
