@@ -1,11 +1,12 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import Grid from '@mui/material/Grid';
 
 import { getMenuItems } from 'src/api/menu-items';
 
-import FoodItem from '../food-item/food-item';
-// import { MenuItemResponseSchema } from 'src/api/api-schemas';
+import AddOrderDialog from 'src/sections/dialogs/add-order';
+
+import FoodItem from '../food-item';
 
 const dummy_data = [
   { id: 1, name: 'Beef', price: '21.2' },
@@ -19,6 +20,7 @@ const dummy_data = [
 ];
 
 const FoodList = () => {
+  const [modal, setModal] = useState(false);
   // const [menuItems, setMenuItems] = useState();
 
   const fetcher = async () => {
@@ -36,13 +38,26 @@ const FoodList = () => {
   }, []);
 
   return (
-    <Grid container spacing={{ xs: 2, md: 3 }} sx={{ pl: 0 }}>
-      {dummy_data.map((food: any) => (
-        <Grid key={food.id} item xs={12} sm={6} md={4} lg={3}>
-          <FoodItem food={food} />
-        </Grid>
-      ))}
-    </Grid>
+    <>
+      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ pl: 0 }}>
+        {dummy_data.map((food: any) => (
+          <Grid key={food.id} item xs={12} sm={6} md={4} lg={3}>
+            <FoodItem
+              food={food}
+              onClick={() => {
+                setModal(true);
+              }}
+            />
+          </Grid>
+        ))}
+      </Grid>
+      <AddOrderDialog
+        value={modal}
+        hide={() => {
+          setModal(false);
+        }}
+      />
+    </>
   );
 };
 

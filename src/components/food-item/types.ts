@@ -7,4 +7,5 @@ export interface FoodItemProps {
     icon: string;
     status: boolean;
   };
+  onClick: () => void;
 }
