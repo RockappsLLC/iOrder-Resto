@@ -248,7 +248,9 @@ export default function JwtLoginView() {
                   </InputAdornment>
                 ),
               }}
+              sx={{ width: '344px', borderRadius: '10px' }}
             />
+
             {/* 
             <Button
               color="error"
@@ -263,7 +265,7 @@ export default function JwtLoginView() {
             <Button
               variant="contained"
               color="error"
-              sx={{ width: '164px', mr: 2 }}
+              sx={{ width: '250px', height: '60px', mr: 2 }}
               onClick={handleOpen}
             >
               <Iconify icon="ic:baseline-plus" />
@@ -314,6 +316,7 @@ export default function JwtLoginView() {
                     tableData.map((row) => row.name)
                   )
                 }
+                sx={{ backgroundColor: (theme) => theme.palette.grey[500] }}
               />
 
               <TableBody>
