@@ -127,7 +127,7 @@ export default function JwtLoginView() {
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log('data 1111', data);
+    console.log(data);
     try {
       console.log('data', data);
     } catch (error) {
@@ -144,7 +144,7 @@ export default function JwtLoginView() {
       <Typography variant="h4" fontWeight={600}>
         Add New Member
       </Typography>
-      <div
+      <Box
         style={{
           width: '100%',
           height: '1px',
@@ -243,21 +243,11 @@ export default function JwtLoginView() {
               }}
               sx={{ width: '344px' }}
             />
-
-            {/* 
-            <Button
-              color="error"
-              sx={{ flexShrink: 0 }}
-              startIcon={<Iconify icon="eva:trash-2-outline" />}
-            >
-              Clear
-            </Button> */}
           </Stack>
           <Stack direction="row" sx={{}}>
             <Button
               variant="contained"
               color="error"
-              // sx={{ width: '203px', height: '50px', mr: 2 }}
               sx={{ width: '250px', height: '60px', mr: 2 }}
               onClick={handleOpen}
             >
@@ -323,7 +313,6 @@ export default function JwtLoginView() {
 
                       <TableCell align="left">
                         <Typography color={row.status ? 'success.light' : 'error'}>
-                          {/* {row.status ? 'Active' : 'Inactive'} */}
                           <Label variant="soft" color={row.status ? 'success' : 'error'}>
                             <Typography fontWeight={400} variant="caption">
                               {row.status ? 'Active' : 'Inactive'}{' '}
