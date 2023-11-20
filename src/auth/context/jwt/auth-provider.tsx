@@ -2,6 +2,7 @@ import { useMemo, useEffect, useReducer, useCallback } from 'react';
 
 import { postLogin } from 'src/api/auth';
 import { getMe, createUser } from 'src/api/users';
+import { CreateUserRequestSchema } from 'src/api/api-schemas';
 
 import { AuthContext } from './auth-context';
 import { setSession, isValidToken } from './utils';
@@ -134,27 +135,30 @@ export function AuthProvider({ children }: Props) {
       email,
       password,
     };
+    try {
+      const res = await postLogin(data);
 
-    const res = await postLogin(data);
+      const { data: accessToken } = res.data || {};
+      if (accessToken) await setSession(accessToken);
 
-    const { data: accessToken } = res.data;
-    if (accessToken) await setSession(accessToken);
+      const response = await getMe();
 
-    const response = await getMe();
+      const { data: profile } = response.data;
 
-    const { data: profile } = response.data;
-
-    dispatch({
-      type: Types.LOGIN,
-      payload: {
-        user: {
-          ...profile,
-          displayName: [profile?.firstName || '', profile?.lastName || ''].join(' '),
-          photoURL: '',
-          accessToken,
+      dispatch({
+        type: Types.LOGIN,
+        payload: {
+          user: {
+            ...profile,
+            displayName: [profile?.firstName || '', profile?.lastName || ''].join(' '),
+            photoURL: '',
+            accessToken,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
   // REGISTER
@@ -165,7 +169,7 @@ export function AuthProvider({ children }: Props) {
       firstName: string,
       lastName: string,
       restaurantId: string,
-      role: string
+      role: CreateUserRequestSchema['role']
     ) => {
       const data = {
         email,
