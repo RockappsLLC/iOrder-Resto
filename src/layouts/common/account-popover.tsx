@@ -52,6 +52,16 @@ export default function AccountPopover() {
     }
   };
 
+  const handleLockout = async () => {
+    try {
+      await logout();
+      popover.onClose();
+      router.replace('/auth/other/lock-screen');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleClickItem = (path: string) => {
     popover.onClose();
     router.push(path);
@@ -116,6 +126,13 @@ export default function AccountPopover() {
           sx={{ m: 1, fontWeight: 'fontWeightBold', color: 'error.main' }}
         >
           Logout
+        </MenuItem>
+
+        <MenuItem
+          onClick={handleLockout}
+          sx={{ m: 1, fontWeight: 'fontWeightBold', color: 'error.main' }}
+        >
+          Lockout
         </MenuItem>
       </CustomPopover>
     </>

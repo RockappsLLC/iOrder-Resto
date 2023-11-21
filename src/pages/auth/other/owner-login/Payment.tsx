@@ -8,7 +8,9 @@ import { Box, Link, Alert, Stack, IconButton, Typography, InputAdornment } from 
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import Iconify from 'src/components/iconify';
+import Money from 'src/assets/icons/money';
+import LockClose from 'src/assets/icons/lock-close';
+
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
 export default function HomeFloor() {
@@ -73,7 +75,7 @@ export default function HomeFloor() {
             startAdornment: (
               <InputAdornment position="start">
                 <IconButton edge="start">
-                  <Iconify icon="majesticons:money-line" />
+                  <Money />
                 </IconButton>
               </InputAdornment>
             ),
@@ -98,9 +100,7 @@ export default function HomeFloor() {
             startAdornment: (
               <InputAdornment position="start">
                 <IconButton onClick={privateKey.onToggle} edge="start">
-                  <Iconify
-                    icon={privateKey.value ? 'ic:round-lock-open' : 'material-symbols:lock-outline'}
-                  />
+                  <LockClose />
                 </IconButton>
               </InputAdornment>
             ),

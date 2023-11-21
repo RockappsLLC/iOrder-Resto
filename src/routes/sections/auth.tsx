@@ -2,12 +2,12 @@ import { lazy, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { GuestGuard } from 'src/auth/guard';
-import PinScreen from 'src/pages/auth/other/PinScreen';
-import LockedScreen from 'src/pages/auth/other/LockedScreen';
-import OwnerForm from 'src/pages/auth/other/owner-login/OwnerForm';
-import LoginOwner from 'src/pages/auth/other/owner-login/LoginOwner';
-import ChooseUserScreen from 'src/pages/auth/other/ChooseUserScreen';
+import PinScreen from 'src/pages/auth/other/pin-screen';
+import LockedScreen from 'src/pages/auth/other/locked-screen';
+import OwnerForm from 'src/pages/auth/other/owner-login/owner-form';
+import LoginOwner from 'src/pages/auth/other/owner-login/login-owner';
 import AuthModernCompactLayout from 'src/layouts/auth/modern-compact';
+import ChooseUserScreen from 'src/pages/auth/other/choose-user-screen';
 
 import { SplashScreen } from 'src/components/loading-screen';
 
