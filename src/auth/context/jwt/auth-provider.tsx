@@ -161,6 +161,35 @@ export function AuthProvider({ children }: Props) {
     }
   }, []);
 
+  // LOGIN WITH PIN
+  const loginWithPin = useCallback(async (email: string, pin: string) => {
+    const data = {
+      email,
+      pin,
+    };
+
+    const res = await postLogin(data);
+
+    const { data: accessToken } = res.data;
+    if (accessToken) await setSession(accessToken);
+
+    const response = await getMe();
+
+    const { data: profile } = response.data;
+
+    dispatch({
+      type: Types.LOGIN,
+      payload: {
+        user: {
+          ...profile,
+          displayName: [profile?.firstName || '', profile?.lastName || ''].join(' '),
+          photoURL: '',
+          accessToken,
+        },
+      },
+    });
+  }, []);
+
   // REGISTER
   const register = useCallback(
     async (
@@ -228,10 +257,11 @@ export function AuthProvider({ children }: Props) {
       unauthenticated: status === 'unauthenticated',
       //
       login,
+      loginWithPin,
       register,
       logout,
     }),
-    [login, logout, register, state.user, status]
+    [login, loginWithPin, logout, register, state.user, status]
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

@@ -1,59 +1,66 @@
-import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import { Stack, Button, Typography } from '@mui/material';
+
+import { useRouter, useSearchParams } from 'src/routes/hooks';
+
+import { useGetUsers } from 'src/api/users';
+import { useAuthContext } from 'src/auth/hooks';
+import { PATH_AFTER_LOGIN } from 'src/config-global';
 
 import Iconify from 'src/components/iconify';
 
 const setPadding = (value: any) => `${value}px`;
 
-const data = [
-  {
-    id: 0,
-    isActive: false,
-    name: 'Beby Jovancy',
-  },
-  {
-    id: 1,
-    isActive: false,
-    name: 'Aisyah Zidni',
-  },
-  {
-    id: 2,
-    isActive: true,
-    name: 'Nirmala Azalea',
-  },
-  {
-    id: 3,
-    isActive: false,
-    name: 'Bena Kane',
-  },
-  {
-    id: 4,
-    isActive: false,
-    name: 'Firmino Kudo',
-  },
-];
-
-function CustomKeyboard({ onKeyPress, onClear, onBackspace }: any) {
+function CustomKeyboard({
+  onKeyPress,
+  onClear,
+  onBackspace,
+  onSubmit,
+  onClick,
+  isActiveUser,
+}: any) {
   const [pin, setPin] = useState('');
 
-  const handleKeyPress = (value: any) => {
-    setPin((prevPin) => prevPin + value);
-    onKeyPress(value);
-  };
+  const handleKeyPress = useCallback(
+    (value: any) => {
+      setPin((prevPin) => prevPin + value);
+      onKeyPress(value);
+    },
+    [onKeyPress]
+  );
 
-  const handleBackspace = () => {
+  const handleBackspace = useCallback(() => {
     const newPin = pin.slice(0, -1);
     setPin(newPin);
     onBackspace();
-  };
+  }, [pin, onBackspace]);
 
   const handleClear = () => {
     setPin('');
     onClear();
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key >= '0' && event.key <= '9') {
+        handleKeyPress(event.key);
+      } else if (event.key === 'Backspace') {
+        handleBackspace();
+      } else if (event.key === 'Enter') {
+        onSubmit(pin);
+        onClick();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyPress, handleBackspace, onSubmit, onClick, pin]);
 
   return (
     <Box mt={5}>
@@ -88,6 +95,7 @@ function CustomKeyboard({ onKeyPress, onClear, onBackspace }: any) {
               borderRadius: 160,
               padding: `${setPadding(16)} ${setPadding(30)}`,
             }}
+            disabled={!isActiveUser}
           >
             {item}
           </Button>
@@ -103,6 +111,7 @@ function CustomKeyboard({ onKeyPress, onClear, onBackspace }: any) {
             borderRadius: 160,
             padding: `${setPadding(16)} ${setPadding(30)}`,
           }}
+          disabled={!isActiveUser}
         >
           C
         </Button>
@@ -130,6 +139,7 @@ function CustomKeyboard({ onKeyPress, onClear, onBackspace }: any) {
             backdropFilter: `blur(8px)`,
             borderRadius: 160,
           }}
+          disabled={!isActiveUser}
         >
           <Iconify icon="eva:backspace-fill" width={22} sx={{ color: '#fff' }} />
         </Button>
@@ -145,6 +155,11 @@ function CustomKeyboard({ onKeyPress, onClear, onBackspace }: any) {
           borderRadius: 10,
           width: '100%',
         }}
+        onClick={() => {
+          onSubmit(pin);
+          onClick();
+        }}
+        disabled={!isActiveUser}
       >
         Unlock
       </Button>
@@ -153,13 +168,59 @@ function CustomKeyboard({ onKeyPress, onClear, onBackspace }: any) {
 }
 
 export default function PinScreen() {
-  const [Users, setUsers] = useState(data);
+  const { loginWithPin } = useAuthContext();
+  const router = useRouter();
 
-  const ChangeActive = (id: any) => {
-    const newData = [...Users] as any;
-    newData.find((item: any) => item.isActive === true).isActive = false;
-    newData[id].isActive = true;
-    setUsers(newData);
+  const searchParams = useSearchParams();
+
+  const paramId = searchParams.get('id');
+  const returnTo = searchParams.get('returnTo');
+
+  const [users, setUsers] = useState([]);
+  const [pinFromKeyboard, setPinFromKeyboard] = useState('');
+
+  const usersData = useGetUsers();
+  const user = usersData?.users as any;
+
+  const handleSubmit = (pin: string) => {
+    setPinFromKeyboard(pin);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const usersWithIsActive = user.map((item: any) => ({
+          ...item,
+          isActive: item._id === paramId,
+        }));
+        setUsers(usersWithIsActive);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchData();
+  }, [user, paramId]);
+
+  const changeActive = (id: any) => {
+    setUsers((prevUsers2: any) =>
+      prevUsers2.map((user2: any) => ({
+        ...user2,
+        isActive: user2._id === id,
+      }))
+    );
+  };
+
+  const activeUser = users.find((item: any) => item.isActive === true) as any;
+
+  const onSubmit = async () => {
+    try {
+      await loginWithPin?.(activeUser?.email, pinFromKeyboard);
+
+      router.push(returnTo || PATH_AFTER_LOGIN);
+    } catch (error) {
+      console.error('Pin screen error', error);
+    }
   };
 
   return (
@@ -200,20 +261,20 @@ export default function PinScreen() {
           gap={5}
           overflow="scroll"
         >
-          {Users.map((user: any, num: number) => (
+          {users.map((item2: any, num: number) => (
             <Stack direction={{ xs: 'column', sm: 'column' }} key={num}>
               <Box
-                width={user.isActive ? 124 : 100}
-                height={user.isActive ? 124 : 100}
+                width={item2.isActive ? 124 : 100}
+                height={item2.isActive ? 124 : 100}
                 borderRadius={100}
                 sx={{
                   backgroundColor: 'red',
-                  opacity: user.isActive ? 1 : 0.5,
+                  opacity: item2.isActive ? 1 : 0.5,
                 }}
-                onClick={() => ChangeActive(user.id)}
+                onClick={() => changeActive(item2._id)}
               />
               <Typography color="#fff" width="max-content" textAlign="center">
-                {user.name}
+                {item2.firstName} {item2.lastName}
               </Typography>
             </Stack>
           ))}
@@ -223,6 +284,9 @@ export default function PinScreen() {
           onKeyPress={(value: any) => console.log(`Pressed ${value}`)}
           onBackspace={() => console.log('Backspace')}
           onClear={() => console.log('Clear')}
+          onSubmit={handleSubmit}
+          onClick={() => onSubmit()}
+          isActiveUser={activeUser}
         />
 
         <Stack mt="auto" direction={{ xs: 'row', sm: 'row' }}>
@@ -234,14 +298,3 @@ export default function PinScreen() {
     </>
   );
 }
-
-// <TextField
-// id="pin"
-// label="Enter your PIN"
-// value={pin}
-// margin="normal"
-// style={{ color: 'red', fontSize: '16px', border: 'none' }}
-// InputProps={{
-// style: { color: 'white', borderColor: 'white' },
-// }}
-// />

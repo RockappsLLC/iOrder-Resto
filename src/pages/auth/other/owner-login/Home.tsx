@@ -13,7 +13,12 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
+import Home from 'src/assets/icons/home';
+import Plus from 'src/assets/icons/plus';
+import LockClose from 'src/assets/icons/lock-close';
+
 import Iconify from 'src/components/iconify';
+import { UploadBox } from 'src/components/upload';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
 export default function HomeFloor() {
@@ -77,7 +82,7 @@ export default function HomeFloor() {
             startAdornment: (
               <InputAdornment position="start">
                 <IconButton edge="start">
-                  <Iconify icon="mdi:home" />
+                  <Home />
                 </IconButton>
               </InputAdornment>
             ),
@@ -101,9 +106,7 @@ export default function HomeFloor() {
               startAdornment: (
                 <InputAdornment position="start">
                   <IconButton onClick={password.onToggle} edge="start">
-                    <Iconify
-                      icon={password.value ? 'zondicons:lock-open' : 'zondicons:lock-closed'}
-                    />
+                    <LockClose />
                   </IconButton>
                 </InputAdornment>
               ),
@@ -126,9 +129,7 @@ export default function HomeFloor() {
               startAdornment: (
                 <InputAdornment position="start">
                   <IconButton onClick={confirmPassword.onToggle} edge="start">
-                    <Iconify
-                      icon={confirmPassword.value ? 'zondicons:lock-open' : 'zondicons:lock-closed'}
-                    />
+                    <LockClose />
                   </IconButton>
                 </InputAdornment>
               ),
@@ -187,6 +188,7 @@ export default function HomeFloor() {
               borderRadius: 30,
               minWidth: '40px',
               height: '40px',
+              backgroundColor: '#FF7527',
             }}
           >
             <Iconify icon="ic:baseline-plus" />
@@ -233,17 +235,38 @@ export default function HomeFloor() {
           <Button
             title="Unlock"
             variant="contained"
-            color="error"
             sx={{
               '&:hover': { backgroundColor: '#F15F34' },
               borderRadius: 30,
               minWidth: '40px',
               height: '40px',
+              backgroundColor: '#FF7527',
             }}
           >
-            <Iconify icon="ic:baseline-plus" />
+            <Plus />
           </Button>
         </Stack>
+      </Stack>
+
+      <Stack spacing={0.1} direction="column">
+        <Typography
+          variant="caption"
+          sx={{ color: 'text.secondary', alignSelf: 'start', mb: -0.1 }}
+        >
+          Restaurant Logo
+        </Typography>
+
+        <RHFTextField
+          name="restaurantLogo"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <UploadBox />
+              </InputAdornment>
+            ),
+            style: { borderRadius: '58px' },
+          }}
+        />
       </Stack>
     </Stack>
   );

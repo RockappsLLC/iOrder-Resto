@@ -17,10 +17,11 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
+import { User } from 'src/assets/icons';
+import LockClose from 'src/assets/icons/lock-close';
 import { PATH_AFTER_LOGIN_OWNER } from 'src/config-global';
 
 import Logo from 'src/components/logo';
-import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
 // ----------------------------------------------------------------------
@@ -101,7 +102,7 @@ export default function LoginOwner() {
             startAdornment: (
               <InputAdornment position="start">
                 <IconButton edge="start">
-                  <Iconify icon="eva:person-outline" />
+                  <User />
                 </IconButton>
               </InputAdornment>
             ),
@@ -126,9 +127,7 @@ export default function LoginOwner() {
             startAdornment: (
               <InputAdornment position="start">
                 <IconButton onClick={password.onToggle} edge="start">
-                  <Iconify
-                    icon={password.value ? 'ic:round-lock-open' : 'material-symbols:lock-outline'}
-                  />
+                  <LockClose />
                 </IconButton>
               </InputAdornment>
             ),

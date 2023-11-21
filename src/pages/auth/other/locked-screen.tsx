@@ -3,8 +3,15 @@ import React, { useState, useEffect } from 'react'; // Import useState and useEf
 import Box from '@mui/material/Box';
 import { Stack, Avatar, Typography } from '@mui/material';
 
+import { useRouter } from 'src/routes/hooks';
+
 export default function DateScreen() {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const router = useRouter();
+
+  const handleScreenClick = () => {
+    router.replace('/auth/other/pin-screen');
+  };
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -36,7 +43,7 @@ export default function DateScreen() {
   const modifiedDate = formattedDate.replace(',', '');
 
   return (
-    <>
+    <Box onClick={handleScreenClick}>
       <Helmet>
         <title>Auth: Lock Screen</title>
       </Helmet>
@@ -98,6 +105,6 @@ export default function DateScreen() {
           </Stack>
         </Stack>
       </Box>
-    </>
+    </Box>
   );
 }

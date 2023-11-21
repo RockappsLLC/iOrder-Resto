@@ -1,13 +1,14 @@
-import { lazy, useState } from 'react';
+import React, { lazy, useState } from 'react';
 
 import Button from '@mui/material/Button';
 import { Box, Card, Stack, Typography } from '@mui/material';
 
+import { Plus, Home, Staff, Money, RiceBowl, ArrowLeft, ArrowRight } from 'src/assets/icons';
+
 import Logo from 'src/components/logo';
-import Iconify from 'src/components/iconify';
 
 const HomeFloorPlanContent = lazy(() => import('src/pages/auth/other/owner-login/Home'));
-const FloorPlanContent = lazy(() => import('src/pages/auth/other/owner-login/FloorPlan'));
+const FloorPlanContent = lazy(() => import('src/pages/auth/other/owner-login/floor-plan'));
 const StaffContent = lazy(() => import('src/pages/auth/other/owner-login/Staff'));
 const PaymentContent = lazy(() => import('src/pages/auth/other/owner-login/Payment'));
 const MenuContent = lazy(() => import('src/pages/auth/other/owner-login/Menu'));
@@ -16,31 +17,31 @@ const contentData = [
   {
     name: 'Home',
     active: true,
-    icon: 'mdi:home',
+    icon: <Home />,
     contentComponent: HomeFloorPlanContent,
   },
   {
     name: 'Floor Plan',
     active: false,
-    icon: 'mdi:plus',
+    icon: <Plus />,
     contentComponent: FloorPlanContent,
   },
   {
     name: 'Staff',
     active: false,
-    icon: 'mdi:account-multiple',
+    icon: <Staff />,
     contentComponent: StaffContent,
   },
   {
     name: 'Menu',
     active: false,
-    icon: 'mdi:rice',
+    icon: <RiceBowl />,
     contentComponent: MenuContent,
   },
   {
     name: 'Payment',
     active: false,
-    icon: 'mdi:cash',
+    icon: <Money />,
     contentComponent: PaymentContent,
   },
 ];
@@ -126,8 +127,11 @@ export default function OwnerForm() {
               onClick={() => handleLinkClick(data.name, index)}
               disabled={data.active}
             >
-              <Iconify icon={data.icon} width={24} color={data.active ? '#F15F34' : '#9C9C9C'} />
-              <Typography ml={1} color={data.active ? 'primary' : '#9C9C9C'}>
+              {React.cloneElement(data.icon, {
+                color: data.active ? '#F15F34' : '#828487',
+              })}
+
+              <Typography ml={1} color={data.active ? 'primary' : '#828487'}>
                 {data.name}
               </Typography>
             </Button>
@@ -155,8 +159,10 @@ export default function OwnerForm() {
               color="error"
               sx={{ borderRadius: 5 }}
             >
-              <Iconify icon="mdi:arrow-left-thin" width={20} color="#fff" mr={1} />
-              <Typography mr={1}>Back</Typography>
+              <ArrowLeft />
+              <Typography mr={1} color="#fff">
+                Back
+              </Typography>
             </Button>
           )}
 
@@ -169,7 +175,7 @@ export default function OwnerForm() {
               sx={{ borderRadius: 5 }}
             >
               <Typography ml={1}>Next</Typography>
-              <Iconify icon="mdi:arrow-right-thin" width={20} color="#000" ml={1} />
+              <ArrowRight />
             </Button>
           )}
         </Box>
