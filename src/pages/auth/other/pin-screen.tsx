@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
-import { Stack, Button, Typography } from '@mui/material';
+import { Stack, Alert, Button, Typography } from '@mui/material';
 
 import { useRouter, useSearchParams } from 'src/routes/hooks';
 
@@ -14,177 +14,20 @@ import Iconify from 'src/components/iconify';
 
 const setPadding = (value: any) => `${value}px`;
 
-function CustomKeyboard({
-  onKeyPress,
-  onClear,
-  onBackspace,
-  onSubmit,
-  onClick,
-  isActiveUser,
-}: any) {
-  const [pin, setPin] = useState('');
-
-  const handleKeyPress = useCallback(
-    (value: any) => {
-      setPin((prevPin) => prevPin + value);
-      onKeyPress(value);
-    },
-    [onKeyPress]
-  );
-
-  const handleBackspace = useCallback(() => {
-    const newPin = pin.slice(0, -1);
-    setPin(newPin);
-    onBackspace();
-  }, [pin, onBackspace]);
-
-  const handleClear = () => {
-    setPin('');
-    onClear();
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key >= '0' && event.key <= '9') {
-        handleKeyPress(event.key);
-      } else if (event.key === 'Backspace') {
-        handleBackspace();
-      } else if (event.key === 'Enter') {
-        onSubmit(pin);
-        onClick();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [handleKeyPress, handleBackspace, onSubmit, onClick, pin]);
-
-  return (
-    <Box mt={5}>
-      <input
-        type="text"
-        value={pin}
-        placeholder="Enter your PIN"
-        style={{
-          backgroundColor: 'transparent',
-          border: 'none',
-          color: '#fff',
-          marginBottom: 10,
-          textAlign: 'center',
-          outline: 'none',
-          fontSize: '28px',
-        }}
-      />
-
-      <Box
-        mt={2}
-        mb={5}
-        style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}
-      >
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
-          <Button
-            variant="outlined"
-            onClick={() => handleKeyPress(item)}
-            style={{
-              borderColor: '#fff',
-              color: '#fff',
-              backdropFilter: `blur(8px)`,
-              borderRadius: 160,
-              padding: `${setPadding(16)} ${setPadding(30)}`,
-            }}
-            disabled={!isActiveUser}
-          >
-            {item}
-          </Button>
-        ))}
-
-        <Button
-          variant="outlined"
-          onClick={handleClear}
-          style={{
-            borderColor: '#fff',
-            color: '#fff',
-            backdropFilter: `blur(8px)`,
-            borderRadius: 160,
-            padding: `${setPadding(16)} ${setPadding(30)}`,
-          }}
-          disabled={!isActiveUser}
-        >
-          C
-        </Button>
-
-        <Button
-          variant="outlined"
-          onClick={() => handleKeyPress('0')}
-          style={{
-            borderColor: '#fff',
-            color: '#fff',
-            backdropFilter: `blur(8px)`,
-            borderRadius: 160,
-            padding: `${setPadding(16)} ${setPadding(30)}`,
-          }}
-        >
-          0
-        </Button>
-
-        <Button
-          variant="outlined"
-          onClick={handleBackspace}
-          style={{
-            borderColor: '#fff',
-            color: '#fff',
-            backdropFilter: `blur(8px)`,
-            borderRadius: 160,
-          }}
-          disabled={!isActiveUser}
-        >
-          <Iconify icon="eva:backspace-fill" width={22} sx={{ color: '#fff' }} />
-        </Button>
-      </Box>
-
-      <Button
-        title="Unlock"
-        variant="contained"
-        color="error"
-        sx={{
-          '&:hover': { backgroundColor: '#F15F34' },
-          paddingY: 1,
-          borderRadius: 10,
-          width: '100%',
-        }}
-        onClick={() => {
-          onSubmit(pin);
-          onClick();
-        }}
-        disabled={!isActiveUser}
-      >
-        Unlock
-      </Button>
-    </Box>
-  );
-}
-
 export default function PinScreen() {
   const { loginWithPin } = useAuthContext();
   const router = useRouter();
-
   const searchParams = useSearchParams();
 
   const paramId = searchParams.get('id');
   const returnTo = searchParams.get('returnTo');
 
   const [users, setUsers] = useState([]);
-  const [pinFromKeyboard, setPinFromKeyboard] = useState('');
+  const [pin, setPin] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const usersData = useGetUsers();
   const user = usersData?.users as any;
-
-  const handleSubmit = (pin: string) => {
-    setPinFromKeyboard(pin);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -213,15 +56,52 @@ export default function PinScreen() {
 
   const activeUser = users.find((item: any) => item.isActive === true) as any;
 
+  const handleKeyPress = useCallback(
+    (value: any) => {
+      setPin((prevPin) => prevPin + value);
+    },
+    [setPin]
+  );
+
+  const handleBackspace = useCallback(() => {
+    const newPin = pin.slice(0, -1);
+    setPin(newPin);
+  }, [pin, setPin]);
+
+  const handleClear = () => {
+    setPin('');
+  };
+
   const onSubmit = async () => {
     try {
-      await loginWithPin?.(activeUser?.email, pinFromKeyboard);
+      await loginWithPin?.(activeUser?.email, pin);
 
       router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
-      console.error('Pin screen error', error);
+      console.error(error);
+      setPin('');
+      setErrorMsg(typeof error === 'string' ? error : error.message);
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key >= '0' && event.key <= '9') {
+        handleKeyPress(event.key);
+      } else if (event.key === 'Backspace') {
+        handleBackspace();
+      } else if (event.key === 'Enter') {
+        onSubmit();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handleKeyPress, handleBackspace]);
 
   return (
     <>
@@ -280,14 +160,114 @@ export default function PinScreen() {
           ))}
         </Stack>
 
-        <CustomKeyboard
-          onKeyPress={(value: any) => console.log(`Pressed ${value}`)}
-          onBackspace={() => console.log('Backspace')}
-          onClear={() => console.log('Clear')}
-          onSubmit={handleSubmit}
-          onClick={() => onSubmit()}
-          isActiveUser={activeUser}
-        />
+        {!!errorMsg && (
+          <Alert sx={{ mt: 1 }} severity="error">
+            {errorMsg}
+          </Alert>
+        )}
+
+        <Box mt={5}>
+          <input
+            type="text"
+            value={pin}
+            placeholder="Enter your PIN"
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              color: '#fff',
+              marginBottom: 10,
+              textAlign: 'center',
+              outline: 'none',
+              fontSize: '28px',
+            }}
+          />
+
+          <Box
+            mt={2}
+            mb={5}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: 10,
+            }}
+          >
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
+              <Button
+                variant="outlined"
+                onClick={() => handleKeyPress(item)}
+                style={{
+                  borderColor: '#fff',
+                  color: '#fff',
+                  backdropFilter: `blur(8px)`,
+                  borderRadius: 160,
+                  padding: `${setPadding(16)} ${setPadding(30)}`,
+                }}
+                disabled={!activeUser}
+              >
+                {item}
+              </Button>
+            ))}
+
+            <Button
+              variant="outlined"
+              onClick={handleClear}
+              style={{
+                borderColor: '#fff',
+                color: '#fff',
+                backdropFilter: `blur(8px)`,
+                borderRadius: 160,
+                padding: `${setPadding(16)} ${setPadding(30)}`,
+              }}
+              disabled={!activeUser}
+            >
+              C
+            </Button>
+
+            <Button
+              variant="outlined"
+              onClick={() => handleKeyPress('0')}
+              style={{
+                borderColor: '#fff',
+                color: '#fff',
+                backdropFilter: `blur(8px)`,
+                borderRadius: 160,
+                padding: `${setPadding(16)} ${setPadding(30)}`,
+              }}
+            >
+              0
+            </Button>
+
+            <Button
+              variant="outlined"
+              onClick={handleBackspace}
+              style={{
+                borderColor: '#fff',
+                color: '#fff',
+                backdropFilter: `blur(8px)`,
+                borderRadius: 160,
+              }}
+              disabled={!activeUser}
+            >
+              <Iconify icon="eva:backspace-fill" width={22} sx={{ color: '#fff' }} />
+            </Button>
+          </Box>
+
+          <Button
+            title="Unlock"
+            variant="contained"
+            color="error"
+            sx={{
+              '&:hover': { backgroundColor: '#F15F34' },
+              paddingY: 1,
+              borderRadius: 10,
+              width: '100%',
+            }}
+            onClick={onSubmit}
+            disabled={!activeUser}
+          >
+            Unlock
+          </Button>
+        </Box>
 
         <Stack mt="auto" direction={{ xs: 'row', sm: 'row' }}>
           <Typography variant="h6" fontWeight={400} color="#fff" mt={3}>

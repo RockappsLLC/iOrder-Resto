@@ -1,17 +1,45 @@
 import { Helmet } from 'react-helmet-async';
-import React, { useState, useEffect } from 'react'; // Import useState and useEffect
+import React, { useState, useEffect } from 'react';
+
 import Box from '@mui/material/Box';
 import { Stack, Avatar, Typography } from '@mui/material';
 
 import { useRouter } from 'src/routes/hooks';
 
-export default function DateScreen() {
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const router = useRouter();
+import { useEventListener } from 'src/hooks/use-event-listener';
 
-  const handleScreenClick = () => {
-    router.replace('/auth/other/pin-screen');
+import { useAuthContext } from 'src/auth/hooks';
+
+export default function DateScreen() {
+  const router = useRouter();
+  const { user, logout } = useAuthContext();
+
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  const restaurnatId = localStorage.getItem('restaurantId');
+
+  const handleScreenClick = async () => {
+    try {
+      await logout();
+      localStorage.removeItem('accessToken');
+
+      if (restaurnatId) {
+        router.replace('/auth/other/pin-screen');
+      } else {
+        router.replace('/');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  const handleKeyPress = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      router.replace('/auth/other/pin-screen');
+    }
+  };
+
+  useEventListener('keydown', handleKeyPress);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -100,7 +128,7 @@ export default function DateScreen() {
               Coca Coffeetalk
             </Typography>
             <Typography variant="h6" color="#fff" fontWeight={300}>
-              Logged in as, <span style={{ fontWeight: 600 }}>Bean Kean</span>
+              Logged in as, <span style={{ fontWeight: 600 }}>{user?.displayName}</span>
             </Typography>
           </Stack>
         </Stack>

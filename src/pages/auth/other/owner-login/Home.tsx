@@ -22,7 +22,11 @@ import { UploadBox } from 'src/components/upload';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
 export default function HomeFloor() {
-  const [value, setValue] = useState(dayjs());
+  const [fromWeek, setFromWeek] = useState(dayjs());
+  const [toWeek, setToWeek] = useState(dayjs());
+  const [fromWeekend, setFromWeekend] = useState(dayjs());
+  const [toWeekend, setToWeenkend] = useState(dayjs());
+
   const [errorMsg, setErrorMsg] = useState('');
 
   const router = useRouter();
@@ -102,6 +106,7 @@ export default function HomeFloor() {
 
           <RHFTextField
             name="password"
+            type="password"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -125,6 +130,7 @@ export default function HomeFloor() {
 
           <RHFTextField
             name="confirmPassword"
+            type="password"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -152,9 +158,9 @@ export default function HomeFloor() {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <TimePicker
               label="From"
-              value={value}
+              value={fromWeek}
               onChange={(newValue: any) => {
-                setValue(newValue);
+                setFromWeek(newValue);
               }}
               slotProps={{
                 textField: {
@@ -166,9 +172,9 @@ export default function HomeFloor() {
 
             <TimePicker
               label="To"
-              value={value}
+              value={toWeek}
               onChange={(newValue: any) => {
-                setValue(newValue);
+                setToWeek(newValue);
               }}
               slotProps={{
                 textField: {
@@ -205,9 +211,9 @@ export default function HomeFloor() {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <TimePicker
               label="From"
-              value={value}
+              value={fromWeekend}
               onChange={(newValue: any) => {
-                setValue(newValue);
+                setFromWeekend(newValue);
               }}
               slotProps={{
                 textField: {
@@ -219,9 +225,9 @@ export default function HomeFloor() {
 
             <TimePicker
               label="To"
-              value={value}
+              value={toWeekend}
               onChange={(newValue: any) => {
-                setValue(newValue);
+                setToWeenkend(newValue);
               }}
               slotProps={{
                 textField: {

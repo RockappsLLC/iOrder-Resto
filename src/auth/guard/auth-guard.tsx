@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -7,13 +7,9 @@ import { SplashScreen } from 'src/components/loading-screen';
 
 import { useAuthContext } from '../hooks';
 
-// ----------------------------------------------------------------------
-
 const loginPaths: Record<string, string> = {
   jwt: paths.auth.jwt.login,
 };
-
-// ----------------------------------------------------------------------
 
 type Props = {
   children: React.ReactNode;
@@ -21,42 +17,35 @@ type Props = {
 
 export default function AuthGuard({ children }: Props) {
   const { loading } = useAuthContext();
-
-  return <>{loading ? <SplashScreen /> : <Container>{children}</Container>}</>;
-}
-
-// ----------------------------------------------------------------------
-
-function Container({ children }: Props) {
   const router = useRouter();
-
-  const { authenticated, method } = useAuthContext();
-
   const [checked, setChecked] = useState(false);
 
-  const check = useCallback(() => {
-    if (!authenticated) {
+  const restaurantIdStorage = localStorage.getItem('restaurantId');
+  const accessToken = localStorage.getItem('accessToken');
+
+  const checkAuthentication = useCallback(() => {
+    if (accessToken && restaurantIdStorage) {
+      router.replace('/dashboard');
+    } else if (!accessToken && !restaurantIdStorage) {
       const searchParams = new URLSearchParams({
         returnTo: window.location.pathname,
       }).toString();
-
-      const loginPath = loginPaths[method];
-
+      const loginPath = loginPaths.jwt;
       const href = `${loginPath}?${searchParams}`;
-
       router.replace(href);
-    } else {
-      setChecked(true);
+    } else if (restaurantIdStorage) {
+      router.replace('/auth/other/pin-screen');
     }
-  }, [authenticated, method, router]);
-
-  useEffect(() => {
-    check();
+    setChecked(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!checked) {
-    return null;
+  useEffect(() => {
+    checkAuthentication();
+  }, [checkAuthentication]);
+
+  if (loading || !checked) {
+    return <SplashScreen />;
   }
 
   return <>{children}</>;
