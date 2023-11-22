@@ -31,7 +31,7 @@ export interface CreateUserRequestSchema {
   restaurantId: string;
   password: string;
   pin?: string;
-  role: 0 | 1 | 2 | 3;
+  role: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 }
 export interface UpdateUserRequestSchema {
   firstName?: string;
@@ -39,7 +39,7 @@ export interface UpdateUserRequestSchema {
   email?: string;
   contactNumber?: string;
   restaurantId?: string;
-  role?: 0 | 1 | 2 | 3;
+  role?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 }
 export interface UserResponseSchema {
   _id?: string;
@@ -49,7 +49,7 @@ export interface UserResponseSchema {
   contactNumber?: string;
   restaurantId?: string;
   password?: string;
-  role?: 0 | 1 | 2 | 3;
+  role?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 }
 export interface UsersResponseSchema {
   users?: UserResponseSchema[];
@@ -68,6 +68,7 @@ export interface GetUsersResponse {
 export interface CreateCategoryRequestSchema {
   name: string;
   icon?: string;
+  status?: boolean;
 }
 export interface CategoryResponseSchema {
   _id?: string;
@@ -103,6 +104,8 @@ export interface CreateRestaurantRequestSchema {
   zip?: string;
   place?: string;
   canton?: string;
+  startDate?: Date;
+  endDate?: Date;
 }
 export interface UpdateRestaurantRequestSchema {
   name?: string;
@@ -112,6 +115,8 @@ export interface UpdateRestaurantRequestSchema {
   zip?: string;
   place?: string;
   canton?: string;
+  startDate?: Date;
+  endDate?: Date;
 }
 export interface GetRestaurantsResponse {
   success?: boolean;
@@ -132,6 +137,8 @@ export interface RestaurantResponseSchema {
   name?: string;
   taxId?: string;
   address?: AddressSchema;
+  startDate?: Date;
+  endDate?: Date;
 }
 export interface CreateRestaurantResponseSchema {
   success?: boolean;
@@ -213,6 +220,11 @@ export interface CreateTableRequestSchema {
   seatsNumber?: number;
   restaurantId: string;
   status?: number;
+  positionX?: number;
+  positionY?: number;
+  height?: number;
+  width?: number;
+  type?: string;
 }
 export interface TableResponseSchema {
   _id?: string;
@@ -220,6 +232,11 @@ export interface TableResponseSchema {
   seatsNumber?: number;
   restaurantId?: string;
   status?: number;
+  positionX?: number;
+  positionY?: number;
+  height?: number;
+  width?: number;
+  type?: string;
 }
 export interface GetTableByIdResponse {
   success?: boolean;
@@ -552,4 +569,65 @@ export interface ErrorResponse {
   success?: boolean;
   message?: string;
   data?: any;
+}
+export interface CreateInvoiceRequestSchema {
+  number: number;
+  dateIssued: Date;
+  dateDue: Date;
+  invoiceTo: RestaurantResponseSchema;
+  items: InvoiceItemSchema[];
+  subtotal?: number;
+  tax?: number;
+  total: number;
+  salesPerson?: string;
+  salesPersonNote?: string;
+  note?: string;
+}
+export interface UpdateInvoiceRequestSchema {
+  number?: number;
+  dateIssued?: Date;
+  dateDue?: Date;
+  invoiceTo?: RestaurantResponseSchema;
+  items?: InvoiceItemSchema[];
+  subtotal?: number;
+  tax?: number;
+  total?: number;
+  salesPerson?: string;
+  salesPersonNote?: string;
+  note?: string;
+}
+export interface GetInvoiceByIdResponse {
+  success?: boolean;
+  data?: InvoiceResponseSchema;
+}
+export interface GetInvoicesResponse {
+  success?: boolean;
+  data?: InvoicesResponseSchema;
+}
+export interface InvoiceItemSchema {
+  name?: string;
+  description?: string;
+  cost?: number;
+  hours?: number;
+  price?: number;
+}
+export interface InvoicesResponseSchema {
+  invoices?: InvoiceResponseSchema[];
+  offset?: number;
+  limit?: number;
+  totalLength?: number;
+}
+export interface InvoiceResponseSchema {
+  _id?: string;
+  number?: number;
+  dateIssued?: Date;
+  dateDue?: Date;
+  invoiceTo?: RestaurantResponseSchema;
+  items?: InvoiceItemSchema[];
+  subtotal?: number;
+  tax?: number;
+  total?: number;
+  salesPerson?: string;
+  salesPersonNote?: string;
+  note?: string;
 }
