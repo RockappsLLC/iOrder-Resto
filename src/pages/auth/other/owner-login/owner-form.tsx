@@ -1,7 +1,7 @@
 import React, { lazy, useState } from 'react';
 
 import Button from '@mui/material/Button';
-import { Box, Card, Stack, Typography } from '@mui/material';
+import { Box, Card, Stack, Divider, Typography } from '@mui/material';
 
 import { Plus, Home, Staff, Money, RiceBowl, ArrowLeft, ArrowRight } from 'src/assets/icons';
 
@@ -138,7 +138,13 @@ export default function OwnerForm() {
           ))}
         </Stack>
 
-        <hr style={{ color: '#e3e3e3' }} />
+        <Divider
+          sx={{
+            width: '100%',
+            height: '1px',
+            backgroundColor: '#C2C2C2',
+          }}
+        />
 
         {contentData.map(
           (data, index) =>
