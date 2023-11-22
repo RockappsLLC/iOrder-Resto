@@ -135,18 +135,50 @@ export function AuthProvider({ children }: Props) {
       email,
       password,
     };
-    try {
-      const res = await postLogin(data);
 
-      const { data: accessToken } = res.data || {};
-      if (accessToken) await setSession(accessToken);
+    const res = await postLogin(data);
+
+    const { data: accessToken } = res.data || {};
+    if (accessToken) await setSession(accessToken);
+
+    const response = await getMe();
+
+    const { data: profile } = response.data;
+
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('restaurantId', profile?.restaurantId);
+
+    dispatch({
+      type: Types.LOGIN,
+      payload: {
+        user: {
+          ...profile,
+          displayName: [profile?.firstName || '', profile?.lastName || ''].join(' '),
+          photoURL: '',
+          accessToken,
+        },
+      },
+    });
+  }, []);
+
+  // LOGIN WITH PIN
+  const loginWithPin = useCallback(async (email: string, pin: any) => {
+    const data = {
+      email,
+      pin,
+    };
+
+    const res = await postLogin(data);
+    const { data: accessToken } = res.data;
+
+    if (accessToken) {
+      await setSession(accessToken);
 
       const response = await getMe();
-
       const { data: profile } = response.data;
 
       localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('restaurantId', profile?.restaurantId);
+      localStorage.setItem('restaurantId', profile?.restaurantId || '');
 
       dispatch({
         type: Types.LOGIN,
@@ -159,45 +191,6 @@ export function AuthProvider({ children }: Props) {
           },
         },
       });
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
-  // LOGIN WITH PIN
-  const loginWithPin = useCallback(async (email: string, pin: string) => {
-    try {
-      const data = {
-        email,
-        pin,
-      };
-
-      const res = await postLogin(data);
-      const { data: accessToken } = res.data;
-
-      if (accessToken) {
-        await setSession(accessToken);
-
-        const response = await getMe();
-        const { data: profile } = response.data;
-
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('restaurantId', profile?.restaurantId || '');
-
-        dispatch({
-          type: Types.LOGIN,
-          payload: {
-            user: {
-              ...profile,
-              displayName: [profile?.firstName || '', profile?.lastName || ''].join(' '),
-              photoURL: '',
-              accessToken,
-            },
-          },
-        });
-      }
-    } catch (error) {
-      console.error('Error during login:', error);
     }
   }, []);
 

@@ -56,10 +56,8 @@ export default function AccountPopover() {
 
   const handleLockout = async () => {
     try {
-      await logout();
       popover.onClose();
-      localStorage.removeItem('accessToken');
-      router.replace('/auth/other/lock-screen');
+      router.replace('/other/locked');
     } catch (error) {
       console.error(error);
     }
