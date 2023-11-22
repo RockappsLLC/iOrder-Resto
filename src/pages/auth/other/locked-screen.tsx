@@ -5,6 +5,8 @@ import { Stack, Avatar, Typography } from '@mui/material';
 
 import { useRouter } from 'src/routes/hooks';
 
+import { useEventListener } from 'src/hooks/use-event-listener';
+
 export default function DateScreen() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const router = useRouter();
@@ -12,6 +14,14 @@ export default function DateScreen() {
   const handleScreenClick = () => {
     router.replace('/auth/other/pin-screen');
   };
+
+  const handleKeyPress = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      router.replace('/auth/other/pin-screen');
+    }
+  };
+
+  useEventListener('keydown', handleKeyPress);
 
   useEffect(() => {
     const intervalId = setInterval(() => {

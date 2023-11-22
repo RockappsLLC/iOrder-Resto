@@ -213,11 +213,19 @@ export default function PinScreen() {
 
   const activeUser = users.find((item: any) => item.isActive === true) as any;
 
+  const [loginCompleted, setLoginCompleted] = useState(false);
+
+  useEffect(() => {
+    if (loginCompleted) {
+      router.push(returnTo || PATH_AFTER_LOGIN);
+    }
+  }, [loginCompleted, router, returnTo]);
+
   const onSubmit = async () => {
     try {
       await loginWithPin?.(activeUser?.email, pinFromKeyboard);
 
-      router.push(returnTo || PATH_AFTER_LOGIN);
+      setLoginCompleted(true);
     } catch (error) {
       console.error('Pin screen error', error);
     }

@@ -46,6 +46,8 @@ export default function AccountPopover() {
     try {
       await logout();
       popover.onClose();
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('restaurantId');
       router.replace('/');
     } catch (error) {
       console.error(error);
@@ -56,6 +58,7 @@ export default function AccountPopover() {
     try {
       await logout();
       popover.onClose();
+      localStorage.removeItem('accessToken');
       router.replace('/auth/other/lock-screen');
     } catch (error) {
       console.error(error);
