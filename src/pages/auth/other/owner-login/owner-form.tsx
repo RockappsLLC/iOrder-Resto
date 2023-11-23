@@ -156,7 +156,7 @@ export default function OwnerForm() {
             )
         )}
 
-        <Box display="flex" justifyContent="space-between">
+        <Box display="flex" justifyContent="space-between" mt={3}>
           {currentContentIndex >= 0 && currentContentIndex < 4 && (
             <Button
               variant="contained"
@@ -186,7 +186,7 @@ export default function OwnerForm() {
           )}
         </Box>
 
-        <Typography variant="subtitle1" color="#828487" fontWeight={400} mt={3}>
+        <Typography variant="subtitle1" color="#828487" fontWeight={400} mt={6}>
           End user agreement
         </Typography>
       </Card>

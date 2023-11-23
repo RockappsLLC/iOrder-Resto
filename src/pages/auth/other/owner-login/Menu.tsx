@@ -26,7 +26,8 @@ import {
   FormControlLabel,
 } from '@mui/material';
 
-import Logo from 'src/components/logo';
+import { EyeIcon, EditIcon, TrashIcon } from 'src/assets/icons';
+
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
@@ -161,17 +162,6 @@ export default function JwtLoginView() {
           backgroundColor: '#C2C2C2',
         }}
       />
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="center"
-        spacing={1}
-        sx={{
-          borderRadius: '8px',
-        }}
-      >
-        <Logo />
-      </Stack>
 
       <RHFTextField name="dishName" label="Enter Dish Name" />
       <RHFTextField name="category" label="Category" />
@@ -359,17 +349,17 @@ export default function JwtLoginView() {
                       <TableCell align="center">
                         <Tooltip title="eye">
                           <IconButton sx={{ gap: 2 }}>
-                            <Iconify icon="ph:eye-light" />
+                            <EyeIcon />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="edit">
                           <IconButton sx={{ gap: 2 }}>
-                            <Iconify icon="iconoir:edit" />
+                            <EditIcon />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="center">
+                        <Tooltip title="delete">
                           <IconButton sx={{ gap: 2 }}>
-                            <Iconify icon="solar:trash-bin-minimalistic-linear" />
+                            <TrashIcon />
                           </IconButton>
                         </Tooltip>
                       </TableCell>

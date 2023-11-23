@@ -22,7 +22,8 @@ import {
   TableContainer,
 } from '@mui/material';
 
-import Logo from 'src/components/logo';
+import { EyeIcon, EditIcon, TrashIcon } from 'src/assets/icons';
+
 import Iconify from 'src/components/iconify';
 import Label from 'src/components/label/label';
 import Scrollbar from 'src/components/scrollbar';
@@ -80,7 +81,6 @@ export default function JwtLoginView() {
   const [tableData, setTableData] = useState<RowDataType[]>([]);
   const [open, setOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  // const themeStretch = true;
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -167,17 +167,6 @@ export default function JwtLoginView() {
           backgroundColor: '#C2C2C2',
         }}
       />
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="center"
-        spacing={1}
-        sx={{
-          borderRadius: '8px',
-        }}
-      >
-        <Logo />
-      </Stack>
 
       <RHFTextField name="name" label="Enter Name" />
       <RHFTextField name="contact" label="Contact Number" />
@@ -332,19 +321,19 @@ export default function JwtLoginView() {
                       </TableCell>
 
                       <TableCell align="center">
-                        <Tooltip title="eye">
+                        <Tooltip title="View">
                           <IconButton sx={{ gap: 2 }}>
-                            <Iconify icon="ph:eye-light" />
+                            <EyeIcon />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="edit">
+                        <Tooltip title="Edit">
                           <IconButton sx={{ gap: 2 }}>
-                            <Iconify icon="iconoir:edit" />
+                            <EditIcon />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="delete">
+                        <Tooltip title="Delete">
                           <IconButton sx={{ gap: 2 }}>
-                            <Iconify icon="solar:trash-bin-minimalistic-linear" />
+                            <TrashIcon />
                           </IconButton>
                         </Tooltip>
                       </TableCell>
