@@ -1,7 +1,7 @@
 import React, { lazy, useState } from 'react';
 
 import Button from '@mui/material/Button';
-import { Box, Card, Stack, Typography } from '@mui/material';
+import { Box, Card, Stack, Divider, Typography } from '@mui/material';
 
 import { Plus, Home, Staff, Money, RiceBowl, ArrowLeft, ArrowRight } from 'src/assets/icons';
 
@@ -138,7 +138,13 @@ export default function OwnerForm() {
           ))}
         </Stack>
 
-        <hr style={{ color: '#e3e3e3' }} />
+        <Divider
+          sx={{
+            width: '100%',
+            height: '1px',
+            backgroundColor: '#C2C2C2',
+          }}
+        />
 
         {contentData.map(
           (data, index) =>
@@ -150,7 +156,7 @@ export default function OwnerForm() {
             )
         )}
 
-        <Box display="flex" justifyContent="space-between">
+        <Box display="flex" justifyContent="space-between" mt={3}>
           {currentContentIndex >= 0 && currentContentIndex < 4 && (
             <Button
               variant="contained"
@@ -180,7 +186,7 @@ export default function OwnerForm() {
           )}
         </Box>
 
-        <Typography variant="subtitle1" color="#828487" fontWeight={400} mt={3}>
+        <Typography variant="subtitle1" color="#828487" fontWeight={400} mt={6}>
           End user agreement
         </Typography>
       </Card>

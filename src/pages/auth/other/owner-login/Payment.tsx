@@ -4,7 +4,16 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Box, Link, Alert, Stack, IconButton, Typography, InputAdornment } from '@mui/material';
+import {
+  Box,
+  Link,
+  Alert,
+  Stack,
+  Container,
+  IconButton,
+  Typography,
+  InputAdornment,
+} from '@mui/material';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
@@ -16,6 +25,7 @@ import FormProvider, { RHFTextField } from 'src/components/hook-form';
 export default function HomeFloor() {
   const [errorMsg, setErrorMsg] = useState('');
   const privateKey = useBoolean();
+  const themeStretch = true;
 
   const LoginSchema = Yup.object().shape({
     publicKey: Yup.string(),
@@ -49,82 +59,84 @@ export default function HomeFloor() {
   });
 
   const renderForm = (
-    <Stack spacing={2} sx={{ width: '100%' }} mt={3}>
-      {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+    <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Stack spacing={2} sx={{ width: '100%' }} mt={3}>
+        {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
-      <Typography variant="h4" fontWeight={600}>
-        Payment details
-      </Typography>
-
-      <Typography color="#828487" variant="subtitle1" fontWeight={400}>
-        Enter the Datatrans credentials
-      </Typography>
-
-      <Stack spacing={0.1} direction="column">
-        <Typography
-          variant="caption"
-          sx={{ color: 'text.secondary', alignSelf: 'start', mb: -0.1 }}
-        >
-          Public Key
+        <Typography variant="h4" fontWeight={600}>
+          Payment details
         </Typography>
 
-        <RHFTextField
-          name="publicKey"
-          placeholder="API KEY"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <IconButton edge="start">
-                  <Money />
-                </IconButton>
-              </InputAdornment>
-            ),
-            style: { borderRadius: '58px' },
-          }}
-        />
-      </Stack>
-
-      <Stack spacing={0.1} direction="column">
-        <Typography
-          variant="caption"
-          sx={{ color: 'text.secondary', alignSelf: 'start', mb: -0.1 }}
-        >
-          Private Key
+        <Typography color="#828487" variant="subtitle1" fontWeight={400}>
+          Enter the Datatrans credentials
         </Typography>
 
-        <RHFTextField
-          name="privateKey"
-          placeholder="Private Key"
-          type={privateKey.value ? 'text' : 'password'}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <IconButton onClick={privateKey.onToggle} edge="start">
-                  <LockClose />
-                </IconButton>
-              </InputAdornment>
-            ),
-            style: { borderRadius: '58px' },
-          }}
-        />
+        <Stack spacing={0.1} direction="column">
+          <Typography
+            variant="caption"
+            sx={{ color: 'text.secondary', alignSelf: 'start', mb: -0.1 }}
+          >
+            Public Key
+          </Typography>
+
+          <RHFTextField
+            name="publicKey"
+            placeholder="API KEY"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconButton edge="start">
+                    <Money />
+                  </IconButton>
+                </InputAdornment>
+              ),
+              style: { borderRadius: '58px' },
+            }}
+          />
+        </Stack>
+
+        <Stack spacing={0.1} direction="column">
+          <Typography
+            variant="caption"
+            sx={{ color: 'text.secondary', alignSelf: 'start', mb: -0.1 }}
+          >
+            Private Key
+          </Typography>
+
+          <RHFTextField
+            name="privateKey"
+            placeholder="Private Key"
+            type={privateKey.value ? 'text' : 'password'}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconButton onClick={privateKey.onToggle} edge="start">
+                    <LockClose />
+                  </IconButton>
+                </InputAdornment>
+              ),
+              style: { borderRadius: '58px' },
+            }}
+          />
+        </Stack>
+
+        <Link variant="subtitle2" color="primary" sx={{ alignSelf: 'flex-start' }}>
+          Forgot password?
+        </Link>
+
+        <LoadingButton
+          fullWidth
+          color="primary"
+          size="large"
+          type="submit"
+          variant="contained"
+          loading={isSubmitting}
+          style={{ borderRadius: 58 }}
+        >
+          Finish the setup
+        </LoadingButton>
       </Stack>
-
-      <Link variant="subtitle2" color="primary" sx={{ alignSelf: 'flex-start' }}>
-        Forgot password?
-      </Link>
-
-      <LoadingButton
-        fullWidth
-        color="primary"
-        size="large"
-        type="submit"
-        variant="contained"
-        loading={isSubmitting}
-        style={{ borderRadius: 58 }}
-      >
-        Finish the setup
-      </LoadingButton>
-    </Stack>
+    </Container>
   );
 
   return (
