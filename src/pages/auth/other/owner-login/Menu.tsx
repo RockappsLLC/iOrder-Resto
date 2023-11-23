@@ -26,6 +26,7 @@ import {
   FormControlLabel,
 } from '@mui/material';
 
+import { useGetMenuItems } from 'src/api/menu-items';
 import { EyeIcon, EditIcon, TrashIcon } from 'src/assets/icons';
 
 import Iconify from 'src/components/iconify';
@@ -85,6 +86,12 @@ export default function JwtLoginView() {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const dataItem = useGetMenuItems();
+  const { menuItems, menuItemsLoading } = dataItem;
+
+  console.log('menuItems', menuItems);
+  console.log('menuItemsLoading', menuItemsLoading);
 
   const handleFilterName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterName(event.target.value);

@@ -17,6 +17,7 @@ import { useRouter, useSearchParams } from 'src/routes/hooks';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
+import { getMe } from 'src/api/users';
 import { useAuthContext } from 'src/auth/hooks';
 import { PATH_AFTER_LOGIN } from 'src/config-global';
 
@@ -46,7 +47,8 @@ export default function JwtLoginView() {
 
   const defaultValues = {
     // email: 'info@iorder.ch',
-    email: 'john@doe.com',
+    email: 'hello@doe.com',
+    // email: 'john@doe.com',
     password: 'password',
   };
 
@@ -65,7 +67,14 @@ export default function JwtLoginView() {
     try {
       await login?.(data.email, data.password);
 
-      router.push(returnTo || PATH_AFTER_LOGIN);
+      const response = await getMe();
+      const profile = response.data;
+
+      if (profile.data?.restaurantId) {
+        router.push(returnTo || PATH_AFTER_LOGIN);
+      } else {
+        router.replace('/other/owner-form');
+      }
     } catch (error) {
       console.error(error);
       reset();

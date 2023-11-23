@@ -12,6 +12,7 @@ const IndexPage = lazy(() => import('src/pages/dashboard/home'));
 const BillsPage = lazy(() => import('src/pages/dashboard/bills'));
 const CustomersPage = lazy(() => import('src/pages/dashboard/customers'));
 const LockedScreen = lazy(() => import('src/pages/dashboard/locked-screen'));
+const OwnerForm = lazy(() => import('src/pages/dashboard/owner-form'));
 
 // ----------------------------------------------------------------------
 
@@ -35,6 +36,9 @@ export const dashboardRoutes = [
   },
   {
     path: 'other',
-    children: [{ path: 'locked', element: <LockedScreen /> }],
+    children: [
+      { path: 'locked', element: <LockedScreen /> },
+      { path: 'owner-form', element: <OwnerForm /> },
+    ],
   },
 ];

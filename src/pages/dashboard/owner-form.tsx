@@ -16,7 +16,7 @@ const MenuContent = lazy(() => import('src/pages/auth/other/owner-login/Menu'));
 const contentData = [
   {
     name: 'Home',
-    active: true,
+    active: false,
     icon: <Home />,
     contentComponent: HomeFloorPlanContent,
   },
@@ -34,7 +34,7 @@ const contentData = [
   },
   {
     name: 'Menu',
-    active: false,
+    active: true,
     icon: <RiceBowl />,
     contentComponent: MenuContent,
   },
