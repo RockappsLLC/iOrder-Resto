@@ -25,6 +25,7 @@ interface IGetMenuCategoriesQueryParams {
   restaurantId?: string;
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetMenuCategories(params?: IGetMenuCategoriesQueryParams) {

@@ -23,6 +23,7 @@ export async function createCategory(
 interface IGetCategoriesQueryParams {
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetCategories(params?: IGetCategoriesQueryParams) {

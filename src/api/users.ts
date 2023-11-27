@@ -25,6 +25,7 @@ interface IGetUsersQueryParams {
   restaurantId?: string;
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetUsers(params?: IGetUsersQueryParams) {

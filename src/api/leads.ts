@@ -23,6 +23,7 @@ export async function createLead(
 interface IGetLeadsQueryParams {
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetLeads(params?: IGetLeadsQueryParams) {

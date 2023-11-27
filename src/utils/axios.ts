@@ -141,4 +141,5 @@ export const endpoints = {
     put: '/invoices/{id}',
     delete: '/invoices/{id}',
   },
+  statistics: { get: '/statistics' },
 };

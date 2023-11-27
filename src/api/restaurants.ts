@@ -25,6 +25,7 @@ export async function createRestaurant(
 interface IGetRestaurantsQueryParams {
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetRestaurants(params?: IGetRestaurantsQueryParams) {
