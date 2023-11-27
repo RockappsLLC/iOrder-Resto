@@ -24,6 +24,7 @@ interface IGetTablesQueryParams {
   restaurantId?: string;
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetTables(params?: IGetTablesQueryParams) {

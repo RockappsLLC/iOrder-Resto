@@ -24,6 +24,7 @@ interface IGetMenuItemsQueryParams {
   restaurantId?: string;
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetMenuItems(params?: IGetMenuItemsQueryParams) {

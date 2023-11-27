@@ -23,6 +23,7 @@ export async function createAppointment(
 interface IGetAppointmentsQueryParams {
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetAppointments(params?: IGetAppointmentsQueryParams) {
