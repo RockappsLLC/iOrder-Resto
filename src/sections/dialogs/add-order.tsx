@@ -1,6 +1,7 @@
 import Fab from '@mui/material/Fab';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import Divider from '@mui/material/Divider';
 import CardMedia from '@mui/material/CardMedia';
@@ -17,7 +18,7 @@ import Iconify from 'src/components/iconify';
 export default function AddOrderDialog({ value, hide }: any) {
   return (
     <Dialog fullWidth open={value} onClose={hide}>
-      <DialogTitle>Add Order</DialogTitle>
+      <DialogTitle sx={{ py: 2 }}>Add Order</DialogTitle>
       <Divider />
       <DialogContent>
         <Card
@@ -58,14 +59,14 @@ export default function AddOrderDialog({ value, hide }: any) {
                 </Typography>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <Fab size="small" color="default" aria-label="add">
-                  <Iconify icon="tabler:minus" width={22} />
+                <Fab sx={{ width: '36px', height: '36px' }} color="default" aria-label="add">
+                  <Iconify icon="tabler:minus" width={20} />
                 </Fab>
                 <Typography fontSize={16} fontWeight={600}>
                   1
                 </Typography>
-                <Fab size="small" color="inherit" aria-label="add">
-                  <Iconify icon="tabler:plus" width={22} />
+                <Fab sx={{ width: '36px', height: '36px' }} color="inherit" aria-label="add">
+                  <Iconify icon="tabler:plus" width={20} />
                 </Fab>
               </div>
             </div>
@@ -76,6 +77,7 @@ export default function AddOrderDialog({ value, hide }: any) {
           Additional
         </Typography>
 
+
         <div
           style={{
             display: 'flex',
@@ -114,13 +116,13 @@ export default function AddOrderDialog({ value, hide }: any) {
             </Typography>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <Fab size="small" color="default" aria-label="add">
+            <Fab sx={{ width: '36px', height: '36px' }} color="default" aria-label="add">
               <Iconify icon="tabler:minus" width={20} />
             </Fab>
             <Typography fontSize={16} fontWeight={600}>
               1
             </Typography>
-            <Fab size="small" color="inherit" aria-label="add">
+            <Fab sx={{ width: '36px', height: '36px' }} color="inherit" aria-label="add">
               <Iconify icon="tabler:plus" width={20} />
             </Fab>
           </div>
@@ -163,13 +165,13 @@ export default function AddOrderDialog({ value, hide }: any) {
             </Typography>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <Fab size="small" color="default" aria-label="add">
+            <Fab sx={{ width: '36px', height: '36px' }} color="default" aria-label="add">
               <Iconify icon="tabler:minus" width={20} />
             </Fab>
             <Typography fontSize={16} fontWeight={600}>
               1
             </Typography>
-            <Fab size="small" color="inherit" aria-label="add">
+            <Fab sx={{ width: '36px', height: '36px' }} color="inherit" aria-label="add">
               <Iconify icon="tabler:plus" width={20} />
             </Fab>
           </div>
@@ -212,20 +214,42 @@ export default function AddOrderDialog({ value, hide }: any) {
             </Typography>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <Fab size="small" color="default" aria-label="add">
+            <Fab sx={{ width: '36px', height: '36px' }} color="default" aria-label="add">
               <Iconify icon="tabler:minus" width={20} />
             </Fab>
             <Typography fontSize={16} fontWeight={600}>
               1
             </Typography>
-            <Fab size="small" color="inherit" aria-label="add">
+            <Fab sx={{ width: '36px', height: '36px' }} color="inherit" aria-label="add">
               <Iconify icon="tabler:plus" width={20} />
             </Fab>
           </div>
         </div>
+
+        <Divider sx={{ my: '24px' }} />
+
+        <Typography color="#828487" fontSize={12} fontWeight={500}>
+          Add Note
+        </Typography>
+
+        <TextField
+          fullWidth
+          multiline
+          rows={4}
+          sx={{ mt: '5px' }}
+          placeholder="Type your note here..."
+        />
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions sx={{ justifyContent: 'space-between' }}>
+        <div>
+          <Typography color="#828487" fontSize={14}>
+            Total
+          </Typography>
+          <Typography color="#19191C" fontSize={16} fontWeight={600}>
+            $ 310.56
+          </Typography>
+        </div>
         <Button
           onClick={hide}
           sx={{ borderRadius: '58px', px: 6, py: 1.5, ':hover': { bgcolor: '#f2734e' } }}
