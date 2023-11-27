@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
-import { Stack, Alert, Button, Typography } from '@mui/material';
+import { Stack, Alert, Button, Avatar, Typography } from '@mui/material';
 
 import { useRouter, useSearchParams } from 'src/routes/hooks';
 
@@ -26,30 +26,25 @@ export default function PinScreen() {
   const [pin, setPin] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  const usersData = useGetUsers();
-  const user = usersData?.users as any;
+  const { users: data, usersLoading } = useGetUsers() as any;
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const usersWithIsActive = user.map((item: any) => ({
+    if (!usersLoading && data.length) {
+      setUsers(
+        data.map((item: any) => ({
           ...item,
           isActive: item._id === paramId,
-        }));
-        setUsers(usersWithIsActive);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    };
-
-    fetchData();
-  }, [user, paramId]);
+        }))
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usersLoading, paramId]);
 
   const changeActive = (id: any) => {
-    setUsers((prevUsers2: any) =>
-      prevUsers2.map((user2: any) => ({
-        ...user2,
-        isActive: user2._id === id,
+    setUsers((_users: any) =>
+      _users.map((userItem: any) => ({
+        ...userItem,
+        isActive: userItem._id === id,
       }))
     );
   };
@@ -86,6 +81,10 @@ export default function PinScreen() {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (!activeUser) {
+        return;
+      }
+
       if (event.key >= '0' && event.key <= '9') {
         handleKeyPress(event.key);
       } else if (event.key === 'Backspace') {
@@ -101,7 +100,7 @@ export default function PinScreen() {
       window.removeEventListener('keydown', handleKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [handleKeyPress, handleBackspace]);
+  }, [activeUser, handleKeyPress, handleBackspace]);
 
   return (
     <>
@@ -141,20 +140,24 @@ export default function PinScreen() {
           gap={5}
           overflow="scroll"
         >
-          {users.map((item2: any, num: number) => (
-            <Stack direction={{ xs: 'column', sm: 'column' }} key={num}>
-              <Box
-                width={item2.isActive ? 124 : 100}
-                height={item2.isActive ? 124 : 100}
-                borderRadius={100}
+          {users.map((userItem: any, num: number) => (
+            <Stack direction={{ xs: 'column', sm: 'column' }} key={num} alignItems="center">
+              <Avatar
+                src={userItem?.photoURL}
+                alt={userItem?.displayName}
                 sx={{
-                  backgroundColor: 'red',
-                  opacity: item2.isActive ? 1 : 0.5,
+                  backgroundColor: '#F15F34',
+                  width: userItem.isActive ? 124 : 100,
+                  height: userItem.isActive ? 124 : 100,
+                  opacity: userItem.isActive ? 1 : 0.5,
                 }}
-                onClick={() => changeActive(item2._id)}
-              />
+                onClick={() => changeActive(userItem._id)}
+              >
+                <Typography fontSize={30}>{userItem?.firstName.charAt(0).toUpperCase()}</Typography>
+              </Avatar>
+
               <Typography color="#fff" width="max-content" textAlign="center">
-                {item2.firstName} {item2.lastName}
+                {userItem.firstName} {userItem.lastName}
               </Typography>
             </Stack>
           ))}
@@ -168,8 +171,9 @@ export default function PinScreen() {
 
         <Box mt={5}>
           <input
-            type="text"
+            type="password"
             value={pin}
+            disabled={!activeUser}
             placeholder="Enter your PIN"
             style={{
               backgroundColor: 'transparent',
