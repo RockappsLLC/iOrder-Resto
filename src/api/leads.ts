@@ -33,13 +33,13 @@ export function useGetLeads(params?: IGetLeadsQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      leads: (data?.leads as GetLeadsResponse['data']) || [],
+      leads: (data as GetLeadsResponse['data'])?.leads || [],
       leadsLoading: isLoading,
       leadsError: error,
       leadsValidating: isValidating,
       leadsEmpty: !isLoading && !data?.leads.length,
     }),
-    [data?.leads, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;

@@ -14,13 +14,13 @@ export function useGetStatistics() {
 
   const memoizedValue = useMemo(
     () => ({
-      statistics: (data?.statistics as GetStatisticsResponse['data']) || [],
+      statistics: (data as GetStatisticsResponse['data']) || [],
       statisticsLoading: isLoading,
       statisticsError: error,
       statisticsValidating: isValidating,
       statisticsEmpty: !isLoading && !data?.statistics.length,
     }),
-    [data?.statistics, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;

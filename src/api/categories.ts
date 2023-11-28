@@ -33,13 +33,13 @@ export function useGetCategories(params?: IGetCategoriesQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      categories: (data?.categories as GetCategoriesResponse['data']) || [],
+      categories: (data as GetCategoriesResponse['data'])?.categories || [],
       categoriesLoading: isLoading,
       categoriesError: error,
       categoriesValidating: isValidating,
       categoriesEmpty: !isLoading && !data?.categories.length,
     }),
-    [data?.categories, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;

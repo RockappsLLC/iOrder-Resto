@@ -34,13 +34,13 @@ export function useGetMenuItems(params?: IGetMenuItemsQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      menuItems: (data?.menuItems as GetMenuItemsResponse['data']) || [],
+      menuItems: (data as GetMenuItemsResponse['data'])?.menuItems || [],
       menuItemsLoading: isLoading,
       menuItemsError: error,
       menuItemsValidating: isValidating,
       menuItemsEmpty: !isLoading && !data?.menuItems.length,
     }),
-    [data?.menuItems, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;

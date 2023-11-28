@@ -34,13 +34,13 @@ export function useGetDevices(params?: IGetDevicesQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      devices: (data?.devices as GetDevicesResponse['data']) || [],
+      devices: (data as GetDevicesResponse['data'])?.devices || [],
       devicesLoading: isLoading,
       devicesError: error,
       devicesValidating: isValidating,
       devicesEmpty: !isLoading && !data?.devices.length,
     }),
-    [data?.devices, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;

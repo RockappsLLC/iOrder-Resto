@@ -33,13 +33,13 @@ export function useGetAppointments(params?: IGetAppointmentsQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      appointments: (data?.appointments as GetAppointmentsResponse['data']) || [],
+      appointments: (data as GetAppointmentsResponse['data'])?.appointments || [],
       appointmentsLoading: isLoading,
       appointmentsError: error,
       appointmentsValidating: isValidating,
       appointmentsEmpty: !isLoading && !data?.appointments.length,
     }),
-    [data?.appointments, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;

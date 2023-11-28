@@ -33,13 +33,13 @@ export function useGetInvoices(params?: IGetInvoicesQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      invoices: (data?.invoices as GetInvoicesResponse['data']) || [],
+      invoices: (data as GetInvoicesResponse['data'])?.invoices || [],
       invoicesLoading: isLoading,
       invoicesError: error,
       invoicesValidating: isValidating,
       invoicesEmpty: !isLoading && !data?.invoices.length,
     }),
-    [data?.invoices, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;

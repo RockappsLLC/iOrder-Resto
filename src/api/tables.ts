@@ -34,13 +34,13 @@ export function useGetTables(params?: IGetTablesQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      tables: (data?.tables as GetTablesResponse['data']) || [],
+      tables: (data as GetTablesResponse['data'])?.tables || [],
       tablesLoading: isLoading,
       tablesError: error,
       tablesValidating: isValidating,
       tablesEmpty: !isLoading && !data?.tables.length,
     }),
-    [data?.tables, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;

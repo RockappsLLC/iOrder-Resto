@@ -32,13 +32,13 @@ export function useGetTasks(params?: IGetTasksQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      tasks: (data?.tasks as GetTasksResponse['data']) || [],
+      tasks: (data as GetTasksResponse['data'])?.tasks || [],
       tasksLoading: isLoading,
       tasksError: error,
       tasksValidating: isValidating,
       tasksEmpty: !isLoading && !data?.tasks.length,
     }),
-    [data?.tasks, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;
