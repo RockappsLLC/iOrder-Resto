@@ -18,16 +18,6 @@ import { AuthProvider } from 'src/auth/context/jwt';
 // ----------------------------------------------------------------------
 
 export default function App() {
-  const charAt = `
-    ___   ___   ___  _____  ___   ___       __  __
-   / __| / _ \\ | __||_   _||_ _| / __|      \\ \\/ /
-  | (__ | (_) || _|   | |   | | | (__        >  < 
-   \\___| \\___/ |___|  |_|  |___| \\___|      /_/\\_\\
-
-  `;
-
-  console.info(`%c${charAt}`, 'color: #5BE49B');
-
   useScrollToTop();
 
   return (
