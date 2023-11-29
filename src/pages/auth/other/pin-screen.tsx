@@ -169,6 +169,8 @@ export default function PinScreen() {
           </Alert>
         )}
 
+        <Box sx={{ flex: 1 }} />
+
         <Box mt={5}>
           <input
             type="password"
@@ -272,6 +274,8 @@ export default function PinScreen() {
             Unlock
           </Button>
         </Box>
+
+        <Box sx={{ flex: 1 }} />
 
         <Stack mt="auto" direction={{ xs: 'row', sm: 'row' }}>
           <Typography variant="h6" fontWeight={400} color="#fff" mt={3}>
