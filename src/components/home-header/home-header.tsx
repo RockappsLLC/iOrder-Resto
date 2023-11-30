@@ -6,7 +6,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import Iconify from '../iconify';
 
-const HomeHeader = () => {
+const HomeHeader = ({ searchInput, setSearchInput }: any) => {
   return (
     <>
       <div
@@ -42,8 +42,8 @@ const HomeHeader = () => {
             fullWidth
             autoFocus
             placeholder="Search menu..."
-            // value={searchQuery}
-            // onChange={handleSearch}
+            value={searchInput}
+            onChange={(e: any) => setSearchInput(e.target.value)}
             startAdornment={
               <InputAdornment position="start">
                 <Iconify icon="eva:search-fill" width={26} sx={{ color: 'text.disabled' }} />

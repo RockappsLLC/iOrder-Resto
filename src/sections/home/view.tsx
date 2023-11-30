@@ -1,11 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
-
-import { getMenuCategories } from 'src/api/menu-categories';
 
 import SvgColor from 'src/components/svg-color';
 import FoodList from 'src/components/food-list';
@@ -50,25 +48,16 @@ const TABS = [
 
 export default function HomeView() {
   const settings = useSettingsContext();
-  // const [menuCategories, setMenuCategories] = useState([]);
   const [currentTab, setCurrentTab] = useState('three');
+  const [allOrders, setAllOrders] = useState([]);
+  const [ordered, setOrdered] = useState(false);
+  const [orderDetails, setOrderDetails]: any = useState();
+
+  const [searchInput, setSearchInput] = useState('');
+  const [foodCount, setFoodCount] = useState(1);
 
   const handleChangeTab = useCallback((event: React.SyntheticEvent, newValue: string) => {
     setCurrentTab(newValue);
-  }, []);
-
-  const fetcher = async () => {
-    try {
-      await getMenuCategories();
-      // setMenuCategories(response.data.data?.menuCategories);
-      // console.log(response.data.data?.menuCategories);
-    } catch (error) {
-      console.warn(error);
-    }
-  };
-
-  useEffect(() => {
-    fetcher();
   }, []);
 
   const renderSwitch = () => {
@@ -78,7 +67,17 @@ export default function HomeView() {
       case 'two':
         return <div>Beverages</div>;
       case 'three':
-        return <FoodList />;
+        return (
+          <FoodList
+            setOrdered={setOrdered}
+            setOrderDetails={setOrderDetails}
+            foodCount={foodCount}
+            setFoodCount={setFoodCount}
+            searchInput={searchInput}
+            allOrders={allOrders}
+            setAllOrders={setAllOrders}
+          />
+        );
       case 'four':
         return <div>Appetizer</div>;
       case 'five':
@@ -86,7 +85,16 @@ export default function HomeView() {
       case 'six':
         return <div>Snack</div>;
       default:
-        return <FoodList />;
+        return (
+          <FoodList
+            setOrdered={setOrdered}
+            foodCount={foodCount}
+            setFoodCount={setFoodCount}
+            searchInput={searchInput}
+            allOrders={allOrders}
+            setAllOrders={setAllOrders}
+          />
+        );
     }
   };
 
@@ -144,11 +152,17 @@ export default function HomeView() {
         lg={11}
         sx={{ bgcolor: '#F8F9FD', border: 1, borderBottom: 0, borderColor: '#E4E4E4' }}
       >
-        <HomeHeader />
+        <HomeHeader searchInput={searchInput} setSearchInput={setSearchInput} />
         <Container maxWidth={settings.themeStretch ? false : 'xl'}>{renderSwitch()}</Container>
       </Grid>
-      <Grid item xs={0} md={3} sx={{ borderTop: 1, borderColor: '#E4E4E4' }}>
-        <OrderSidebar />
+      <Grid item xs={1} md={3} sx={{ borderTop: 1, borderColor: '#E4E4E4' }}>
+        <OrderSidebar
+          ordered={ordered}
+          orderDetails={orderDetails}
+          foodCount={foodCount}
+          setFoodCount={setFoodCount}
+          allOrders={allOrders}
+        />
       </Grid>
     </Grid>
   );
