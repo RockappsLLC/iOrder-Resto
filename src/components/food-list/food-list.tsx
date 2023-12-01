@@ -12,12 +12,15 @@ import FoodItem from '../food-item';
 
 const FoodList = ({
   setOrdered,
-  setOrderDetails,
-  foodCount,
-  setFoodCount,
   searchInput,
   allOrders,
   setAllOrders,
+  foodCount,
+  setFoodCount,
+  itemCounts,
+  setItemCounts,
+  handleIncrement,
+  handleDecrement,
 }: any) => {
   const [modal, setModal] = useState(false);
   const [foodId, setFoodId] = useState('');
@@ -94,11 +97,14 @@ const FoodList = ({
         foodId={foodId}
         hide={() => setModal(false)}
         setOrdered={setOrdered}
-        setOrderDetails={setOrderDetails}
-        foodCount={foodCount}
-        setFoodCount={setFoodCount}
         allOrders={allOrders}
         setAllOrders={setAllOrders}
+        itemCounts={itemCounts}
+        setItemCounts={setItemCounts}
+        foodCount={foodCount}
+        setFoodCount={setFoodCount}
+        handleIncrement={handleIncrement}
+        handleDecrement={handleDecrement}
       />
     </>
   );

@@ -2,6 +2,7 @@ import { useMemo, useEffect, useReducer, useCallback } from 'react';
 
 import { postLogin } from 'src/api/auth';
 import { getMe, createUser } from 'src/api/users';
+import { CreateUserRequestSchema } from 'src/api/api-schemas';
 
 import { AuthContext } from './auth-context';
 import { setSession, isValidToken } from './utils';
@@ -85,10 +86,23 @@ export function AuthProvider({ children }: Props) {
 
   const initialize = useCallback(async () => {
     try {
-      const accessToken = sessionStorage.getItem(STORAGE_KEY);
+      const accessToken = localStorage.getItem(STORAGE_KEY);
 
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
+        dispatch({
+          type: Types.INITIAL,
+          payload: {
+            user: {
+              displayName: '',
+              photoURL: '',
+              // ...profile,
+              // displayName: [profile?.firstName || '', profile?.lastName || ''].join(' '),
+              // photoURL: '',
+              accessToken,
+            },
+          },
+        });
 
         const response = await getMe();
 
@@ -137,12 +151,18 @@ export function AuthProvider({ children }: Props) {
 
     const res = await postLogin(data);
 
-    const { data: accessToken } = res.data;
+    const {
+      data: { token: accessToken, userData: profile },
+    } = res.data || {};
+
     if (accessToken) await setSession(accessToken);
 
-    const response = await getMe();
+    // const response = await getMe();
 
-    const { data: profile } = response.data;
+    // const { data: profile } = response.data;
+
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('restaurantId', profile?.restaurantId);
 
     dispatch({
       type: Types.LOGIN,
@@ -157,6 +177,42 @@ export function AuthProvider({ children }: Props) {
     });
   }, []);
 
+  // LOGIN WITH PIN
+  const loginWithPin = useCallback(async (email: string, pin: any) => {
+    const data = {
+      email,
+      pin,
+    };
+
+    const res = await postLogin(data);
+
+    const {
+      data: { token: accessToken, userData: profile },
+    } = res.data || {};
+
+    if (accessToken) {
+      await setSession(accessToken);
+
+      // const response = await getMe();
+      // const { data: profile } = response.data;
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('restaurantId', profile?.restaurantId || '');
+
+      dispatch({
+        type: Types.LOGIN,
+        payload: {
+          user: {
+            ...profile,
+            displayName: [profile?.firstName || '', profile?.lastName || ''].join(' '),
+            photoURL: '',
+            accessToken,
+          },
+        },
+      });
+    }
+  }, []);
+
   // REGISTER
   const register = useCallback(
     async (
@@ -165,7 +221,7 @@ export function AuthProvider({ children }: Props) {
       firstName: string,
       lastName: string,
       restaurantId: string,
-      role: string
+      role: CreateUserRequestSchema['role']
     ) => {
       const data = {
         email,
@@ -224,10 +280,11 @@ export function AuthProvider({ children }: Props) {
       unauthenticated: status === 'unauthenticated',
       //
       login,
+      loginWithPin,
       register,
       logout,
     }),
-    [login, logout, register, state.user, status]
+    [login, loginWithPin, logout, register, state.user, status]
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

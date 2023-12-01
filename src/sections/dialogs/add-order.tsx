@@ -25,11 +25,14 @@ export default function AddOrderDialog({
   hide,
   foodId,
   setOrdered,
-  setOrderDetails,
-  foodCount,
-  setFoodCount,
   allOrders,
   setAllOrders,
+  foodCount,
+  setFoodCount,
+  itemCounts,
+  setItemCounts,
+  handleIncrement,
+  handleDecrement,
 }: any) {
   const [foodItem, setFoodItem] = useState<MenuItemResponseSchema>();
 
@@ -59,7 +62,10 @@ export default function AddOrderDialog({
   }, [foodId, setFoodCount]); // Include resetInputs in the dependency array
 
   const handleOrder = () => {
-    setOrderDetails(foodItem);
+    if (allOrders.find((order: any) => order._id === foodItem?._id)) {
+      hide();
+      return;
+    }
     setAllOrders([...allOrders, foodItem]);
     setOrdered(true);
     hide();
@@ -123,7 +129,10 @@ export default function AddOrderDialog({
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <Fab
                   onClick={() => setFoodCount((prevCount: number) => prevCount - 1)}
-                  disabled={foodCount === 1}
+                  disabled={
+                    itemCounts.find((countItem: any) => countItem._id === foodItem?._id)?.count ===
+                    1
+                  }
                   sx={{ width: '36px', height: '36px' }}
                   color="default"
                   aria-label="add"
@@ -131,6 +140,7 @@ export default function AddOrderDialog({
                   <Iconify icon="tabler:minus" width={20} />
                 </Fab>
                 <Typography fontSize={16} fontWeight={600}>
+                  {/* {itemCounts.find((countItem: any) => countItem._id === foodItem?._id)?.count || 1} */}
                   {foodCount}
                 </Typography>
                 <Fab
@@ -144,7 +154,6 @@ export default function AddOrderDialog({
               </div>
             </div>
           </CardContent>
-          {/* </CardActionArea> */}
         </Card>
         <Typography fontSize={16} fontWeight={600}>
           Additional

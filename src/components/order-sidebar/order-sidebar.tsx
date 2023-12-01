@@ -12,17 +12,17 @@ import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 import Iconify from '../iconify/iconify';
 
 interface OrderSidebarProps {
   ordered: boolean;
-  orderDetails: {
-    name: string;
-    price: number;
-  };
-  foodCount: number;
-  setFoodCount: (prevCount: any) => void;
   allOrders: Array<object>;
+  itemCounts: any;
+  handleIncrement: (id: string) => void;
+  handleDecrement: (id: string) => void;
 }
 
 const defaultValues = {
@@ -52,10 +52,13 @@ const schema = yup.object().shape({
 });
 
 const OrderSidebar = (props: OrderSidebarProps) => {
-  const { ordered, allOrders } = props;
+  const { ordered, allOrders, itemCounts, handleIncrement, handleDecrement } = props;
 
-  const [itemCounts, setItemCounts] = useState<{ _id: string; count: number }[]>([]);
   const [currentTab, setCurrentTab] = useState('buy');
+
+  const theme = useTheme();
+  // const sm = useMediaQuery(theme.breakpoints.down('sm'));
+  const xl = useMediaQuery(theme.breakpoints.only('xl'));
 
   const {
     // reset,
@@ -76,43 +79,14 @@ const OrderSidebar = (props: OrderSidebarProps) => {
     // addData(data)
   };
 
-  const handleIncrement = (itemId: string) => {
-    setItemCounts((prevCounts) => {
-      const existingItem = prevCounts.find((countItem) => countItem._id === itemId);
-
-      if (existingItem) {
-        return prevCounts.map((countItem) =>
-          countItem._id === itemId ? { ...countItem, count: countItem.count + 1 } : countItem
-        );
-      }
-
-      return [...prevCounts, { _id: itemId, count: 1 }];
-    });
-  };
-
-  const handleDecrement = (itemId: string) => {
-    setItemCounts((prevCounts) => {
-      const existingItem = prevCounts.find((countItem) => countItem._id === itemId);
-
-      if (existingItem && existingItem.count > 0) {
-        return prevCounts.map((countItem) =>
-          countItem._id === itemId ? { ...countItem, count: countItem.count - 1 } : countItem
-        );
-      }
-
-      return prevCounts;
-    });
-  };
-
   const subTotal = allOrders.reduce((accumulator: number, currentItem: any) => {
-    const countObj = itemCounts.find((countItem) => countItem._id === currentItem._id);
+    const countObj = itemCounts.find((countItem: any) => countItem._id === currentItem._id);
     const count = countObj ? countObj.count : 1;
 
     return accumulator + (currentItem?.price ?? 0) * count;
   }, 0);
 
   const totalPrice = subTotal + 1.87;
-  // const total = subTotal + 1.87;
 
   return (
     <div style={{ height: '90%' }}>
@@ -228,8 +202,8 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                   style={{
                     marginLeft: '20px',
                     marginRight: '20px',
-                    overflowY: allOrders.length > 2 ? 'scroll' : 'hidden',
-                    height: '250px',
+                    overflowY: allOrders.length < 4 ? 'hidden' : 'scroll',
+                    height: xl ? '320px' : '200px',
                   }}
                 >
                   {allOrders.map((order: any) => (
@@ -281,7 +255,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                               <Fab
                                 onClick={() => handleDecrement(order._id)}
                                 disabled={
-                                  itemCounts.find((countItem) => countItem._id === order._id)
+                                  itemCounts.find((countItem: any) => countItem._id === order._id)
                                     ?.count === 1
                                 }
                                 sx={{ width: '36px', height: '36px' }}
@@ -291,7 +265,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                                 <Iconify icon="tabler:minus" width={20} />
                               </Fab>
                               <Typography fontSize={16} fontWeight={600}>
-                                {itemCounts.find((countItem) => countItem._id === order._id)
+                                {itemCounts.find((countItem: any) => countItem._id === order._id)
                                   ?.count || 1}
                               </Typography>
                               <Fab
