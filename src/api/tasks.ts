@@ -3,13 +3,18 @@ import { useMemo } from 'react';
 
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
-import { GetTasksResponse, GetTaskByIdResponse, CreateTaskRequestSchema } from './api-schemas';
+import {
+  ErrorResponse,
+  GetTasksResponse,
+  GetTaskByIdResponse,
+  CreateTaskRequestSchema,
+} from './api-schemas';
 
 // ----------------------------------------------------------------------
 
 export async function createTask(
   data: CreateTaskRequestSchema
-): Promise<{ data: GetTaskByIdResponse }> {
+): Promise<{ data: GetTaskByIdResponse } | ErrorResponse> {
   const URL = endpoints.tasks.post;
   return axios.post(URL, data);
 }
@@ -41,7 +46,9 @@ export function useGetTasks(params?: IGetTasksQueryParams) {
 
 // ----------------------------------------------------------------------
 
-export function getTasks(params?: IGetTasksQueryParams): Promise<{ data: GetTasksResponse }> {
+export function getTasks(
+  params?: IGetTasksQueryParams
+): Promise<{ data: GetTasksResponse } | ErrorResponse> {
   const URL = endpoints.tasks.get;
   return axios.get(URL, { params });
 }
@@ -67,7 +74,7 @@ export function useGetTask(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getTask(id: string): Promise<{ data: GetTaskByIdResponse }> {
+export function getTask(id: string): Promise<{ data: GetTaskByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.tasks.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -77,7 +84,7 @@ export function getTask(id: string): Promise<{ data: GetTaskByIdResponse }> {
 export async function updateTaskById(
   id: string,
   data: CreateTaskRequestSchema
-): Promise<{ data: GetTaskByIdResponse }> {
+): Promise<{ data: GetTaskByIdResponse } | ErrorResponse> {
   const URL = endpoints.tasks.put.replace('{id}', id);
   return axios.put(URL, data);
 }

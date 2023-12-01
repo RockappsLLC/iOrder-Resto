@@ -1,47 +1,54 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import { Typography } from '@mui/material';
+import { Avatar, Typography } from '@mui/material';
 
-const data = [
-  {
-    id: 0,
-    isActive: false,
-    name: 'Beby Jovancy',
-  },
-  {
-    id: 1,
-    isActive: false,
-    name: 'Aisyah Zidni',
-  },
-  {
-    id: 2,
-    isActive: true,
-    name: 'Nirmala Azalea',
-  },
-  {
-    id: 3,
-    isActive: false,
-    name: 'Bena Kane',
-  },
-  {
-    id: 4,
-    isActive: false,
-    name: 'Firmino Kudo',
-  },
-];
+import { useRouter } from 'src/routes/hooks';
+
+import { useGetUsers } from 'src/api/users';
 
 export default function ChooseUserScreen() {
-  const [Users, setUsers] = useState(data);
+  const router = useRouter();
 
-  const ChangeActive = (id: any) => {
-    const newData = [...Users] as any;
-    newData.find((item: any) => item.isActive === true).isActive = false;
-    newData[id].isActive = true;
-    setUsers(newData);
+  const [users, setUsers] = useState([]);
+
+  const usersData = useGetUsers();
+  const userItem = usersData?.users as any;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const usersWithIsActive = userItem.map((item: any) => ({
+          ...item,
+          isActive: false,
+        }));
+        setUsers(usersWithIsActive);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+    fetchData();
+  }, [userItem]);
+
+  const changeActive = (id: number) => {
+    setUsers((prevUsers: any) =>
+      prevUsers.map((activeItem: any) => ({
+        ...activeItem,
+        isActive: activeItem._id === id,
+      }))
+    );
+  };
+
+  const activeUsers = users.filter((activeUser: any) => activeUser.isActive === true) as any;
+  const onlyUser = activeUsers[0]?._id;
+
+  const handleLoginClick = () => {
+    const pinScreenPath = '/auth/other/pin-screen';
+    const params = onlyUser;
+    router.push(`${pinScreenPath}?id=${params}`);
   };
 
   return (
@@ -82,20 +89,24 @@ export default function ChooseUserScreen() {
           gap={5}
           overflow="scroll"
         >
-          {Users.map((user: any, num: number) => (
-            <Stack direction={{ xs: 'column', sm: 'column' }} key={num}>
-              <Box
-                width={user.isActive ? 124 : 100}
-                height={user.isActive ? 124 : 100}
-                borderRadius={100}
+          {users.map((user: any, num: number) => (
+            <Stack direction={{ xs: 'column', sm: 'column' }} alignItems="center" key={num}>
+              <Avatar
+                src={user?.photoURL}
+                alt={user?.displayName}
                 sx={{
-                  backgroundColor: 'red',
+                  backgroundColor: '#F15F34',
+                  width: user.isActive ? 124 : 100,
+                  height: user.isActive ? 124 : 100,
                   opacity: user.isActive ? 1 : 0.5,
                 }}
-                onClick={() => ChangeActive(user.id)}
-              />
+                onClick={() => changeActive(user._id)}
+              >
+                <Typography fontSize={30}>{user?.firstName.charAt(0).toUpperCase()}</Typography>
+              </Avatar>
+
               <Typography color="#fff" width="max-content" textAlign="center">
-                {user.name}
+                {user.firstName} {user.lastName}
               </Typography>
             </Stack>
           ))}
@@ -133,6 +144,7 @@ export default function ChooseUserScreen() {
             variant="outlined"
             color="error"
             sx={{ backdropFilter: `blur(10px)`, borderRadius: 10 }}
+            onClick={() => handleLoginClick()}
           >
             Login
           </Button>

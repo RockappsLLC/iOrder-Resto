@@ -46,7 +46,18 @@ export default function AccountPopover() {
     try {
       await logout();
       popover.onClose();
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('restaurantId');
       router.replace('/');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleLockout = async () => {
+    try {
+      popover.onClose();
+      router.replace('/other/locked');
     } catch (error) {
       console.error(error);
     }
@@ -116,6 +127,13 @@ export default function AccountPopover() {
           sx={{ m: 1, fontWeight: 'fontWeightBold', color: 'error.main' }}
         >
           Logout
+        </MenuItem>
+
+        <MenuItem
+          onClick={handleLockout}
+          sx={{ m: 1, fontWeight: 'fontWeightBold', color: 'error.main' }}
+        >
+          Lockout
         </MenuItem>
       </CustomPopover>
     </>

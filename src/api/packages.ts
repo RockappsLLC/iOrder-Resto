@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
 import {
+  ErrorResponse,
   GetPackagesResponse,
   GetPackageByIdResponse,
   CreatePackageRequestSchema,
@@ -13,7 +14,7 @@ import {
 
 export async function createPackage(
   data: CreatePackageRequestSchema
-): Promise<{ data: GetPackageByIdResponse }> {
+): Promise<{ data: GetPackageByIdResponse } | ErrorResponse> {
   const URL = endpoints.packages.post;
   return axios.post(URL, data);
 }
@@ -47,7 +48,7 @@ export function useGetPackages(params?: IGetPackagesQueryParams) {
 
 export function getPackages(
   params?: IGetPackagesQueryParams
-): Promise<{ data: GetPackagesResponse }> {
+): Promise<{ data: GetPackagesResponse } | ErrorResponse> {
   const URL = endpoints.packages.get;
   return axios.get(URL, { params });
 }
@@ -73,7 +74,7 @@ export function useGetPackage(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getPackage(id: string): Promise<{ data: GetPackageByIdResponse }> {
+export function getPackage(id: string): Promise<{ data: GetPackageByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.packages.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -83,7 +84,7 @@ export function getPackage(id: string): Promise<{ data: GetPackageByIdResponse }
 export async function updatePackageById(
   id: string,
   data: CreatePackageRequestSchema
-): Promise<{ data: GetPackageByIdResponse }> {
+): Promise<{ data: GetPackageByIdResponse } | ErrorResponse> {
   const URL = endpoints.packages.put.replace('{id}', id);
   return axios.put(URL, data);
 }

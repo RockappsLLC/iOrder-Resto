@@ -3,13 +3,18 @@ import { useMemo } from 'react';
 
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
-import { GetTablesResponse, GetTableByIdResponse, CreateTableRequestSchema } from './api-schemas';
+import {
+  ErrorResponse,
+  GetTablesResponse,
+  GetTableByIdResponse,
+  CreateTableRequestSchema,
+} from './api-schemas';
 
 // ----------------------------------------------------------------------
 
 export async function createTable(
   data: CreateTableRequestSchema
-): Promise<{ data: GetTableByIdResponse }> {
+): Promise<{ data: GetTableByIdResponse } | ErrorResponse> {
   const URL = endpoints.tables.post;
   return axios.post(URL, data);
 }
@@ -19,6 +24,7 @@ interface IGetTablesQueryParams {
   restaurantId?: string;
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetTables(params?: IGetTablesQueryParams) {
@@ -42,7 +48,9 @@ export function useGetTables(params?: IGetTablesQueryParams) {
 
 // ----------------------------------------------------------------------
 
-export function getTables(params?: IGetTablesQueryParams): Promise<{ data: GetTablesResponse }> {
+export function getTables(
+  params?: IGetTablesQueryParams
+): Promise<{ data: GetTablesResponse } | ErrorResponse> {
   const URL = endpoints.tables.get;
   return axios.get(URL, { params });
 }
@@ -68,7 +76,7 @@ export function useGetTable(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getTable(id: string): Promise<{ data: GetTableByIdResponse }> {
+export function getTable(id: string): Promise<{ data: GetTableByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.tables.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -78,7 +86,7 @@ export function getTable(id: string): Promise<{ data: GetTableByIdResponse }> {
 export async function updateTableById(
   id: string,
   data: CreateTableRequestSchema
-): Promise<{ data: GetTableByIdResponse }> {
+): Promise<{ data: GetTableByIdResponse } | ErrorResponse> {
   const URL = endpoints.tables.put.replace('{id}', id);
   return axios.put(URL, data);
 }

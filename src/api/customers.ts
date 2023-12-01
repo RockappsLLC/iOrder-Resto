@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
 import {
+  ErrorResponse,
   GetCustomersResponse,
   GetCustomerByIdResponse,
   CreateCustomerRequestSchema,
@@ -14,7 +15,7 @@ import {
 
 export async function createCustomer(
   data: CreateCustomerRequestSchema
-): Promise<{ data: GetCustomerByIdResponse }> {
+): Promise<{ data: GetCustomerByIdResponse } | ErrorResponse> {
   const URL = endpoints.customers.post;
   return axios.post(URL, data);
 }
@@ -49,7 +50,7 @@ export function useGetCustomers(params?: IGetCustomersQueryParams) {
 
 export function getCustomers(
   params?: IGetCustomersQueryParams
-): Promise<{ data: GetCustomersResponse }> {
+): Promise<{ data: GetCustomersResponse } | ErrorResponse> {
   const URL = endpoints.customers.get;
   return axios.get(URL, { params });
 }
@@ -75,7 +76,9 @@ export function useGetCustomer(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getCustomer(id: string): Promise<{ data: GetCustomerByIdResponse }> {
+export function getCustomer(
+  id: string
+): Promise<{ data: GetCustomerByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.customers.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -85,7 +88,7 @@ export function getCustomer(id: string): Promise<{ data: GetCustomerByIdResponse
 export async function updateCustomerById(
   id: string,
   data: UpdateCustomerRequestSchema
-): Promise<{ data: GetCustomerByIdResponse }> {
+): Promise<{ data: GetCustomerByIdResponse } | ErrorResponse> {
   const URL = endpoints.customers.put.replace('{id}', id);
   return axios.put(URL, data);
 }

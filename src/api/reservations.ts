@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
 import {
+  ErrorResponse,
   GetReservationsResponse,
   GetReservationByIdResponse,
   CreateReservationRequestSchema,
@@ -15,7 +16,7 @@ import {
 
 export async function createReservation(
   data: CreateReservationRequestSchema
-): Promise<{ data: CreateReservationResponseSchema }> {
+): Promise<{ data: CreateReservationResponseSchema } | ErrorResponse> {
   const URL = endpoints.reservations.post;
   return axios.post(URL, data);
 }
@@ -50,7 +51,7 @@ export function useGetReservations(params?: IGetReservationsQueryParams) {
 
 export function getReservations(
   params?: IGetReservationsQueryParams
-): Promise<{ data: GetReservationsResponse }> {
+): Promise<{ data: GetReservationsResponse } | ErrorResponse> {
   const URL = endpoints.reservations.get;
   return axios.get(URL, { params });
 }
@@ -76,7 +77,9 @@ export function useGetReservation(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getReservation(id: string): Promise<{ data: GetReservationByIdResponse }> {
+export function getReservation(
+  id: string
+): Promise<{ data: GetReservationByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.reservations.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -86,7 +89,7 @@ export function getReservation(id: string): Promise<{ data: GetReservationByIdRe
 export async function updateReservationById(
   id: string,
   data: UpdateReservationRequestSchema
-): Promise<{ data: GetReservationByIdResponse }> {
+): Promise<{ data: GetReservationByIdResponse } | ErrorResponse> {
   const URL = endpoints.reservations.put.replace('{id}', id);
   return axios.put(URL, data);
 }

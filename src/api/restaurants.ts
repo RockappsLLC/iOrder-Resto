@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
 import {
+  ErrorResponse,
   GetRestaurantsResponse,
   GetRestaurantByIdResponse,
   CreateRestaurantRequestSchema,
@@ -15,7 +16,7 @@ import {
 
 export async function createRestaurant(
   data: CreateRestaurantRequestSchema
-): Promise<{ data: CreateRestaurantResponseSchema }> {
+): Promise<{ data: CreateRestaurantResponseSchema } | ErrorResponse> {
   const URL = endpoints.restaurants.post;
   return axios.post(URL, data);
 }
@@ -24,6 +25,7 @@ export async function createRestaurant(
 interface IGetRestaurantsQueryParams {
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetRestaurants(params?: IGetRestaurantsQueryParams) {
@@ -49,7 +51,7 @@ export function useGetRestaurants(params?: IGetRestaurantsQueryParams) {
 
 export function getRestaurants(
   params?: IGetRestaurantsQueryParams
-): Promise<{ data: GetRestaurantsResponse }> {
+): Promise<{ data: GetRestaurantsResponse } | ErrorResponse> {
   const URL = endpoints.restaurants.get;
   return axios.get(URL, { params });
 }
@@ -75,7 +77,9 @@ export function useGetRestaurant(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getRestaurant(id: string): Promise<{ data: GetRestaurantByIdResponse }> {
+export function getRestaurant(
+  id: string
+): Promise<{ data: GetRestaurantByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.restaurants.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -85,7 +89,7 @@ export function getRestaurant(id: string): Promise<{ data: GetRestaurantByIdResp
 export async function updateRestaurantById(
   id: string,
   data: UpdateRestaurantRequestSchema
-): Promise<{ data: GetRestaurantByIdResponse }> {
+): Promise<{ data: GetRestaurantByIdResponse } | ErrorResponse> {
   const URL = endpoints.restaurants.put.replace('{id}', id);
   return axios.put(URL, data);
 }

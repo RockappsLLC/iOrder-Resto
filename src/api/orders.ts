@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
 import {
+  ErrorResponse,
   GetOrdersResponse,
   OrderRequestSchema,
   GetOrderByIdResponse,
@@ -14,7 +15,7 @@ import {
 
 export async function createOrder(
   data: OrderRequestSchema
-): Promise<{ data: GetOrderByIdResponse }> {
+): Promise<{ data: GetOrderByIdResponse } | ErrorResponse> {
   const URL = endpoints.orders.post;
   return axios.post(URL, data);
 }
@@ -24,6 +25,7 @@ interface IGetOrdersQueryParams {
   restaurantId?: string;
   offset?: number;
   limit?: number;
+  search?: number;
 }
 
 export function useGetOrders(params?: IGetOrdersQueryParams) {
@@ -47,7 +49,9 @@ export function useGetOrders(params?: IGetOrdersQueryParams) {
 
 // ----------------------------------------------------------------------
 
-export function getOrders(params?: IGetOrdersQueryParams): Promise<{ data: GetOrdersResponse }> {
+export function getOrders(
+  params?: IGetOrdersQueryParams
+): Promise<{ data: GetOrdersResponse } | ErrorResponse> {
   const URL = endpoints.orders.get;
   return axios.get(URL, { params });
 }
@@ -73,7 +77,7 @@ export function useGetOrder(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getOrder(id: string): Promise<{ data: GetOrderByIdResponse }> {
+export function getOrder(id: string): Promise<{ data: GetOrderByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.orders.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -83,7 +87,7 @@ export function getOrder(id: string): Promise<{ data: GetOrderByIdResponse }> {
 export async function updateOrderById(
   id: string,
   data: UpdateOrderRequestSchema
-): Promise<{ data: GetOrderByIdResponse }> {
+): Promise<{ data: GetOrderByIdResponse } | ErrorResponse> {
   const URL = endpoints.orders.put.replace('{id}', id);
   return axios.put(URL, data);
 }

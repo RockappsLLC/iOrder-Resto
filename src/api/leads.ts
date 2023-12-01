@@ -3,13 +3,18 @@ import { useMemo } from 'react';
 
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
-import { GetLeadsResponse, GetLeadByIdResponse, CreateLeadRequestSchema } from './api-schemas';
+import {
+  ErrorResponse,
+  GetLeadsResponse,
+  GetLeadByIdResponse,
+  CreateLeadRequestSchema,
+} from './api-schemas';
 
 // ----------------------------------------------------------------------
 
 export async function createLead(
   data: CreateLeadRequestSchema
-): Promise<{ data: GetLeadByIdResponse }> {
+): Promise<{ data: GetLeadByIdResponse } | ErrorResponse> {
   const URL = endpoints.leads.post;
   return axios.post(URL, data);
 }
@@ -18,6 +23,7 @@ export async function createLead(
 interface IGetLeadsQueryParams {
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetLeads(params?: IGetLeadsQueryParams) {
@@ -41,7 +47,9 @@ export function useGetLeads(params?: IGetLeadsQueryParams) {
 
 // ----------------------------------------------------------------------
 
-export function getLeads(params?: IGetLeadsQueryParams): Promise<{ data: GetLeadsResponse }> {
+export function getLeads(
+  params?: IGetLeadsQueryParams
+): Promise<{ data: GetLeadsResponse } | ErrorResponse> {
   const URL = endpoints.leads.get;
   return axios.get(URL, { params });
 }
@@ -67,7 +75,7 @@ export function useGetLead(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getLead(id: string): Promise<{ data: GetLeadByIdResponse }> {
+export function getLead(id: string): Promise<{ data: GetLeadByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.leads.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -77,7 +85,7 @@ export function getLead(id: string): Promise<{ data: GetLeadByIdResponse }> {
 export async function updateLeadById(
   id: string,
   data: CreateLeadRequestSchema
-): Promise<{ data: GetLeadByIdResponse }> {
+): Promise<{ data: GetLeadByIdResponse } | ErrorResponse> {
   const URL = endpoints.leads.put.replace('{id}', id);
   return axios.put(URL, data);
 }

@@ -134,4 +134,12 @@ export const endpoints = {
     put: '/orders/{id}',
     delete: '/orders/{id}',
   },
+  invoices: {
+    post: '/invoices',
+    get: '/invoices',
+    getById: '/invoices/{id}',
+    put: '/invoices/{id}',
+    delete: '/invoices/{id}',
+  },
+  statistics: { get: '/statistics' },
 };

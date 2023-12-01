@@ -1,5 +1,7 @@
 import { LogoutOptions, PopupLoginOptions, RedirectLoginOptions } from '@auth0/auth0-react';
 
+import { CreateUserRequestSchema } from 'src/api/api-schemas';
+
 // ----------------------------------------------------------------------
 
 export type ActionMapType<M extends { [index: string]: any }> = {
@@ -31,7 +33,7 @@ type CanRemove = {
     firstName: string,
     lastName: string,
     restaurantId: string,
-    role: string
+    role: CreateUserRequestSchema['role']
   ) => Promise<void>;
   //
   loginWithGoogle?: () => Promise<void>;
@@ -54,13 +56,14 @@ export type JWTContextType = CanRemove & {
   authenticated: boolean;
   unauthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
+  loginWithPin: (email: string, pin: string) => Promise<void>;
   register: (
     email: string,
     password: string,
     firstName: string,
     lastName: string,
     restaurantId: string,
-    role: string
+    role: CreateUserRequestSchema['role']
   ) => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -83,7 +86,7 @@ export type FirebaseContextType = CanRemove & {
     firstName: string,
     lastName: string,
     restaurantId: string,
-    role: string
+    role: CreateUserRequestSchema['role']
   ) => Promise<void>;
 };
 
@@ -100,7 +103,7 @@ export type AmplifyContextType = CanRemove & {
     firstName: string,
     lastName: string,
     restaurantId: string,
-    role: string
+    role: CreateUserRequestSchema['role']
   ) => Promise<unknown>;
   logout: () => Promise<unknown>;
   confirmRegister: (email: string, code: string) => Promise<void>;

@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
 import {
+  ErrorResponse,
   GetMenuItemsResponse,
   GetMenuItemByIdResponse,
   CreateMenuItemRequestSchema,
@@ -13,7 +14,7 @@ import {
 
 export async function createMenuItem(
   data: CreateMenuItemRequestSchema
-): Promise<{ data: GetMenuItemByIdResponse }> {
+): Promise<{ data: GetMenuItemByIdResponse } | ErrorResponse> {
   const URL = endpoints.menuItems.post;
   return axios.post(URL, data);
 }
@@ -23,6 +24,7 @@ interface IGetMenuItemsQueryParams {
   restaurantId?: string;
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetMenuItems(params?: IGetMenuItemsQueryParams) {
@@ -48,7 +50,7 @@ export function useGetMenuItems(params?: IGetMenuItemsQueryParams) {
 
 export function getMenuItems(
   params?: IGetMenuItemsQueryParams
-): Promise<{ data: GetMenuItemsResponse }> {
+): Promise<{ data: GetMenuItemsResponse } | ErrorResponse> {
   const URL = endpoints.menuItems.get;
   return axios.get(URL, { params });
 }
@@ -74,7 +76,9 @@ export function useGetMenuItem(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getMenuItem(id: string): Promise<{ data: GetMenuItemByIdResponse }> {
+export function getMenuItem(
+  id: string
+): Promise<{ data: GetMenuItemByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.menuItems.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -84,7 +88,7 @@ export function getMenuItem(id: string): Promise<{ data: GetMenuItemByIdResponse
 export async function updateMenuItemById(
   id: string,
   data: CreateMenuItemRequestSchema
-): Promise<{ data: GetMenuItemByIdResponse }> {
+): Promise<{ data: GetMenuItemByIdResponse } | ErrorResponse> {
   const URL = endpoints.menuItems.put.replace('{id}', id);
   return axios.put(URL, data);
 }

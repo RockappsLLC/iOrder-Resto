@@ -1,0 +1,45 @@
+name: Setup Node.js
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Checkout the code
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+
+      - name: Echo environmental variable
+        run: echo "VITE_HOST_API=https://backend.iorder.ch/api/v1" >> .env
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build # Replace with your build command
+
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: "167.235.135.222"
+          username: "root"
+          password: "MeWm25aXA6e4PCkpDX"
+          port: "22"
+          source: "."
+          target: /home/iorder-resto
+
+      - name: Run pm2 script
+        uses: appleboy/ssh-action@master
+        with:
+          host: "167.235.135.222"
+          username: "root"
+          password: "MeWm25aXA6e4PCkpDX"
+          port: "22"
+          script: bash /home/iorder-resto/deploy-prod.sh

@@ -65,7 +65,7 @@ export default function JwtRegisterView() {
 
   const onSubmit = handleSubmit(async (data) => {
     const restaurantId = '';
-    const role = '1';
+    const role = 1;
     try {
       await register?.(
         data.email,

@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
 import {
+  ErrorResponse,
   GetAppointmentsResponse,
   GetAppointmentByIdResponse,
   CreateAppointmentRequestSchema,
@@ -13,7 +14,7 @@ import {
 
 export async function createAppointment(
   data: CreateAppointmentRequestSchema
-): Promise<{ data: GetAppointmentByIdResponse }> {
+): Promise<{ data: GetAppointmentByIdResponse } | ErrorResponse> {
   const URL = endpoints.appointments.post;
   return axios.post(URL, data);
 }
@@ -22,6 +23,7 @@ export async function createAppointment(
 interface IGetAppointmentsQueryParams {
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetAppointments(params?: IGetAppointmentsQueryParams) {
@@ -47,7 +49,7 @@ export function useGetAppointments(params?: IGetAppointmentsQueryParams) {
 
 export function getAppointments(
   params?: IGetAppointmentsQueryParams
-): Promise<{ data: GetAppointmentsResponse }> {
+): Promise<{ data: GetAppointmentsResponse } | ErrorResponse> {
   const URL = endpoints.appointments.get;
   return axios.get(URL, { params });
 }
@@ -73,7 +75,9 @@ export function useGetAppointment(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getAppointment(id: string): Promise<{ data: GetAppointmentByIdResponse }> {
+export function getAppointment(
+  id: string
+): Promise<{ data: GetAppointmentByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.appointments.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -83,7 +87,7 @@ export function getAppointment(id: string): Promise<{ data: GetAppointmentByIdRe
 export async function updateAppointmentById(
   id: string,
   data: CreateAppointmentRequestSchema
-): Promise<{ data: GetAppointmentByIdResponse }> {
+): Promise<{ data: GetAppointmentByIdResponse } | ErrorResponse> {
   const URL = endpoints.appointments.put.replace('{id}', id);
   return axios.put(URL, data);
 }

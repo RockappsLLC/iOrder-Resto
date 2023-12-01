@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
 import {
+  ErrorResponse,
   GetDevicesResponse,
   DeviceRequestSchema,
   GetDeviceByIdResponse,
@@ -14,7 +15,7 @@ import {
 
 export async function createDevice(
   data: DeviceRequestSchema
-): Promise<{ data: GetDeviceByIdResponse }> {
+): Promise<{ data: GetDeviceByIdResponse } | ErrorResponse> {
   const URL = endpoints.devices.post;
   return axios.post(URL, data);
 }
@@ -47,7 +48,9 @@ export function useGetDevices(params?: IGetDevicesQueryParams) {
 
 // ----------------------------------------------------------------------
 
-export function getDevices(params?: IGetDevicesQueryParams): Promise<{ data: GetDevicesResponse }> {
+export function getDevices(
+  params?: IGetDevicesQueryParams
+): Promise<{ data: GetDevicesResponse } | ErrorResponse> {
   const URL = endpoints.devices.get;
   return axios.get(URL, { params });
 }
@@ -73,7 +76,7 @@ export function useGetDevice(id: string) {
 
 // ----------------------------------------------------------------------
 
-export function getDevice(id: string): Promise<{ data: GetDeviceByIdResponse }> {
+export function getDevice(id: string): Promise<{ data: GetDeviceByIdResponse } | ErrorResponse> {
   const URL = id ? endpoints.devices.getById.replace('{id}', id) : '';
   return axios.get(URL);
 }
@@ -83,7 +86,7 @@ export function getDevice(id: string): Promise<{ data: GetDeviceByIdResponse }> 
 export async function updateDeviceById(
   id: string,
   data: UpdateDeviceRequestSchema
-): Promise<{ data: GetDeviceByIdResponse }> {
+): Promise<{ data: GetDeviceByIdResponse } | ErrorResponse> {
   const URL = endpoints.devices.put.replace('{id}', id);
   return axios.put(URL, data);
 }

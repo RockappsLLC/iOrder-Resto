@@ -11,6 +11,7 @@ import { LoadingScreen } from 'src/components/loading-screen';
 const IndexPage = lazy(() => import('src/pages/dashboard/home'));
 const BillsPage = lazy(() => import('src/pages/dashboard/bills'));
 const CustomersPage = lazy(() => import('src/pages/dashboard/customers'));
+const LockedScreen = lazy(() => import('src/pages/dashboard/locked-screen'));
 
 // ----------------------------------------------------------------------
 
@@ -31,5 +32,9 @@ export const dashboardRoutes = [
       { path: 'bills', element: <BillsPage /> },
       { path: 'customers', element: <CustomersPage /> },
     ],
+  },
+  {
+    path: 'other',
+    children: [{ path: 'locked', element: <LockedScreen /> }],
   },
 ];
