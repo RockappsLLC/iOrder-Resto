@@ -62,10 +62,6 @@ export default function AddOrderDialog({
   }, [foodId, setFoodCount]); // Include resetInputs in the dependency array
 
   const handleOrder = () => {
-    if (allOrders.find((order: any) => order._id === foodItem?._id)) {
-      hide();
-      return;
-    }
     setAllOrders([...allOrders, foodItem]);
     setOrdered(true);
     hide();
@@ -378,11 +374,14 @@ export default function AddOrderDialog({
         </div>
         <Button
           onClick={handleOrder}
+          disabled={allOrders.find((order: any) => order._id === foodItem?._id)}
           sx={{ borderRadius: '58px', px: 6, py: 1.5, ':hover': { bgcolor: '#f2734e' } }}
           color="primary"
           variant="contained"
         >
-          Add to order
+          {allOrders.find((order: any) => order._id === foodItem?._id)
+            ? 'Already ordered'
+            : 'Add to order'}
         </Button>
       </DialogActions>
     </Dialog>

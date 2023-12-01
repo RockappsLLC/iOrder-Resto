@@ -9,11 +9,12 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import { useTheme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-
-import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+
+import AddNote from 'src/sections/dialogs/add-note';
 
 import Iconify from '../iconify/iconify';
 
@@ -55,6 +56,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
   const { ordered, allOrders, itemCounts, handleIncrement, handleDecrement } = props;
 
   const [currentTab, setCurrentTab] = useState('buy');
+  const [addNote, setAddNote] = useState(false);
 
   const theme = useTheme();
   // const sm = useMediaQuery(theme.breakpoints.down('sm'));
@@ -178,6 +180,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                 />
               </div>
               <Fab
+                onClick={() => setAddNote(true)}
                 size="small"
                 color="default"
                 variant="soft"
@@ -350,6 +353,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
           Reservation
         </Box>
       )}
+      <AddNote open={addNote} hide={() => setAddNote(false)} />
     </div>
   );
 };
