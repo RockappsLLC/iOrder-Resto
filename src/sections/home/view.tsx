@@ -13,6 +13,7 @@ import OrderSidebar from 'src/components/order-sidebar/order-sidebar';
 
 export default function HomeView() {
   const settings = useSettingsContext();
+  const [reservationDrawer, setReservationDrawer] = useState(false);
 
   const [categoryId, seCategoryId]: any = useState('6535919fc665979a76591ca1');
 
@@ -21,6 +22,10 @@ export default function HomeView() {
   }, []);
 
   const [searchInput, setSearchInput] = useState('');
+
+  // <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+  // <Button onClick={() => setReservationDrawer(true)}>Open Drawer</Button>
+  // <ReservationList open={reservationDrawer} hide={() => setReservationDrawer(false)} />
 
   return (
     <Grid container columns={15} sx={{ height: '100%' }}>
