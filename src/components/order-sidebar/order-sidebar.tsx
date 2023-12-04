@@ -7,29 +7,26 @@ import Fab from '@mui/material/Fab';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import Button from '@mui/material/Button';
+import { Button } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import { useTheme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
+import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import AddNote from 'src/sections/dialogs/add-note';
 
-import Iconify from '../iconify/iconify';
+import Iconify from '../iconify';
+import { useOrderContext } from './context';
 
-interface OrderSidebarProps {
-  ordered: boolean;
-  allOrders: Array<object>;
-  itemCounts: any;
-  handleIncrement: (id: string) => void;
-  handleDecrement: (id: string) => void;
-}
+interface OrderSidebarProps {}
 
 const defaultValues = {
   name: '',
   code: '',
 };
+
+const TAX = 0.1;
 
 const showErrors = (field: string, valueLen: number, min: number) => {
   if (valueLen === 0) {
@@ -53,7 +50,7 @@ const schema = yup.object().shape({
 });
 
 const OrderSidebar = (props: OrderSidebarProps) => {
-  const { ordered, allOrders, itemCounts, handleIncrement, handleDecrement } = props;
+  const { orders, ordered, updateOrder } = useOrderContext();
 
   const [currentTab, setCurrentTab] = useState('buy');
   const [addNote, setAddNote] = useState(false);
@@ -80,15 +77,20 @@ const OrderSidebar = (props: OrderSidebarProps) => {
   const onSubmit = (data: any) => {
     // addData(data)
   };
-
-  const subTotal = allOrders.reduce((accumulator: number, currentItem: any) => {
-    const countObj = itemCounts.find((countItem: any) => countItem._id === currentItem._id);
-    const count = countObj ? countObj.count : 1;
-
-    return accumulator + (currentItem?.price ?? 0) * count;
+  console.log(orders);
+  const subTotal = orders.reduce((acc: number, currentItem: any) => {
+    const extrasTotal = currentItem.extras.reduce(
+      (_acc: number, _obj: any) => _acc + Number(_obj.price || 0) * Number(_obj.count || 0),
+      0
+    );
+    const price = Number(currentItem.price || 0);
+    const total = (price + extrasTotal) * Number(currentItem.count || 0);
+    return acc + total;
   }, 0);
 
-  const totalPrice = subTotal + 1.87;
+  const taxTotal = Math.round(Number(subTotal * TAX) * 10) / 10;
+
+  const totalPrice = subTotal + taxTotal;
 
   return (
     <div style={{ height: '90%' }}>
@@ -205,11 +207,11 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                   style={{
                     marginLeft: '20px',
                     marginRight: '20px',
-                    overflowY: allOrders.length < 4 ? 'hidden' : 'scroll',
+                    overflowY: orders.length < 4 ? 'hidden' : 'scroll',
                     height: xl ? '320px' : '200px',
                   }}
                 >
-                  {allOrders.map((order: any) => (
+                  {orders.map((order: any) => (
                     <div key={order._id}>
                       <div
                         style={{
@@ -256,11 +258,8 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                               <Fab
-                                onClick={() => handleDecrement(order._id)}
-                                disabled={
-                                  itemCounts.find((countItem: any) => countItem._id === order._id)
-                                    ?.count === 1
-                                }
+                                onClick={() => updateOrder(order._id, { count: order.count - 1 })}
+                                disabled={order.count === 1}
                                 sx={{ width: '36px', height: '36px' }}
                                 color="default"
                                 aria-label="add"
@@ -268,11 +267,10 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                                 <Iconify icon="tabler:minus" width={20} />
                               </Fab>
                               <Typography fontSize={16} fontWeight={600}>
-                                {itemCounts.find((countItem: any) => countItem._id === order._id)
-                                  ?.count || 1}
+                                {order.count || 1}
                               </Typography>
                               <Fab
-                                onClick={() => handleIncrement(order._id)}
+                                onClick={() => updateOrder(order._id, { count: order.count + 1 })}
                                 sx={{ width: '36px', height: '36px' }}
                                 color="inherit"
                                 aria-label="add"
@@ -306,7 +304,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                         Sub Total
                       </Typography>
                       <Typography fontSize={16} fontWeight={400} color="#828487">
-                        Tax (10%)
+                        Tax ({100 * TAX}%)
                       </Typography>
                     </div>
                     <div>
@@ -314,7 +312,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                         $ {subTotal}
                       </Typography>
                       <Typography fontSize={16} fontWeight={600}>
-                        $ 1.87
+                        $ {taxTotal}
                       </Typography>
                     </div>
                   </div>

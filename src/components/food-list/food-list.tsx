@@ -10,18 +10,7 @@ import AddOrderDialog from 'src/sections/dialogs/add-order';
 
 import FoodItem from '../food-item';
 
-const FoodList = ({
-  setOrdered,
-  searchInput,
-  allOrders,
-  setAllOrders,
-  foodCount,
-  setFoodCount,
-  itemCounts,
-  setItemCounts,
-  handleIncrement,
-  handleDecrement,
-}: any) => {
+const FoodList = ({ searchInput }: any) => {
   const [modal, setModal] = useState(false);
   const [foodId, setFoodId] = useState('');
 
@@ -92,20 +81,7 @@ const FoodList = ({
           </Grid>
         ))}
       </Grid>
-      <AddOrderDialog
-        value={modal}
-        foodId={foodId}
-        hide={() => setModal(false)}
-        setOrdered={setOrdered}
-        allOrders={allOrders}
-        setAllOrders={setAllOrders}
-        itemCounts={itemCounts}
-        setItemCounts={setItemCounts}
-        foodCount={foodCount}
-        setFoodCount={setFoodCount}
-        handleIncrement={handleIncrement}
-        handleDecrement={handleDecrement}
-      />
+      <AddOrderDialog value={modal} foodId={foodId} hide={() => setModal(false)} />
     </>
   );
 };

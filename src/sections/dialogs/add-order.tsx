@@ -13,66 +13,86 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
-import { getMenuItem } from 'src/api/menu-items';
+import { useGetMenuItem } from 'src/api/menu-items';
 import { MenuItemResponseSchema } from 'src/api/api-schemas';
 
 import Iconify from 'src/components/iconify';
+import { useOrderContext } from 'src/components/order-sidebar/context';
 
 // ----------------------------------------------------------------------
 
-export default function AddOrderDialog({
-  value,
-  hide,
-  foodId,
-  setOrdered,
-  allOrders,
-  setAllOrders,
-  foodCount,
-  setFoodCount,
-  itemCounts,
-  setItemCounts,
-  handleIncrement,
-  handleDecrement,
-}: any) {
-  const [foodItem, setFoodItem] = useState<MenuItemResponseSchema>();
+const extrasSample = [
+  {
+    _id: '1',
+    name: 'Rice',
+    price: 3,
+    count: 0,
+  },
+  {
+    _id: '2',
+    name: 'Egg',
+    price: 1.2,
+    count: 0,
+  },
+];
 
-  const [additionalCount1, setAdditionalCount1] = useState(0);
-  const [additionalCount2, setAdditionalCount2] = useState(0);
-  const [additionalCount3, setAdditionalCount3] = useState(0);
+const defaultOrder = {
+  count: 1,
+  extras: extrasSample,
+};
+
+export default function AddOrderDialog({ value, hide, foodId }: any) {
+  const { orders, addOrder, setOrdered } = useOrderContext();
+
+  const { menuItem, menuItemLoading } = useGetMenuItem(foodId);
+  const [order, setOrder] = useState<
+    MenuItemResponseSchema & { count: number; extras: typeof extrasSample }
+  >(defaultOrder);
 
   useEffect(() => {
-    const resetInputs = () => {
-      setFoodCount(1);
-      setAdditionalCount1(0);
-      setAdditionalCount2(0);
-      setAdditionalCount3(0);
-    };
+    if (!menuItemLoading) {
+      setOrder(menuItem ? { ...defaultOrder, ...menuItem } : defaultOrder);
+    }
+  }, [menuItemLoading, menuItem]);
 
-    const fetchData = async () => {
-      try {
-        const response = await getMenuItem(foodId);
-        setFoodItem(response.data.data);
-        resetInputs();
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, [foodId, setFoodCount]); // Include resetInputs in the dependency array
-
-  const handleOrder = () => {
-    setAllOrders([...allOrders, foodItem]);
+  const handleAddOrder = () => {
+    if (orders.find((_order: any) => _order._id === order?._id)) {
+      hide();
+      return;
+    }
+    addOrder(order);
     setOrdered(true);
     hide();
   };
 
-  const total =
-    foodItem?.price !== undefined &&
-    foodItem.price * foodCount +
-      4 * additionalCount1 +
-      2 * additionalCount2 +
-      0.87 * additionalCount3;
+  const handleDecreaseExtra = (id: string) => {
+    const extras = order.extras.map((extra) => {
+      if (extra._id === id) {
+        return { ...extra, count: extra.count - 1 };
+      }
+      return extra;
+    });
+    setOrder({ ...order, extras });
+  };
+  const handleIncreaseExtra = (id: string) => {
+    const extras = order.extras.map((extra) => {
+      if (extra._id === id) {
+        return { ...extra, count: extra.count + 1 };
+      }
+      return extra;
+    });
+    setOrder({ ...order, extras });
+  };
+
+  if (!menuItem) return null;
+
+  const extrasTotal = order.extras.reduce(
+    (acc, obj) => acc + Number(obj.price || 0) * Number(obj.count || 0),
+    0
+  );
+  const price = Number(order.price || 0);
+
+  const total = (price + extrasTotal) * Number(order.count || 0);
 
   return (
     <Dialog fullWidth open={value} onClose={hide}>
@@ -105,7 +125,7 @@ export default function AddOrderDialog({
           />
           <CardContent sx={{ width: '100%', pr: 0 }}>
             <Typography fontSize={16} fontWeight={600} gutterBottom component="div">
-              {foodItem?.name}
+              {menuItem.name}
             </Typography>
             <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
               <div>
@@ -119,16 +139,13 @@ export default function AddOrderDialog({
                   Price
                 </Typography>
                 <Typography fontSize={16} fontWeight={600} variant="body2" color="#F15F34">
-                  $ {foodItem?.price}
+                  $ {menuItem.price}
                 </Typography>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <Fab
-                  onClick={() => setFoodCount((prevCount: number) => prevCount - 1)}
-                  disabled={
-                    itemCounts.find((countItem: any) => countItem._id === foodItem?._id)?.count ===
-                    1
-                  }
+                  onClick={() => setOrder({ ...order, count: order.count - 1 })}
+                  disabled={order.count === 1}
                   sx={{ width: '36px', height: '36px' }}
                   color="default"
                   aria-label="add"
@@ -136,11 +153,10 @@ export default function AddOrderDialog({
                   <Iconify icon="tabler:minus" width={20} />
                 </Fab>
                 <Typography fontSize={16} fontWeight={600}>
-                  {/* {itemCounts.find((countItem: any) => countItem._id === foodItem?._id)?.count || 1} */}
-                  {foodCount}
+                  {order.count}
                 </Typography>
                 <Fab
-                  onClick={() => setFoodCount((prevCount: number) => prevCount + 1)}
+                  onClick={() => setOrder({ ...order, count: order.count + 1 })}
                   sx={{ width: '36px', height: '36px' }}
                   color="inherit"
                   aria-label="add"
@@ -155,198 +171,72 @@ export default function AddOrderDialog({
           Additional
         </Typography>
 
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            paddingLeft: 2,
-            paddingRight: 2,
-            marginTop: 16,
-          }}
-        >
-          {/* //  <CardActionArea */}
-          <CardMedia
-            sx={{ width: '44px', borderRadius: '12px' }}
-            component="img"
-            height="44px"
-            image="/assets/images/food.png"
-            alt="food"
-          />
+        {order.extras.map((extra) => (
           <div
             style={{
               display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-              paddingLeft: 20,
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              paddingLeft: 2,
+              paddingRight: 2,
+              marginTop: 16,
             }}
           >
-            <Typography
-              sx={{ display: 'flex', alignItems: 'center' }}
-              fontSize={14}
-              fontWeight={600}
+            {/* //  <CardActionArea */}
+            <CardMedia
+              sx={{ width: '44px', borderRadius: '12px' }}
+              component="img"
+              height="44px"
+              image="/assets/images/food.png"
+              alt="food"
+            />
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+                paddingLeft: 20,
+              }}
             >
-              Rice
-            </Typography>
-            <Typography fontSize={14} variant="body2">
-              $ 4
-            </Typography>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            {additionalCount1 > 0 && (
-              <>
-                <Fab
-                  onClick={() => setAdditionalCount1((prevCount: number) => prevCount - 1)}
-                  sx={{ width: '36px', height: '36px' }}
-                  color="default"
-                  aria-label="add"
-                >
-                  <Iconify icon="tabler:minus" width={20} />
-                </Fab>
-                <Typography fontSize={16} fontWeight={600}>
-                  {additionalCount1}
-                </Typography>
-              </>
-            )}
-            <Fab
-              onClick={() => setAdditionalCount1((prevCount: number) => prevCount + 1)}
-              sx={{ width: '36px', height: '36px' }}
-              color="inherit"
-              aria-label="add"
-            >
-              <Iconify icon="tabler:plus" width={20} />
-            </Fab>
-          </div>
-        </div>
+              <Typography
+                sx={{ display: 'flex', alignItems: 'center' }}
+                fontSize={14}
+                fontWeight={600}
+              >
+                {extra.name}
+              </Typography>
+              <Typography fontSize={14} variant="body2">
+                $ {extra.price}
+              </Typography>
+            </div>
 
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            paddingLeft: 2,
-            paddingRight: 2,
-            marginTop: 16,
-          }}
-        >
-          {/* //  <CardActionArea */}
-          <CardMedia
-            sx={{ width: '44px', borderRadius: '12px' }}
-            component="img"
-            height="44px"
-            image="/assets/images/food.png"
-            alt="food"
-          />
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-              paddingLeft: 20,
-            }}
-          >
-            <Typography
-              sx={{ display: 'flex', alignItems: 'center' }}
-              fontSize={14}
-              fontWeight={600}
-            >
-              Extra sauce
-            </Typography>
-            <Typography fontSize={14} variant="body2">
-              $ 2
-            </Typography>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              {extra.count > 0 && (
+                <>
+                  <Fab
+                    onClick={() => handleDecreaseExtra(extra._id)}
+                    sx={{ width: '36px', height: '36px' }}
+                    color="default"
+                    aria-label="add"
+                  >
+                    <Iconify icon="tabler:minus" width={20} />
+                  </Fab>
+                  <Typography fontSize={16} fontWeight={600}>
+                    {extra.count}
+                  </Typography>
+                </>
+              )}
+              <Fab
+                onClick={() => handleIncreaseExtra(extra._id)}
+                sx={{ width: '36px', height: '36px' }}
+                color="inherit"
+                aria-label="add"
+              >
+                <Iconify icon="tabler:plus" width={20} />
+              </Fab>
+            </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            {additionalCount2 > 0 && (
-              <>
-                <Fab
-                  onClick={() => setAdditionalCount2((prevCount: number) => prevCount - 1)}
-                  sx={{ width: '36px', height: '36px' }}
-                  color="default"
-                  aria-label="add"
-                >
-                  <Iconify icon="tabler:minus" width={20} />
-                </Fab>
-                <Typography fontSize={16} fontWeight={600}>
-                  {additionalCount2}
-                </Typography>
-              </>
-            )}
-
-            <Fab
-              onClick={() => setAdditionalCount2((prevCount: number) => prevCount + 1)}
-              sx={{ width: '36px', height: '36px' }}
-              color="inherit"
-              aria-label="add"
-            >
-              <Iconify icon="tabler:plus" width={20} />
-            </Fab>
-          </div>
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            paddingLeft: 2,
-            paddingRight: 2,
-            marginTop: 16,
-          }}
-        >
-          {/* //  <CardActionArea */}
-          <CardMedia
-            sx={{ width: '44px', borderRadius: '12px' }}
-            component="img"
-            height="44px"
-            image="/assets/images/food.png"
-            alt="food"
-          />
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-              paddingLeft: 20,
-            }}
-          >
-            <Typography
-              sx={{ display: 'flex', alignItems: 'center' }}
-              fontSize={14}
-              fontWeight={600}
-            >
-              Egg
-            </Typography>
-            <Typography fontSize={14} variant="body2">
-              $ 0.87
-            </Typography>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            {additionalCount3 > 0 && (
-              <>
-                <Fab
-                  onClick={() => setAdditionalCount3((prevCount: number) => prevCount - 1)}
-                  sx={{ width: '36px', height: '36px' }}
-                  color="default"
-                  aria-label="add"
-                >
-                  <Iconify icon="tabler:minus" width={20} />
-                </Fab>
-                <Typography fontSize={16} fontWeight={600}>
-                  {additionalCount3}
-                </Typography>
-              </>
-            )}
-
-            <Fab
-              onClick={() => setAdditionalCount3((prevCount: number) => prevCount + 1)}
-              sx={{ width: '36px', height: '36px' }}
-              color="inherit"
-              aria-label="add"
-            >
-              <Iconify icon="tabler:plus" width={20} />
-            </Fab>
-          </div>
-        </div>
+        ))}
 
         <Divider sx={{ my: '24px' }} />
 
@@ -373,15 +263,13 @@ export default function AddOrderDialog({
           </Typography>
         </div>
         <Button
-          onClick={handleOrder}
-          disabled={allOrders.find((order: any) => order._id === foodItem?._id)}
+          disabled={orders.find((o: any) => o._id === order._id)}
+          onClick={handleAddOrder}
           sx={{ borderRadius: '58px', px: 6, py: 1.5, ':hover': { bgcolor: '#f2734e' } }}
           color="primary"
           variant="contained"
         >
-          {allOrders.find((order: any) => order._id === foodItem?._id)
-            ? 'Already ordered'
-            : 'Add to order'}
+          {orders.find((o: any) => o._id === order._id) ? 'Already ordered' : 'Add to order'}
         </Button>
       </DialogActions>
     </Dialog>

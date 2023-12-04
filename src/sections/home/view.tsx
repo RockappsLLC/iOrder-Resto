@@ -48,43 +48,10 @@ const TABS = [
 
 export default function HomeView() {
   const settings = useSettingsContext();
+
   const [currentTab, setCurrentTab] = useState('three');
 
-  const [allOrders, setAllOrders] = useState([]);
-  const [ordered, setOrdered] = useState(false);
-
-  const [itemCounts, setItemCounts] = useState<{ _id: string; count: number }[]>([]);
-
   const [searchInput, setSearchInput] = useState('');
-  const [foodCount, setFoodCount] = useState(1);
-
-  const handleIncrement = (itemId: string) => {
-    setItemCounts((prevCounts) => {
-      const existingItem = prevCounts.find((countItem) => countItem._id === itemId);
-
-      if (existingItem) {
-        return prevCounts.map((countItem) =>
-          countItem._id === itemId ? { ...countItem, count: countItem.count + 1 } : countItem
-        );
-      }
-
-      return [...prevCounts, { _id: itemId, count: 1 }];
-    });
-  };
-
-  const handleDecrement = (itemId: string) => {
-    setItemCounts((prevCounts) => {
-      const existingItem = prevCounts.find((countItem) => countItem._id === itemId);
-
-      if (existingItem && existingItem.count > 0) {
-        return prevCounts.map((countItem) =>
-          countItem._id === itemId ? { ...countItem, count: countItem.count - 1 } : countItem
-        );
-      }
-
-      return prevCounts;
-    });
-  };
 
   const handleChangeTab = useCallback((event: React.SyntheticEvent, newValue: string) => {
     setCurrentTab(newValue);
@@ -97,20 +64,7 @@ export default function HomeView() {
       case 'two':
         return <div>Beverages</div>;
       case 'three':
-        return (
-          <FoodList
-            setOrdered={setOrdered}
-            searchInput={searchInput}
-            allOrders={allOrders}
-            setAllOrders={setAllOrders}
-            foodCount={foodCount}
-            setFoodCount={setFoodCount}
-            itemCounts={itemCounts}
-            setItemCounts={setItemCounts}
-            handleIncrement={handleIncrement}
-            handleDecrement={handleDecrement}
-          />
-        );
+        return <FoodList searchInput={searchInput} />;
       case 'four':
         return <div>Appetizer</div>;
       case 'five':
@@ -118,20 +72,7 @@ export default function HomeView() {
       case 'six':
         return <div>Snack</div>;
       default:
-        return (
-          <FoodList
-            setOrdered={setOrdered}
-            searchInput={searchInput}
-            allOrders={allOrders}
-            setAllOrders={setAllOrders}
-            foodCount={foodCount}
-            setFoodCount={setFoodCount}
-            itemCounts={itemCounts}
-            setItemCounts={setItemCounts}
-            handleIncrement={handleIncrement}
-            handleDecrement={handleDecrement}
-          />
-        );
+        return <FoodList searchInput={searchInput} />;
     }
   };
 
@@ -193,13 +134,7 @@ export default function HomeView() {
         <Container maxWidth={settings.themeStretch ? false : 'xl'}>{renderSwitch()}</Container>
       </Grid>
       <Grid item xs={1} md={3} sx={{ borderTop: 1, borderColor: '#E4E4E4' }}>
-        <OrderSidebar
-          ordered={ordered}
-          allOrders={allOrders}
-          itemCounts={itemCounts}
-          handleIncrement={handleIncrement}
-          handleDecrement={handleDecrement}
-        />
+        <OrderSidebar />
       </Grid>
     </Grid>
   );
