@@ -185,6 +185,7 @@ export interface CreateMenuItemRequestSchema {
   menuCategoryId?: string;
   icon?: string;
   status?: boolean;
+  preparationTime?: number;
 }
 export interface MenuItemResponseSchema {
   _id?: string;
@@ -194,6 +195,7 @@ export interface MenuItemResponseSchema {
   menuCategoryId?: string;
   icon?: string;
   status?: boolean;
+  preparationTime?: number;
 }
 export interface MenuItemsResponseSchema {
   menuItems?: MenuItemResponseSchema[];
@@ -386,7 +388,7 @@ export interface GetDevicesResponse {
 export interface CreateTaskRequestSchema {
   title: string;
   comment?: string;
-  status?: 0 | 1 | 2 | 3;
+  status: 0 | 1 | 2 | 3;
   label?: string;
   dueDate?: Date;
   members?: string[];
@@ -532,6 +534,7 @@ export interface UpdateOrderRequestSchema {
   status?: 0 | 1 | 2;
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
+  restaurantId?: string;
 }
 export interface OrderRequestSchema {
   customer: CustomerResponseSchema;
@@ -539,6 +542,7 @@ export interface OrderRequestSchema {
   status?: 0 | 1 | 2;
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
+  restaurantId?: string;
 }
 export interface GetOrderByIdResponse {
   success?: boolean;
@@ -630,4 +634,25 @@ export interface InvoiceResponseSchema {
   salesPerson?: string;
   salesPersonNote?: string;
   note?: string;
+}
+export interface StatisticsResponseSchema {
+  appointments?: number;
+  categories?: number;
+  customers?: number;
+  devices?: number;
+  invoices?: number;
+  leads?: number;
+  menuCategories?: number;
+  menuItems?: number;
+  orders?: number;
+  packages?: number;
+  reservations?: number;
+  restaurants?: number;
+  tables?: number;
+  tasks?: number;
+  users?: number;
+}
+export interface GetStatisticsResponse {
+  success?: boolean;
+  data?: StatisticsResponseSchema;
 }

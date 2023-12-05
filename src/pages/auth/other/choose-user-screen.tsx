@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import { Typography } from '@mui/material';
+import { Avatar, Typography } from '@mui/material';
 
 import { useRouter } from 'src/routes/hooks';
 
@@ -90,17 +90,21 @@ export default function ChooseUserScreen() {
           overflow="scroll"
         >
           {users.map((user: any, num: number) => (
-            <Stack direction={{ xs: 'column', sm: 'column' }} key={num}>
-              <Box
-                width={user.isActive ? 124 : 100}
-                height={user.isActive ? 124 : 100}
-                borderRadius={100}
+            <Stack direction={{ xs: 'column', sm: 'column' }} alignItems="center" key={num}>
+              <Avatar
+                src={user?.photoURL}
+                alt={user?.displayName}
                 sx={{
-                  backgroundColor: 'red',
+                  backgroundColor: '#F15F34',
+                  width: user.isActive ? 124 : 100,
+                  height: user.isActive ? 124 : 100,
                   opacity: user.isActive ? 1 : 0.5,
                 }}
                 onClick={() => changeActive(user._id)}
-              />
+              >
+                <Typography fontSize={30}>{user?.firstName.charAt(0).toUpperCase()}</Typography>
+              </Avatar>
+
               <Typography color="#fff" width="max-content" textAlign="center">
                 {user.firstName} {user.lastName}
               </Typography>

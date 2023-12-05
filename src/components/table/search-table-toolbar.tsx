@@ -1,5 +1,5 @@
 // @mui
-import { Stack, Button, TextField, InputAdornment } from '@mui/material';
+import { Stack, Theme, Button, SxProps, TextField, InputAdornment } from '@mui/material';
 
 // components
 import Iconify from '../iconify';
@@ -9,12 +9,14 @@ type Props = {
   isFiltered: boolean;
   onResetFilter: VoidFunction;
   onFilterName: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  sx?: SxProps<Theme>;
 };
 export default function TableToolbar({
   filterName,
   isFiltered,
   onFilterName,
   onResetFilter, // optionsService,
+  sx,
 }: Props) {
   return (
     <Stack
@@ -24,7 +26,7 @@ export default function TableToolbar({
         xs: 'column',
         md: 'row',
       }}
-      sx={{ px: 2.5, py: 3 }}
+      sx={{ px: 2.5, py: 3, ...sx }}
     >
       <TextField
         fullWidth

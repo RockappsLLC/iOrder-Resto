@@ -25,6 +25,7 @@ interface IGetOrdersQueryParams {
   restaurantId?: string;
   offset?: number;
   limit?: number;
+  search?: number;
 }
 
 export function useGetOrders(params?: IGetOrdersQueryParams) {

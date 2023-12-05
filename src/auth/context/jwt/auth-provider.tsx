@@ -90,6 +90,19 @@ export function AuthProvider({ children }: Props) {
 
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
+        dispatch({
+          type: Types.INITIAL,
+          payload: {
+            user: {
+              displayName: '',
+              photoURL: '',
+              // ...profile,
+              // displayName: [profile?.firstName || '', profile?.lastName || ''].join(' '),
+              // photoURL: '',
+              accessToken,
+            },
+          },
+        });
 
         const response = await getMe();
 
@@ -138,12 +151,15 @@ export function AuthProvider({ children }: Props) {
 
     const res = await postLogin(data);
 
-    const { data: accessToken } = res.data || {};
+    const {
+      data: { token: accessToken, userData: profile },
+    } = res.data || {};
+
     if (accessToken) await setSession(accessToken);
 
-    const response = await getMe();
+    // const response = await getMe();
 
-    const { data: profile } = response.data;
+    // const { data: profile } = response.data;
 
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('restaurantId', profile?.restaurantId);
@@ -169,13 +185,16 @@ export function AuthProvider({ children }: Props) {
     };
 
     const res = await postLogin(data);
-    const { data: accessToken } = res.data;
+
+    const {
+      data: { token: accessToken, userData: profile },
+    } = res.data || {};
 
     if (accessToken) {
       await setSession(accessToken);
 
-      const response = await getMe();
-      const { data: profile } = response.data;
+      // const response = await getMe();
+      // const { data: profile } = response.data;
 
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('restaurantId', profile?.restaurantId || '');

@@ -5,6 +5,7 @@ export { default as Staff } from './staff';
 export { default as Money } from './money';
 export { default as EyeIcon } from './eye';
 export { default as EditIcon } from './edit';
+export { default as Filter } from './filter';
 export { default as TrashIcon } from './trash';
 export { default as SentIcon } from './sent-icon';
 export { default as RiceBowl } from './rice-bowl';
