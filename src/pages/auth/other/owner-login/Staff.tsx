@@ -12,18 +12,18 @@ import {
   Alert,
   Button,
   Tooltip,
+  Divider,
   TableRow,
   Checkbox,
   TableBody,
   TableCell,
-  TextField,
   IconButton,
   Typography,
   TableContainer,
-  InputAdornment,
 } from '@mui/material';
 
-import Logo from 'src/components/logo';
+import { EyeIcon, EditIcon, TrashIcon } from 'src/assets/icons';
+
 import Iconify from 'src/components/iconify';
 import Label from 'src/components/label/label';
 import Scrollbar from 'src/components/scrollbar';
@@ -37,6 +37,8 @@ import {
   TableHeadCustom,
   TableSelectedAction,
 } from 'src/components/table';
+
+import SearchTableToolbar from '../../../../components/table/search-table-toolbar';
 
 type RowDataType = {
   nr: number;
@@ -75,12 +77,22 @@ const TABLE_HEAD = [
 ];
 
 export default function JwtLoginView() {
+  const [filterName, setFilterName] = useState('');
   const [tableData, setTableData] = useState<RowDataType[]>([]);
   const [open, setOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleFilterName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterName(event.target.value);
+  };
+  const handleResetFilter = () => {
+    setFilterName('');
+  };
+
+  const isFiltered = !!filterName;
 
   const table = useTable({
     defaultOrderBy: 'calories',
@@ -94,7 +106,10 @@ export default function JwtLoginView() {
   const dataFiltered = applyFilter({
     inputData: tableData,
     comparator: getComparator(table.order, table.orderBy),
+    filterName,
   });
+
+  console.log('tableData', tableData);
 
   const LoginSchema = Yup.object().shape({
     dishName: Yup.string(),
@@ -144,24 +159,14 @@ export default function JwtLoginView() {
       <Typography variant="h4" fontWeight={600}>
         Add New Member
       </Typography>
-      <Box
-        style={{
+
+      <Divider
+        sx={{
           width: '100%',
           height: '1px',
-          background: 'rgba(167, 161, 158, 0.10)',
+          backgroundColor: '#C2C2C2',
         }}
       />
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="center"
-        spacing={1}
-        sx={{
-          borderRadius: '8px',
-        }}
-      >
-        <Logo />
-      </Stack>
 
       <RHFTextField name="name" label="Enter Name" />
       <RHFTextField name="contact" label="Contact Number" />
@@ -231,17 +236,11 @@ export default function JwtLoginView() {
             }}
             sx={{ py: 3 }}
           >
-            <TextField
-              fullWidth
-              placeholder="Search"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ width: '344px' }}
+            <SearchTableToolbar
+              isFiltered={isFiltered}
+              filterName={filterName}
+              onFilterName={handleFilterName}
+              onResetFilter={handleResetFilter}
             />
           </Stack>
           <Stack direction="row" sx={{}}>
@@ -321,20 +320,20 @@ export default function JwtLoginView() {
                         </Typography>
                       </TableCell>
 
-                      <TableCell align="right">
-                        <Tooltip title="Filter list">
+                      <TableCell align="center">
+                        <Tooltip title="View">
                           <IconButton sx={{ gap: 2 }}>
-                            <Iconify icon="ph:eye-light" />
+                            <EyeIcon />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Filter list">
+                        <Tooltip title="Edit">
                           <IconButton sx={{ gap: 2 }}>
-                            <Iconify icon="iconoir:edit" />
+                            <EditIcon />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Filter list">
+                        <Tooltip title="Delete">
                           <IconButton sx={{ gap: 2 }}>
-                            <Iconify icon="solar:trash-bin-minimalistic-linear" />
+                            <TrashIcon />
                           </IconButton>
                         </Tooltip>
                       </TableCell>
@@ -356,10 +355,12 @@ export default function JwtLoginView() {
 
 function applyFilter({
   inputData,
+  filterName,
   comparator,
 }: {
   inputData: RowDataType[];
   comparator: (a: any, b: any) => number;
+  filterName: string;
 }) {
   const stabilizedThis = inputData.map((el, index) => [el, index] as const);
 
@@ -372,6 +373,17 @@ function applyFilter({
   });
 
   inputData = stabilizedThis.map((el) => el[0]);
+
+  if (filterName) {
+    inputData = inputData.filter(
+      (item) =>
+        (item.name && item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1) ||
+        (item.email && item.email.toLowerCase().indexOf(filterName.toLowerCase()) !== -1) ||
+        (item.nr && item.nr.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1) ||
+        (item.contact &&
+          item.contact.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1)
+    );
+  }
 
   return inputData;
 }
