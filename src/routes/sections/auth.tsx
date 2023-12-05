@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom';
 
 import { GuestGuard } from 'src/auth/guard';
 import PinScreen from 'src/pages/auth/other/pin-screen';
-import OwnerForm from 'src/pages/auth/other/owner-login/owner-form';
 import LoginOwner from 'src/pages/auth/other/owner-login/login-owner';
 import AuthModernCompactLayout from 'src/layouts/auth/modern-compact';
 import ChooseUserScreen from 'src/pages/auth/other/choose-user-screen';
@@ -69,10 +68,10 @@ const authOther = {
       path: 'login-owner',
       element: <LoginOwner />,
     },
-    {
-      path: 'owner-form',
-      element: <OwnerForm />,
-    },
+    // {
+    //   path: 'owner-form',
+    //   element: <OwnerForm />,
+    // },
   ],
 };
 

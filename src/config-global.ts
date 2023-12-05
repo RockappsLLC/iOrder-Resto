@@ -33,4 +33,4 @@ export const MAPBOX_API = import.meta.env.VITE_MAPBOX_API;
 // ROOT PATH AFTER LOGIN SUCCESSFUL
 export const PATH_AFTER_LOGIN = paths.dashboard.root; // as '/dashboard'
 export const PATH_LOGIN_WITH_PIN = paths.auth.other.chooseUser;
-export const PATH_AFTER_LOGIN_OWNER = paths.auth.other.ownerForm;
+export const PATH_AFTER_LOGIN_OWNER = paths.dashboard.ownerForm;
