@@ -700,7 +700,7 @@ export interface FilesResponseSchema {
   files?: string[];
 }
 export interface UploadFilesRequest {
-  files: string;
+  files: any; // binary;
   restaurantId?: string;
 }
 export interface UploadFilesResponse {
