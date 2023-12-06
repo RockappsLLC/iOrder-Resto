@@ -32,6 +32,7 @@ export interface CreateUserRequestSchema {
   password: string;
   pin?: string;
   role: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+  status?: boolean;
 }
 export interface UpdateUserRequestSchema {
   firstName?: string;
@@ -40,6 +41,7 @@ export interface UpdateUserRequestSchema {
   contactNumber?: string;
   restaurantId?: string;
   role?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+  status?: boolean;
 }
 export interface UserResponseSchema {
   _id?: string;
@@ -50,6 +52,7 @@ export interface UserResponseSchema {
   restaurantId?: string;
   password?: string;
   role?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+  status?: boolean;
 }
 export interface UsersResponseSchema {
   users?: UserResponseSchema[];
@@ -106,6 +109,9 @@ export interface CreateRestaurantRequestSchema {
   canton?: string;
   startDate?: Date;
   endDate?: Date;
+  merchantId?: string;
+  merchantPassword?: string;
+  icon?: string;
 }
 export interface UpdateRestaurantRequestSchema {
   name?: string;
@@ -117,6 +123,9 @@ export interface UpdateRestaurantRequestSchema {
   canton?: string;
   startDate?: Date;
   endDate?: Date;
+  merchantId?: string;
+  merchantPassword?: string;
+  icon?: string;
 }
 export interface GetRestaurantsResponse {
   success?: boolean;
@@ -139,6 +148,9 @@ export interface RestaurantResponseSchema {
   address?: AddressSchema;
   startDate?: Date;
   endDate?: Date;
+  merchantId?: string;
+  merchantPassword?: string;
+  icon?: string;
 }
 export interface CreateRestaurantResponseSchema {
   success?: boolean;
@@ -543,6 +555,7 @@ export interface OrderRequestSchema {
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
   restaurantId?: string;
+  tableId?: string;
 }
 export interface GetOrderByIdResponse {
   success?: boolean;
@@ -655,4 +668,42 @@ export interface StatisticsResponseSchema {
 export interface GetStatisticsResponse {
   success?: boolean;
   data?: StatisticsResponseSchema;
+}
+export interface PaymentRequestSchema {
+  orderId: string;
+}
+export interface PaymentResponseSchema {
+  transactionId?: string;
+  merchantId?: string;
+  type?: string;
+  status?: string;
+  currency?: string;
+  refno?: string;
+  detail?: object;
+  history?: object[];
+}
+export interface PaymentsResponseSchema {
+  payments?: PaymentResponseSchema[];
+  offset?: number;
+  limit?: number;
+  totalLength?: number;
+}
+export interface GetPaymentByIdResponse {
+  success?: boolean;
+  data?: PaymentResponseSchema;
+}
+export interface GetPaymentsResponse {
+  success?: boolean;
+  data?: PaymentsResponseSchema;
+}
+export interface FilesResponseSchema {
+  files?: string[];
+}
+export interface UploadFilesRequest {
+  files: string;
+  restaurantId?: string;
+}
+export interface UploadFilesResponse {
+  success?: boolean;
+  data?: FilesResponseSchema;
 }

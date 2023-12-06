@@ -142,4 +142,9 @@ export const endpoints = {
     delete: '/invoices/{id}',
   },
   statistics: { get: '/statistics' },
+  payments: {
+    post: '/payments',
+    transactions: { getById: '/payments/transactions/{transactionId}' },
+  },
+  files: { upload: { post: '/files/upload' } },
 };

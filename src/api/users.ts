@@ -32,7 +32,7 @@ export function useGetUsers(params?: IGetUsersQueryParams) {
   const URL = [endpoints.users.get, { params }];
 
   const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
-  console.log('da', data);
+
   const memoizedValue = useMemo(
     () => ({
       users: (data as GetUsersResponse['data'])?.users || [],
