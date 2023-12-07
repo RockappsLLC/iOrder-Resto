@@ -344,6 +344,7 @@ export interface GetReservationByIdResponse {
   data?: ReservationResponseSchema;
 }
 export interface ReservationResponseSchema {
+  _id: string;
   name?: string;
   tableId?: string;
   restaurantId?: string;

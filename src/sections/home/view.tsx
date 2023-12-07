@@ -2,6 +2,13 @@ import { useState, useCallback } from 'react';
 
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
+import { useState } from 'react';
+
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import { alpha } from '@mui/material/styles';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 
 import FoodList from 'src/components/food-list';
 import { useSettingsContext } from 'src/components/settings';
@@ -9,11 +16,15 @@ import HomeHeader from 'src/components/home-header/home-header';
 import HomeSidebar from 'src/components/home-sidebar/home-sidebar';
 import OrderSidebar from 'src/components/order-sidebar/order-sidebar';
 
+import NewReservation from '../dialogs/new-reservation';
+import ReservationList from '../drawers/reservation-list';
+
 // ----------------------------------------------------------------------
 
 export default function HomeView() {
   const settings = useSettingsContext();
   const [reservationDrawer, setReservationDrawer] = useState(false);
+  const [reservationDialog, setReservationDialog] = useState(false);
 
   const [categoryId, seCategoryId]: any = useState('6535919fc665979a76591ca1');
 
@@ -59,5 +70,24 @@ export default function HomeView() {
         <OrderSidebar />
       </Grid>
     </Grid>
+   /*  <>
+      <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+        <Typography variant="h4"> Page Home </Typography>
+        <Button onClick={() => setReservationDrawer(true)}>Open Drawer</Button>
+        <Button onClick={() => setReservationDialog(true)}>Open Modal</Button>
+        <Box
+          sx={{
+            mt: 5,
+            width: 1,
+            height: 320,
+            borderRadius: 2,
+            bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04),
+            border: (theme) => `dashed 1px ${theme.palette.divider}`,
+          }}
+        />
+      </Container>
+      <NewReservation open={reservationDialog} hide={() => setReservationDialog(false)} />
+      <ReservationList open={reservationDrawer} hide={() => setReservationDrawer(false)} />
+    </> */
   );
 }
