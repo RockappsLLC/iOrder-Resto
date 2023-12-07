@@ -35,13 +35,13 @@ export function useGetReservations(params?: IGetReservationsQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      reservations: (data?.reservations as GetReservationsResponse['data']) || [],
+      reservations: (data as GetReservationsResponse['data'])?.reservations || [],
       reservationsLoading: isLoading,
       reservationsError: error,
       reservationsValidating: isValidating,
       reservationsEmpty: !isLoading && !data?.reservations.length,
     }),
-    [data?.reservations, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;

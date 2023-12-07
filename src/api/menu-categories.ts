@@ -35,13 +35,13 @@ export function useGetMenuCategories(params?: IGetMenuCategoriesQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      menuCategories: (data?.menuCategories as GetMenuCategoriesResponse['data']) || [],
+      menuCategories: (data as GetMenuCategoriesResponse['data'])?.menuCategories || [],
       menuCategoriesLoading: isLoading,
       menuCategoriesError: error,
       menuCategoriesValidating: isValidating,
       menuCategoriesEmpty: !isLoading && !data?.menuCategories.length,
     }),
-    [data?.menuCategories, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;

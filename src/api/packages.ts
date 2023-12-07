@@ -32,13 +32,13 @@ export function useGetPackages(params?: IGetPackagesQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      packages: (data?.packages as GetPackagesResponse['data']) || [],
+      packages: (data as GetPackagesResponse['data'])?.packages || [],
       packagesLoading: isLoading,
       packagesError: error,
       packagesValidating: isValidating,
       packagesEmpty: !isLoading && !data?.packages.length,
     }),
-    [data?.packages, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;

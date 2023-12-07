@@ -35,13 +35,13 @@ export function useGetOrders(params?: IGetOrdersQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      orders: (data?.orders as GetOrdersResponse['data']) || [],
+      orders: (data as GetOrdersResponse['data'])?.orders || [],
       ordersLoading: isLoading,
       ordersError: error,
       ordersValidating: isValidating,
       ordersEmpty: !isLoading && !data?.orders.length,
     }),
-    [data?.orders, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;

@@ -35,13 +35,13 @@ export function useGetRestaurants(params?: IGetRestaurantsQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      restaurants: (data?.restaurants as GetRestaurantsResponse['data']) || [],
+      restaurants: (data as GetRestaurantsResponse['data'])?.restaurants || [],
       restaurantsLoading: isLoading,
       restaurantsError: error,
       restaurantsValidating: isValidating,
       restaurantsEmpty: !isLoading && !data?.restaurants.length,
     }),
-    [data?.restaurants, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;

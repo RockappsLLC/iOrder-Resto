@@ -34,13 +34,13 @@ export function useGetCustomers(params?: IGetCustomersQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      customers: (data?.customers as GetCustomersResponse['data']) || [],
+      customers: (data as GetCustomersResponse['data'])?.customers || [],
       customersLoading: isLoading,
       customersError: error,
       customersValidating: isValidating,
       customersEmpty: !isLoading && !data?.customers.length,
     }),
-    [data?.customers, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating]
   );
 
   return memoizedValue;
