@@ -77,7 +77,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
   const onSubmit = (data: any) => {
     // addData(data)
   };
-  console.log(orders);
+  // console.log(orders);
   const subTotal = orders.reduce((acc: number, currentItem: any) => {
     const extrasTotal = currentItem.extras.reduce(
       (_acc: number, _obj: any) => _acc + Number(_obj.price || 0) * Number(_obj.count || 0),

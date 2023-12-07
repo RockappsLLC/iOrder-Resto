@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 
 import Grid from '@mui/material/Grid';
 
-import { getMenuItems } from 'src/api/menu-items';
+import { useGetMenuItems } from 'src/api/menu-items';
 // import { getMenuCategories } from 'src/api/menu-categories';
-import { MenuItemResponseSchema } from 'src/api/api-schemas';
+import { MenuItemResponseSchema, MenuItemsResponseSchema } from 'src/api/api-schemas';
 
 import AddOrderDialog from 'src/sections/dialogs/add-order';
 
@@ -15,7 +15,6 @@ const FoodList = ({ searchInput }: any) => {
   const [foodId, setFoodId] = useState('');
 
   // const [menuCategories, setMenuCategories] = useState<MenuCategoryResponseSchema[]>();
-  const [menuItems, setMenuItems] = useState<MenuItemResponseSchema[]>();
 
   // const data2 = {
   //   name: 'Pizza',
@@ -45,31 +44,23 @@ const FoodList = ({ searchInput }: any) => {
   //   console.log(response);
   // };
 
-  const fetcher = async (query: string) => {
-    try {
-      // const response = await getMenuCategories();
-      // const searchQuery = query?.length > 2 ? `search=${query}` : '';
-      // console.log(query);
+  // const searchQuery = query?.length > 2 ? `search=${query}` : '';
 
-      const res = await getMenuItems();
-      // setMenuCategories(response.data.data?.menuCategories);
-      setMenuItems(res.data.data?.menuItems);
-      // console.log(response.data.data?.menuCategories);
-      // console.log(res.data.data?.menuItems);
-    } catch (error) {
-      console.warn(error);
-    }
-  };
+  const { menuItems, menuItemsLoading } = useGetMenuItems({ search: searchInput });
+
+  const [menuItemsData, setMenuItemsData] = useState<MenuItemResponseSchema[]>([]);
 
   useEffect(() => {
-    fetcher(searchInput);
-  }, [searchInput]);
+    if (!menuItemsLoading && menuItems.length) {
+      setMenuItemsData(menuItems as any);
+    }
+  }, [menuItemsLoading, menuItems]);
 
   return (
     <>
       {/* <Button onClick={addMenuItem}>addMenuItem</Button> */}
       <Grid container spacing={{ xs: 2, md: 3 }} sx={{ pl: 0 }}>
-        {menuItems?.map((food: any) => (
+        {menuItemsData.map((food: any) => (
           <Grid key={food._id} item xs={12} sm={6} md={4} lg={3}>
             <FoodItem
               food={food}

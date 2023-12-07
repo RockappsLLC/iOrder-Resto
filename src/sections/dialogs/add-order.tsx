@@ -74,6 +74,7 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
     });
     setOrder({ ...order, extras });
   };
+
   const handleIncreaseExtra = (id: string) => {
     const extras = order.extras.map((extra) => {
       if (extra._id === id) {
@@ -173,6 +174,7 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
 
         {order.extras.map((extra) => (
           <div
+            key={extra._id}
             style={{
               display: 'flex',
               justifyContent: 'flex-start',
