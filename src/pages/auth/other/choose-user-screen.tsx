@@ -45,10 +45,14 @@ export default function ChooseUserScreen() {
   const activeUsers = users.filter((activeUser: any) => activeUser.isActive === true) as any;
   const onlyUser = activeUsers[0]?._id;
 
-  const handleLoginClick = () => {
+  const handleClockinClick = () => {
     const pinScreenPath = '/auth/other/pin-screen';
     const params = onlyUser;
     router.push(`${pinScreenPath}?id=${params}`);
+  };
+
+  const handleLoginClick = () => {
+    router.push('/auth/jwt/login');
   };
 
   return (
@@ -123,6 +127,7 @@ export default function ChooseUserScreen() {
                 paddingY: 1,
                 borderRadius: 10,
               }}
+              onClick={() => handleClockinClick()}
             >
               Clock in
             </Button>
