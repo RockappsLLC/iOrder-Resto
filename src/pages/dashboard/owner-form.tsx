@@ -156,7 +156,7 @@ export default function OwnerForm() {
             )
         )}
 
-        <Box display="flex" justifyContent="space-between" mt={3}>
+        <Box display="flex" justifyContent="space-between" mt={5}>
           {currentContentIndex >= 0 && currentContentIndex < 4 && (
             <Button
               variant="contained"
