@@ -8,19 +8,19 @@ import MenuItem from '@mui/material/MenuItem';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import Iconify from 'src/components/iconify';
 
 const SelectDate = () => {
-  const currentMonth = new Date();
+  const [openDatepicker, setOpenDatepicker] = useState(false);
 
+  const currentMonth = new Date();
   const [selectedMonth, setSelectedMonth]: any = useState(currentMonth);
   const [selectedDay, setSelectedDay] = useState(new Date());
   const [weekDay, setWeekDay] = useState(selectedDay.getDate());
-
   const nextMonth = new Date(currentMonth);
   nextMonth.setMonth(currentMonth.getMonth() + 1);
   const nextNextMonth = new Date(currentMonth);
@@ -32,6 +32,8 @@ const SelectDate = () => {
     const newMonthIndex = event.target.value as number;
     const newMonth = months[newMonthIndex];
     setSelectedMonth(newMonth);
+    setSelectedDay(newMonth);
+    setWeekDay(selectedDay.getDate());
   };
 
   let minDate: Date;
@@ -45,31 +47,76 @@ const SelectDate = () => {
   const maxDate = endOfMonth(selectedMonth);
 
   let daysOfWeek;
-  if (selectedDay.toDateString() === new Date().toDateString()) {
-    daysOfWeek = eachDayOfInterval({
-      start: new Date(new Date().setDate(selectedDay.getDate())),
-      end: new Date(new Date().setDate(selectedDay.getDate() + 6)),
-    });
-  } else if (
-    selectedDay.getMonth() === new Date().getMonth() &&
-    selectedDay.getDate() - new Date().getDate() == 1
+
+  const currentDate = new Date();
+  const actualMonth = currentDate.getMonth();
+  const selectedMonthYear = selectedDay.getFullYear();
+  const monthOfSelectedDay = selectedDay.getMonth();
+  const monthOfSelectedMonth = selectedMonth.getMonth();
+  const dateOfSelectedDay = selectedDay.getDate();
+  const dateOfToday = currentDate.getDate();
+  const totalDaysInSelectedMonth = new Date(selectedMonthYear, monthOfSelectedDay + 1, 0).getDate();
+
+  const tempSelectedDay = new Date(selectedDay);
+
+  if (
+    selectedDay.toDateString() === currentDate.toDateString() ||
+    (monthOfSelectedDay === monthOfSelectedMonth && dateOfSelectedDay === 1)
   ) {
     daysOfWeek = eachDayOfInterval({
-      start: new Date(new Date().setDate(selectedDay.getDate() - 1)),
-      end: new Date(new Date().setDate(selectedDay.getDate() + 5)),
+      start: new Date(tempSelectedDay.setDate(dateOfSelectedDay)),
+      end: new Date(tempSelectedDay.setDate(dateOfSelectedDay + 6)),
     });
   } else if (
-    selectedDay.getMonth() === new Date().getMonth() &&
-    selectedDay.getDate() - new Date().getDate() == 2
+    (monthOfSelectedDay === actualMonth && dateOfSelectedDay - dateOfToday === 1) ||
+    (monthOfSelectedDay === monthOfSelectedMonth && dateOfSelectedDay === 2)
   ) {
     daysOfWeek = eachDayOfInterval({
-      start: new Date(new Date().setDate(selectedDay.getDate() - 2)),
-      end: new Date(new Date().setDate(selectedDay.getDate() + 4)),
+      start: new Date(tempSelectedDay.setDate(dateOfSelectedDay - 1)),
+      end: new Date(tempSelectedDay.setDate(dateOfSelectedDay + 5)),
+    });
+  } else if (
+    (monthOfSelectedDay === actualMonth && dateOfSelectedDay - dateOfToday === 2) ||
+    (monthOfSelectedDay === monthOfSelectedMonth && dateOfSelectedDay === 3)
+  ) {
+    daysOfWeek = eachDayOfInterval({
+      start: new Date(tempSelectedDay.setDate(dateOfSelectedDay - 2)),
+      end: new Date(tempSelectedDay.setDate(dateOfSelectedDay + 4)),
+    });
+  } else if (
+    (dateOfSelectedDay === 31 && totalDaysInSelectedMonth === 31) ||
+    (dateOfSelectedDay === 30 && totalDaysInSelectedMonth === 30) ||
+    (dateOfSelectedDay === 29 && totalDaysInSelectedMonth === 29) ||
+    (dateOfSelectedDay === 28 && totalDaysInSelectedMonth === 28)
+  ) {
+    daysOfWeek = eachDayOfInterval({
+      start: new Date(tempSelectedDay.setDate(dateOfSelectedDay - 6)),
+      end: new Date(tempSelectedDay.setDate(dateOfSelectedDay)),
+    });
+  } else if (
+    (dateOfSelectedDay === 30 && totalDaysInSelectedMonth === 31) ||
+    (dateOfSelectedDay === 29 && totalDaysInSelectedMonth === 30) ||
+    (dateOfSelectedDay === 28 && totalDaysInSelectedMonth === 29) ||
+    (dateOfSelectedDay === 27 && totalDaysInSelectedMonth === 28)
+  ) {
+    daysOfWeek = eachDayOfInterval({
+      start: new Date(tempSelectedDay.setDate(dateOfSelectedDay - 5)),
+      end: new Date(tempSelectedDay.setDate(dateOfSelectedDay + 1)),
+    });
+  } else if (
+    (dateOfSelectedDay === 29 && totalDaysInSelectedMonth === 31) ||
+    (dateOfSelectedDay === 28 && totalDaysInSelectedMonth === 30) ||
+    (dateOfSelectedDay === 27 && totalDaysInSelectedMonth === 29) ||
+    (dateOfSelectedDay === 26 && totalDaysInSelectedMonth === 28)
+  ) {
+    daysOfWeek = eachDayOfInterval({
+      start: new Date(tempSelectedDay.setDate(dateOfSelectedDay - 4)),
+      end: new Date(tempSelectedDay.setDate(dateOfSelectedDay + 2)),
     });
   } else {
     daysOfWeek = eachDayOfInterval({
-      start: new Date(new Date().setDate(selectedDay.getDate() - 3)),
-      end: new Date(new Date().setDate(selectedDay.getDate() + 3)),
+      start: new Date(tempSelectedDay.setDate(dateOfSelectedDay - 3)),
+      end: new Date(tempSelectedDay.setDate(dateOfSelectedDay + 3)),
     });
   }
 
@@ -98,17 +145,6 @@ const SelectDate = () => {
             ))}
           </Select>
         </FormControl>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            value={selectedDay}
-            onChange={(newValue: any) => {
-              setSelectedDay(newValue);
-              setWeekDay(newValue.getDate());
-            }}
-            minDate={minDate}
-            maxDate={maxDate}
-          />
-        </LocalizationProvider>
       </div>
       <Grid
         container
@@ -120,28 +156,49 @@ const SelectDate = () => {
           borderRadius: '58px',
         }}
       >
-        <Grid
-          item
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: '1px solid #E4E4E4',
-            p: 2,
-            width: '68px',
-            borderTopLeftRadius: '16px',
-            borderBottomLeftRadius: '16px',
-          }}
-        >
-          <Iconify width="24px" height="24px" icon="solar:calendar-linear" color="#F15F34" />
-        </Grid>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <MobileDatePicker
+            value={selectedDay}
+            onChange={(newValue: any) => {
+              setSelectedDay(newValue);
+              setWeekDay(newValue.getDate());
+            }}
+            minDate={minDate}
+            maxDate={maxDate}
+            sx={{ display: 'none' }}
+            open={openDatepicker}
+            onClose={() => setOpenDatepicker(false)}
+          />
+
+          <Grid
+            item
+            onClick={() => setOpenDatepicker(true)}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '1px solid #E4E4E4',
+              p: 2,
+              width: '68px',
+              borderTopLeftRadius: '16px',
+              borderBottomLeftRadius: '16px',
+              ':hover': { cursor: 'pointer', bgcolor: '#FFF5EE' },
+            }}
+          >
+            <Iconify width="24px" height="24px" icon="solar:calendar-linear" color="#F15F34" />
+          </Grid>
+        </LocalizationProvider>
         {weekdays.map((day, index) => (
           <Grid
             key={day}
             item
             onClick={() => {
               setWeekDay(+dateNumbers[index]);
-              // setSelectedDay(new Date(dateNumbers[index]));
+              setSelectedDay((prevDate) => {
+                const newDate = new Date(prevDate);
+                newDate.setDate(+dateNumbers[index]);
+                return newDate;
+              });
             }}
             sx={{
               display: 'flex',
