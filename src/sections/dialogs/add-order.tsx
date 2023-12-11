@@ -48,6 +48,7 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
   const [order, setOrder] = useState<
     MenuItemResponseSchema & { count: number; extras: typeof extrasSample }
   >(defaultOrder);
+  const orderObject = orders.find((o: any) => o._id === order._id);
 
   useEffect(() => {
     if (!menuItemLoading) {
@@ -116,7 +117,6 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
             my: 3,
           }}
         >
-          {/* //  <CardActionArea */}
           <CardMedia
             sx={{ width: '74px', borderRadius: '12px' }}
             component="img"
@@ -184,7 +184,6 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
               marginTop: 16,
             }}
           >
-            {/* //  <CardActionArea */}
             <CardMedia
               sx={{ width: '44px', borderRadius: '12px' }}
               component="img"
@@ -265,13 +264,13 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
           </Typography>
         </div>
         <Button
-          disabled={orders.find((o: any) => o._id === order._id)}
+          disabled={orderObject !== undefined && orderObject.count > 0}
           onClick={handleAddOrder}
           sx={{ borderRadius: '58px', px: 6, py: 1.5, ':hover': { bgcolor: '#f2734e' } }}
           color="primary"
           variant="contained"
         >
-          {orders.find((o: any) => o._id === order._id) ? 'Already ordered' : 'Add to order'}
+          {orderObject !== undefined && orderObject.count > 0 ? 'Already ordered' : 'Add to order'}
         </Button>
       </DialogActions>
     </Dialog>

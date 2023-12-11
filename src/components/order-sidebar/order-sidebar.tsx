@@ -50,7 +50,7 @@ const schema = yup.object().shape({
 });
 
 const OrderSidebar = (props: OrderSidebarProps) => {
-  const { orders, ordered, updateOrder } = useOrderContext();
+  const { orders, ordered, updateOrder, removeOrder } = useOrderContext();
 
   const [currentTab, setCurrentTab] = useState('buy');
   const [addNote, setAddNote] = useState(false);
@@ -102,15 +102,15 @@ const OrderSidebar = (props: OrderSidebarProps) => {
           borderRadius: '80px',
           my: 2,
           mx: '20px',
+          px: 1,
         }}
       >
         <Tab
           value="buy"
           label="Buy"
           sx={{
-            px: 6,
+            width: '50%',
             mx: 'auto',
-            // ml: '6px',
             my: '6px',
             borderRadius: '80px',
             bgcolor: currentTab === 'buy' ? 'white' : '',
@@ -120,7 +120,8 @@ const OrderSidebar = (props: OrderSidebarProps) => {
           value="reservation"
           label="Reservation"
           sx={{
-            px: 6,
+            width: '50%',
+            // px: 5,
             mx: 'auto',
             my: '6px',
             borderRadius: '80px',
@@ -158,7 +159,6 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                       onChange={onChange}
                       placeholder="Leonard"
                       error={Boolean(errors.name)}
-                      aria-describedby="validation-schema-name"
                       {...(errors.name && { helperText: errors.name.message })}
                     />
                   )}
@@ -175,7 +175,6 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                       onChange={onChange}
                       placeholder="T-08"
                       error={Boolean(errors.code)}
-                      aria-describedby="validation-schema-code"
                       {...(errors.code && { helperText: errors.code.message })}
                     />
                   )}
@@ -228,7 +227,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                         />
                         <div style={{ width: '100%', paddingLeft: 10 }}>
                           <Typography fontSize={16} fontWeight={600} gutterBottom component="div">
-                            {order?.name}
+                            {order.name}
                           </Typography>
                           <div
                             style={{
@@ -253,13 +252,16 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                                 variant="body2"
                                 color="#F15F34"
                               >
-                                $ {order?.price}
+                                $ {order.price}
                               </Typography>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                               <Fab
-                                onClick={() => updateOrder(order._id, { count: order.count - 1 })}
-                                disabled={order.count === 1}
+                                onClick={() => {
+                                  updateOrder(order._id, { count: order.count - 1 });
+                                  if (order.count === 1) removeOrder(order._id);
+                                }}
+                                // disabled={order.count === 1}
                                 sx={{ width: '36px', height: '36px' }}
                                 color="default"
                                 aria-label="add"
@@ -267,7 +269,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                                 <Iconify icon="tabler:minus" width={20} />
                               </Fab>
                               <Typography fontSize={16} fontWeight={600}>
-                                {order.count || 1}
+                                {order.count}
                               </Typography>
                               <Fab
                                 onClick={() => updateOrder(order._id, { count: order.count + 1 })}

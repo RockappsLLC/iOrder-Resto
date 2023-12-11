@@ -26,7 +26,7 @@ export const OrderProvider = ({ children }: any) => {
 
   const updateOrder = useCallback(
     (id: IOrder['_id'], updates: IOrder) => {
-      console.log({ id, orders, updates });
+      // console.log({ id, orders, updates });
       const index = orders.findIndex((order) => order._id === id);
       const newOrder = { ...orders[index], ...updates };
       setOrders([...orders.slice(0, index), newOrder, ...orders.slice(index + 1)]);

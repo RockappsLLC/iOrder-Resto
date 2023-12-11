@@ -1,12 +1,18 @@
 import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
 import Container from '@mui/material/Container';
 import InputBase from '@mui/material/InputBase';
+import TextField from '@mui/material/TextField';
+import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import Iconify from '../iconify';
 
 const HomeHeader = ({ searchInput, setSearchInput }: any) => {
+  const theme = useTheme();
+  const md = useMediaQuery(theme.breakpoints.up('md'));
   return (
     <>
       <div
@@ -54,23 +60,33 @@ const HomeHeader = ({ searchInput, setSearchInput }: any) => {
             }}
           />
         </Container>
-        <Container sx={{ display: 'flex', gap: 1 }}>
-          <Button sx={{ borderRadius: '40px' }} variant="outlined">
-            All
-          </Button>
-          <Button sx={{ borderRadius: '40px' }} variant="outlined">
-            Chicken
-          </Button>
-          <Button sx={{ borderRadius: '40px' }} variant="outlined">
-            Seafood
-          </Button>
-          <Button sx={{ borderRadius: '40px' }} variant="outlined">
-            Pasta
-          </Button>
-          <Button sx={{ borderRadius: '40px' }} variant="outlined">
-            Rice bowl
-          </Button>
-        </Container>
+        {md ? (
+          <Container sx={{ display: 'flex', flexDirection: md ? 'row' : 'column', gap: 1 }}>
+            <Button sx={{ borderRadius: '40px' }} variant="outlined">
+              All
+            </Button>
+            <Button sx={{ borderRadius: '40px' }} variant="outlined">
+              Chicken
+            </Button>
+            <Button sx={{ borderRadius: '40px' }} variant="outlined">
+              Seafood
+            </Button>
+            <Button sx={{ borderRadius: '40px' }} variant="outlined">
+              Pasta
+            </Button>
+            <Button sx={{ borderRadius: '40px' }} variant="outlined">
+              Rice bowl
+            </Button>
+          </Container>
+        ) : (
+          <TextField defaultValue="all" select sx={{ width: '50%', p: 2 }}>
+            <MenuItem value="all">All</MenuItem>
+            <MenuItem value="chicken">Chicken</MenuItem>
+            <MenuItem value="seafood">Seafood</MenuItem>
+            <MenuItem value="pasta">Pasta</MenuItem>
+            <MenuItem value="ricebowl">Rice bowl</MenuItem>
+          </TextField>
+        )}
       </div>
     </>
   );

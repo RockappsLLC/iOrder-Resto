@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 
 import { useGetMenuItems } from 'src/api/menu-items';
 // import { getMenuCategories } from 'src/api/menu-categories';
@@ -9,7 +10,6 @@ import { MenuItemResponseSchema } from 'src/api/api-schemas';
 import AddOrderDialog from 'src/sections/dialogs/add-order';
 
 import FoodItem from '../food-item';
-import Typography from '@mui/material/Typography';
 
 const FoodList = ({ searchInput }: any) => {
   const [modal, setModal] = useState(false);
