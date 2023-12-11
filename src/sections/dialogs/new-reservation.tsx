@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Typography from '@mui/material/Typography';
@@ -8,9 +10,24 @@ import Iconify from 'src/components/iconify';
 import SelectDate from 'src/components/select-date';
 import SelectTime from 'src/components/select-time';
 import SelectPartySize from 'src/components/select-partysize';
+import { useState } from 'react';
 
 const NewReservation = ({ open, hide }: any) => {
+  const [partySize, setPartySize] = useState(0);
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
+
   const handleReservation = () => {
+    console.log(
+      partySize,
+      new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        time.getHours(),
+        time.getMinutes()
+      )
+    );
     hide();
   };
 
@@ -28,9 +45,9 @@ const NewReservation = ({ open, hide }: any) => {
           <Iconify icon="tabler:x" />
         </Button>
       </div>
-      <SelectPartySize />
-      <SelectDate />
-      <SelectTime />
+      <SelectPartySize partySize={partySize} setPartySize={setPartySize} />
+      <SelectDate date={date} setDate={setDate} />
+      <SelectTime time={time} setTime={setTime} />
       <DialogActions>
         <Button
           fullWidth

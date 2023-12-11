@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { enUS } from 'date-fns/locale';
-import { format, endOfMonth, startOfMonth, eachDayOfInterval } from 'date-fns';
+import { format, endOfMonth, startOfMonth, eachDayOfInterval, setDate } from 'date-fns';
 
 import Grid from '@mui/material/Grid';
 import Select from '@mui/material/Select';
@@ -14,7 +14,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import Iconify from 'src/components/iconify';
 
-const SelectDate = () => {
+const SelectDate = ({ date, setDate }: any) => {
   const [openDatepicker, setOpenDatepicker] = useState(false);
 
   const currentMonth = new Date();
@@ -33,6 +33,7 @@ const SelectDate = () => {
     const newMonth = months[newMonthIndex];
     setSelectedMonth(newMonth);
     setSelectedDay(newMonth);
+    setDate(newMonth);
     setWeekDay(selectedDay.getDate());
   };
 
@@ -161,6 +162,7 @@ const SelectDate = () => {
             value={selectedDay}
             onChange={(newValue: any) => {
               setSelectedDay(newValue);
+              setDate(newValue);
               setWeekDay(newValue.getDate());
             }}
             minDate={minDate}
@@ -195,6 +197,11 @@ const SelectDate = () => {
             onClick={() => {
               setWeekDay(+dateNumbers[index]);
               setSelectedDay((prevDate) => {
+                const newDate = new Date(prevDate);
+                newDate.setDate(+dateNumbers[index]);
+                return newDate;
+              });
+              setDate((prevDate: Date) => {
                 const newDate = new Date(prevDate);
                 newDate.setDate(+dateNumbers[index]);
                 return newDate;

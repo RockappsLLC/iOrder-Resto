@@ -4,9 +4,7 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-const SelectPartySize = () => {
-  const [selectedSize, setSelectedSize] = useState(0);
-
+const SelectPartySize = ({ partySize, setPartySize }: any) => {
   return (
     <Container sx={{ p: 3, pb: 0, borderRadius: 0 }}>
       <Typography color="#828487" fontSize={14}>
@@ -26,14 +24,14 @@ const SelectPartySize = () => {
           <Grid
             item
             key={number}
-            onClick={() => setSelectedSize(number)}
+            onClick={() => setPartySize(number)}
             sx={{
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               width: '68px',
-              bgcolor: selectedSize === number ? '#FFF5EE' : '',
-              color: selectedSize === number ? '#F15F34' : 'black',
+              bgcolor: partySize === number ? '#FFF5EE' : '',
+              color: partySize === number ? '#F15F34' : 'black',
               '&:hover': { bgcolor: '#FFF5EE', color: '#F15F34', cursor: 'pointer' },
               border: '1px solid #E4E4E4',
               p: 2,
