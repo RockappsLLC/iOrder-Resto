@@ -473,7 +473,7 @@ export interface CreateAppointmentRequestSchema {
   restaunantName?: string;
   categoryId?: string;
   contact?: string;
-  package?: string;
+  pricingPlan?: string;
   from?: Date;
   to?: Date;
   type?: string;
@@ -485,7 +485,7 @@ export interface AppointmentResponseSchema {
   restaunantName?: string;
   categoryId?: string;
   contact?: string;
-  package?: string;
+  pricingPlan?: string;
   from?: Date;
   to?: Date;
   type?: string;
@@ -505,7 +505,7 @@ export interface GetAppointmentsResponse {
   success?: boolean;
   data?: AppointmentsResponseSchema;
 }
-export interface CreatePackageRequestSchema {
+export interface CreatePricingPlanRequestSchema {
   name: string;
   description: string;
   price: number;
@@ -515,7 +515,7 @@ export interface CreatePackageRequestSchema {
   icon?: string;
   popular?: boolean;
 }
-export interface PackageResponseSchema {
+export interface PricingPlanResponseSchema {
   _id?: string;
   name?: string;
   description?: string;
@@ -526,19 +526,19 @@ export interface PackageResponseSchema {
   icon?: string;
   popular?: boolean;
 }
-export interface PackagesResponseSchema {
-  packages?: PackageResponseSchema[];
+export interface PricingPlansResponseSchema {
+  pricingPlanss?: PricingPlanResponseSchema[];
   offset?: number;
   limit?: number;
   totalLength?: number;
 }
-export interface GetPackageByIdResponse {
+export interface GetPricingPlanByIdResponse {
   success?: boolean;
-  data?: PackageResponseSchema;
+  data?: PricingPlanResponseSchema;
 }
-export interface GetPackagesResponse {
+export interface GetPricingPlansResponse {
   success?: boolean;
-  data?: PackagesResponseSchema;
+  data?: PricingPlansResponseSchema;
 }
 export interface UpdateOrderRequestSchema {
   customer?: CustomerResponseSchema;

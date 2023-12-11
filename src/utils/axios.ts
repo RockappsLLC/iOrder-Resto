@@ -120,12 +120,12 @@ export const endpoints = {
     put: '/appointments/{id}',
     delete: '/appointments/{id}',
   },
-  packages: {
-    post: '/packages',
-    get: '/packages',
-    getById: '/packages/{id}',
-    put: '/packages/{id}',
-    delete: '/packages/{id}',
+  pricingPlans: {
+    post: '/pricing-plans',
+    get: '/pricing-plans',
+    getById: '/pricing-plans/{id}',
+    put: '/pricing-plans/{id}',
+    delete: '/pricing-plans/{id}',
   },
   orders: {
     post: '/orders',
