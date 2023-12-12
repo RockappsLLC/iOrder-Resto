@@ -14,7 +14,6 @@ import {
   Tooltip,
   Divider,
   TableRow,
-  Checkbox,
   TableBody,
   TableCell,
   IconButton,
@@ -22,11 +21,14 @@ import {
   TableContainer,
 } from '@mui/material';
 
+import { UserResponseSchema } from 'src/api/api-schemas';
 import { EyeIcon, EditIcon, TrashIcon } from 'src/assets/icons';
+import { deleteUser, createUser, useGetUsers, updateUserById } from 'src/api/users';
 
 import Iconify from 'src/components/iconify';
 import Label from 'src/components/label/label';
 import Scrollbar from 'src/components/scrollbar';
+import { ConfirmDialog } from 'src/components/custom-dialog';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import RHFAutocomplete from 'src/components/hook-form/rhf-autocomplete';
 import {
@@ -40,31 +42,9 @@ import {
 
 import SearchTableToolbar from '../../../../components/table/search-table-toolbar';
 
-type RowDataType = {
-  nr: number;
-  name: string;
-  contact: number;
-  email: string;
-  status: any;
-};
-
 const StatusData = [
   { name: 'Active', status: true },
   { name: 'Inactive', status: false },
-];
-
-function createData(nr: number, name: string, contact: number, email: string, status: boolean) {
-  return { nr, name, contact, email, status };
-}
-
-const TABLE_DATA = [
-  createData(1246, 'Robert Fox', 6295550129, 'robertfox@example.com', false),
-  createData(1247, 'Ronald Richards', 7025550122, 'ronaldrichards@example.com', true),
-  createData(1248, 'Savannah Nguyen', 2085550112, 'savannah@example.com', false),
-  createData(1249, 'Darlene Robertson', 3035550105, 'darlene.r@example.com', true),
-  createData(1250, 'Kristin Watson', 6295550129, 'kristin.watson@example.com', true),
-  createData(1251, 'Dianne Russell', 6295550129, 'dianne.r@example.com', false),
-  createData(1252, 'Darrell Steward', 6295550129, 'darrell.steward@example.com', true),
 ];
 
 const TABLE_HEAD = [
@@ -76,14 +56,53 @@ const TABLE_HEAD = [
   { id: 'action', label: 'Action', align: 'center' },
 ];
 
-export default function JwtLoginView() {
-  const [filterName, setFilterName] = useState('');
-  const [tableData, setTableData] = useState<RowDataType[]>([]);
-  const [open, setOpen] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
+export type FormValuesProps = UserResponseSchema;
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+export default function JwtLoginView() {
+  const [openModal, setOpenModal] = useState({
+    open: false,
+    idToEdit: '',
+    isEdit: false,
+    isView: false,
+  });
+
+  const handleOpenModal = (id?: string, isViewItem?: boolean) => {
+    setOpenModal({
+      open: true,
+      idToEdit: id || '',
+      isEdit: isViewItem ? false : !!id,
+      isView: isViewItem || false,
+    });
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal({ open: false, idToEdit: '', isEdit: false, isView: false });
+  };
+
+  const [deleteModal, setDeleteModal] = useState({
+    open: false,
+    idToDelete: null,
+  });
+
+  const handleOpenDeleteModal = (id: any) => {
+    setDeleteModal({ open: true, idToDelete: id });
+  };
+
+  const handleCloseDeleteModal = () => {
+    setDeleteModal({ open: false, idToDelete: null });
+  };
+
+  const [filterName, setFilterName] = useState('');
+
+  const { users, usersLoading } = useGetUsers();
+
+  const [usersData, setUsersData] = useState<UserResponseSchema[]>([]);
+
+  useEffect(() => {
+    if (!usersLoading && users.length) {
+      setUsersData(users);
+    }
+  }, [usersLoading, users]);
 
   const handleFilterName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterName(event.target.value);
@@ -97,116 +116,35 @@ export default function JwtLoginView() {
   const table = useTable({
     defaultOrderBy: 'calories',
   });
-  const denseHeight = table.dense ? 34 : 54;
 
-  useEffect(() => {
-    setTableData(TABLE_DATA);
-  }, []);
+  const denseHeight = table.dense ? 34 : 54;
+  const rowsPerPage = usersData.length;
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: usersData as any,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
 
-  console.log('tableData', tableData);
-
-  const LoginSchema = Yup.object().shape({
-    dishName: Yup.string(),
-    category: Yup.string(),
-    contact: Yup.number(),
-    time: Yup.number(),
-    status: Yup.object({
-      name: Yup.string(),
-      status: Yup.boolean(),
-    }),
-  });
-
-  const defaultValues = {
-    dishName: '',
-    category: '',
-    contact: 0,
-    time: 0,
-    status: { name: '', status: true },
-  };
-
-  const methods = useForm({
-    resolver: yupResolver(LoginSchema),
-    defaultValues,
-  });
-
-  const {
-    reset,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = methods;
-
-  const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
+  const handleDeleteRow = async () => {
     try {
-      console.log('data', data);
+      const id: any = deleteModal.idToDelete;
+
+      await deleteUser(id);
+
+      const deleteRow = usersData.filter((row: any) => row._id !== id);
+      setUsersData(deleteRow);
+
+      handleCloseDeleteModal();
     } catch (error) {
-      console.error('error', error);
-      reset();
-      setErrorMsg(typeof error === 'string' ? error : error.message);
+      console.log('error handleDeleteRow: ', error);
     }
-  });
-
-  const renderForm = (
-    <Stack spacing={2} sx={{ width: '100%' }}>
-      {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-
-      <Typography variant="h4" fontWeight={600}>
-        Add New Member
-      </Typography>
-
-      <Divider
-        sx={{
-          width: '100%',
-          height: '1px',
-          backgroundColor: '#C2C2C2',
-        }}
-      />
-
-      <RHFTextField name="name" label="Enter Name" />
-      <RHFTextField name="contact" label="Contact Number" />
-      <RHFTextField name="email" label="Email Address" />
-      <RHFAutocomplete
-        name="status"
-        label="Select Status"
-        options={StatusData}
-        getOptionLabel={(option: any) => option.name}
-        defaultValue={StatusData.find((option) => option.name === defaultValues.status.name)}
-      />
-
-      <Stack direction="row" gap={1.5}>
-        <Button
-          variant="contained"
-          fullWidth
-          sx={{ backgroundColor: '#a7a19e1a', color: '#201A18', fontWeight: 400 }}
-          onClick={handleClose}
-        >
-          Cancel
-        </Button>
-
-        <LoadingButton
-          fullWidth
-          color="primary"
-          type="submit"
-          variant="contained"
-          loading={isSubmitting}
-          sx={{ fontWeight: 400 }}
-        >
-          Add
-        </LoadingButton>
-      </Stack>
-    </Stack>
-  );
+  };
 
   return (
     <Box>
       <div>
-        <Modal open={open} onClose={handleClose}>
+        <Modal open={openModal.open} onClose={handleCloseModal}>
           <Box
             sx={{
               position: 'absolute' as const,
@@ -220,9 +158,14 @@ export default function JwtLoginView() {
               p: 2.5,
             }}
           >
-            <FormProvider methods={methods} onSubmit={onSubmit}>
-              {renderForm}
-            </FormProvider>
+            <RenderForm
+              openModal={openModal}
+              handleCloseModal={handleCloseModal}
+              isEdit={openModal.isEdit}
+              isView={openModal.isView}
+              usersData={usersData}
+              setUsersData={setUsersData}
+            />
           </Box>
         </Modal>
 
@@ -241,14 +184,15 @@ export default function JwtLoginView() {
               filterName={filterName}
               onFilterName={handleFilterName}
               onResetFilter={handleResetFilter}
+              sx={{ paddingLeft: 0 }}
             />
           </Stack>
           <Stack direction="row" sx={{}}>
             <Button
               variant="contained"
               color="error"
-              sx={{ width: '250px', height: '60px', mr: 2 }}
-              onClick={handleOpen}
+              sx={{ width: '250px', height: '60px' }}
+              onClick={() => handleOpenModal()}
             >
               <Iconify icon="ic:baseline-plus" />
               <Typography> Add New Member</Typography>
@@ -260,11 +204,11 @@ export default function JwtLoginView() {
           <TableSelectedAction
             dense={table.dense}
             numSelected={table.selected.length}
-            rowCount={tableData.length}
+            rowCount={usersData.length}
             onSelectAllRows={(checked) =>
               table.onSelectAllRows(
                 checked,
-                tableData.map((row) => row.name)
+                usersData.map((row: any) => row?.name)
               )
             }
             action={
@@ -276,38 +220,39 @@ export default function JwtLoginView() {
             }
           />
 
-          <Scrollbar>
-            <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 800 }}>
+          <Scrollbar sx={{ maxHeight: 400 }}>
+            <Table stickyHeader size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 800 }}>
               <TableHeadCustom
                 order={table.order}
                 orderBy={table.orderBy}
                 headLabel={TABLE_HEAD}
-                rowCount={tableData.length}
+                rowCount={usersData.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
-                onSelectAllRows={(checked) =>
-                  table.onSelectAllRows(
-                    checked,
-                    tableData.map((row) => row.name)
-                  )
-                }
+                // onSelectAllRows={(checked) =>
+                //   table.onSelectAllRows(
+                //     checked,
+                //     usersData.map((row: any) => row?.firstName)
+                //   )
+                // }
               />
 
               <TableBody>
                 {dataFiltered
-                  .slice(
-                    table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage
-                  )
+                  .slice(table.page * rowsPerPage, table.page * rowsPerPage + rowsPerPage)
                   .map((row) => (
-                    <TableRow hover key={row.name} selected={table.selected.includes(row.name)}>
-                      <TableCell padding="checkbox">
-                        <Checkbox checked={table.selected.includes(row.name)} />
-                      </TableCell>
-                      <TableCell> {row.nr} </TableCell>
-                      <TableCell> {row.name} </TableCell>
+                    <TableRow
+                      hover
+                      key={row._id}
+                      // selected={table.selected.includes(row?.firstName)}
+                    >
+                      {/* <TableCell padding="checkbox">
+                        <Checkbox checked={table.selected.includes(row?.firstName)} />
+                      </TableCell> */}
+                      <TableCell> {row?._id} </TableCell>
+                      <TableCell> {row.firstName} </TableCell>
 
-                      <TableCell align="left">{row.contact}</TableCell>
+                      <TableCell align="left">{row.contactNumber}</TableCell>
                       <TableCell align="left">{row.email}</TableCell>
 
                       <TableCell align="left">
@@ -322,17 +267,23 @@ export default function JwtLoginView() {
 
                       <TableCell align="center">
                         <Tooltip title="View">
-                          <IconButton sx={{ gap: 2 }}>
+                          <IconButton
+                            sx={{ gap: 2 }}
+                            onClick={() => handleOpenModal(row._id, true)}
+                          >
                             <EyeIcon />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Edit">
-                          <IconButton sx={{ gap: 2 }}>
+                          <IconButton sx={{ gap: 2 }} onClick={() => handleOpenModal(row._id)}>
                             <EditIcon />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete">
-                          <IconButton sx={{ gap: 2 }}>
+                          <IconButton
+                            sx={{ gap: 2 }}
+                            onClick={() => handleOpenDeleteModal(row._id)}
+                          >
                             <TrashIcon />
                           </IconButton>
                         </Tooltip>
@@ -342,23 +293,192 @@ export default function JwtLoginView() {
 
                 <TableEmptyRows
                   height={denseHeight}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                  emptyRows={emptyRows(table.page, rowsPerPage, usersData.length)}
                 />
               </TableBody>
             </Table>
           </Scrollbar>
         </TableContainer>
       </div>
+
+      <ConfirmDialog
+        open={deleteModal.open}
+        onClose={handleCloseDeleteModal}
+        title="Delete"
+        content="Are you sure want to delete?"
+        action={
+          <Button variant="contained" color="error" onClick={() => handleDeleteRow()}>
+            Delete
+          </Button>
+        }
+      />
     </Box>
   );
 }
+
+const RenderForm = ({
+  openModal,
+  handleCloseModal,
+  isEdit,
+  isView,
+  usersData,
+  setUsersData,
+}: any) => {
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const LoginSchema = Yup.object().shape({
+    firstName: Yup.string(),
+    email: Yup.string(),
+    contactNumber: Yup.string(),
+    status: Yup.boolean(),
+  });
+
+  const oneUser = usersData?.find((item: any) => item._id === openModal?.idToEdit);
+
+  const defaultValues = {
+    firstName: oneUser?.firstName || '',
+    email: oneUser?.email || '',
+    contactNumber: oneUser?.contactNumber || '',
+    status: oneUser?.status || true,
+  };
+
+  const methods = useForm<FormValuesProps>({
+    resolver: yupResolver(LoginSchema),
+    defaultValues,
+  });
+
+  const {
+    reset,
+    handleSubmit,
+    setValue,
+    formState: { isSubmitting },
+  } = methods;
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      if (isEdit) {
+        await updateUserById(openModal?.idToEdit, {
+          firstName: data.firstName || '',
+          contactNumber: data.contactNumber || '',
+          email: data.email || '',
+          status: data.status,
+        });
+
+        const updatedUsersData = usersData.map((user: any) => {
+          if (user._id === openModal?.idToEdit) {
+            return {
+              ...user,
+              firstName: data.firstName || user.firstName,
+              contactNumber: data.contactNumber || user.contactNumber,
+              email: data.email || user.email,
+              status: data.status,
+            };
+          }
+          return user;
+        });
+
+        setUsersData(updatedUsersData);
+        handleCloseModal();
+      } else {
+        await createUser({
+          firstName: data.firstName || '',
+          lastName: 'asd',
+          contactNumber: data.contactNumber || '',
+          email: data.email || '',
+          restaurantId: '653590bec665979a76591c9a',
+          password: 'asd',
+          role: 1,
+          status: data.status || true,
+        });
+
+        handleCloseModal();
+      }
+      console.log('data', data);
+    } catch (error) {
+      console.error('error', error);
+      reset();
+      setErrorMsg(typeof error === 'string' ? error : error.message);
+    }
+  });
+
+  const getFormTitle = () => {
+    if (isEdit) {
+      return 'Edit member';
+    }
+    if (isView) {
+      return 'View member';
+    }
+    return ' Add New Member';
+  };
+
+  return (
+    <FormProvider methods={methods} onSubmit={onSubmit}>
+      <Stack spacing={2} sx={{ width: '100%' }}>
+        {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+
+        <Typography variant="h4" fontWeight={600}>
+          {getFormTitle()}
+        </Typography>
+
+        <Divider
+          sx={{
+            width: '100%',
+            height: '1px',
+            backgroundColor: '#C2C2C2',
+          }}
+        />
+
+        <RHFTextField name="firstName" label="Enter Name" />
+
+        <RHFTextField name="contactNumber" label="Contact Number" />
+
+        <RHFTextField name="email" label="Email Address" />
+
+        <RHFAutocomplete
+          name="status"
+          label="Select Status"
+          options={StatusData}
+          getOptionLabel={(option: any) => option.name || option.status}
+          value={StatusData.find((option) => option.status) || null}
+          onChange={(event: any, newValue: any) => {
+            const selectedStatus = newValue.status;
+            setValue('status', selectedStatus);
+          }}
+        />
+
+        <Stack direction="row" gap={1.5}>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ backgroundColor: '#a7a19e1a', color: '#201A18', fontWeight: 400 }}
+            onClick={handleCloseModal}
+          >
+            Cancel
+          </Button>
+
+          <LoadingButton
+            fullWidth
+            color="primary"
+            type="submit"
+            variant="contained"
+            loading={isSubmitting}
+            sx={{ fontWeight: 400 }}
+            disabled={isView}
+          >
+            Add
+          </LoadingButton>
+        </Stack>
+      </Stack>
+    </FormProvider>
+  );
+};
 
 function applyFilter({
   inputData,
   filterName,
   comparator,
 }: {
-  inputData: RowDataType[];
+  inputData: UserResponseSchema[];
   comparator: (a: any, b: any) => number;
   filterName: string;
 }) {
@@ -377,11 +497,10 @@ function applyFilter({
   if (filterName) {
     inputData = inputData.filter(
       (item) =>
-        (item.name && item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1) ||
+        (item.firstName && item.firstName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1) ||
         (item.email && item.email.toLowerCase().indexOf(filterName.toLowerCase()) !== -1) ||
-        (item.nr && item.nr.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1) ||
-        (item.contact &&
-          item.contact.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1)
+        (item.contactNumber &&
+          item.contactNumber.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1)
     );
   }
 

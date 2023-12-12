@@ -95,14 +95,13 @@ export default function MenuPage() {
     setDeleteModal({ open: false, idToDelete: null });
   };
 
-  const dataItem = useGetMenuItems();
-  const { menuItems, menuItemsLoading } = dataItem as any;
+  const { menuItems, menuItemsLoading } = useGetMenuItems();
 
   const [menuItemsData, setMenuItemsData] = useState<MenuItemResponseSchema[]>([]);
 
   useEffect(() => {
     if (!menuItemsLoading && menuItems.length) {
-      setMenuItemsData(menuItems as any);
+      setMenuItemsData(menuItems);
     }
   }, [menuItemsLoading, menuItems]);
 
@@ -122,7 +121,7 @@ export default function MenuPage() {
 
       await deleteMenuItem(id);
 
-      const deleteRow = (menuItemsData as any).filter((row: any) => row._id !== id);
+      const deleteRow = menuItemsData.filter((row: any) => row._id !== id);
       setMenuItemsData(deleteRow);
 
       handleCloseDeleteModal();
@@ -385,7 +384,7 @@ const RenderForm = ({
 
   const [errorMsg, setErrorMsg] = useState('');
 
-  const oneMenuItem = (menuItemsData as any)?.find((item: any) => item._id === openModal?.idToEdit);
+  const oneMenuItem = menuItemsData?.find((item: any) => item._id === openModal?.idToEdit);
 
   const defaultValues = {
     name: oneMenuItem?.name || '',
@@ -412,7 +411,7 @@ const RenderForm = ({
   const onSubmit = async (data: FormValuesProps) => {
     try {
       if (isEdit) {
-        const asd = await updateMenuItemById(openModal?.idToEdit as any, {
+        const asd = await updateMenuItemById(openModal?.idToEdit, {
           name: data.name || '',
           price: data.price || 0,
           restaurantId: data.restaurantId || '',

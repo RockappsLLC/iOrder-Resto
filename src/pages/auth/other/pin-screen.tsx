@@ -102,6 +102,10 @@ export default function PinScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeUser, handleKeyPress, handleBackspace]);
 
+  const handleClockInOut = () => {
+    router.push('/auth/other/choose-user');
+  };
+
   return (
     <>
       <Helmet>
@@ -139,6 +143,12 @@ export default function PinScreen() {
           maxWidth="60%"
           gap={5}
           overflow="scroll"
+          sx={{
+            '::-webkit-scrollbar': {
+              width: '0em',
+            },
+            scrollbarWidth: 'none',
+          }}
         >
           {users.map((userItem: any, num: number) => (
             <Stack direction={{ xs: 'column', sm: 'column' }} key={num} alignItems="center">
@@ -278,7 +288,14 @@ export default function PinScreen() {
         <Box sx={{ flex: 1 }} />
 
         <Stack mt="auto" direction={{ xs: 'row', sm: 'row' }}>
-          <Typography variant="h6" fontWeight={400} color="#fff" mt={3}>
+          <Typography
+            variant="h6"
+            fontWeight={400}
+            color="#fff"
+            mt={3}
+            sx={{ cursor: 'pointer' }}
+            onClick={() => handleClockInOut()}
+          >
             Clock in / Clock out
           </Typography>
         </Stack>
