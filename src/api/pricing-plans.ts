@@ -32,7 +32,7 @@ export function useGetPricingPlans(params?: IGetPricingPlansQueryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      pricingPlans: (data as GetPricingPlansResponse['data'])?.pricingPlans || [],
+      pricingPlans: (data as GetPricingPlansResponse['data'])?.pricingPlanss || [],
       pricingPlansLoading: isLoading,
       pricingPlansError: error,
       pricingPlansValidating: isValidating,
