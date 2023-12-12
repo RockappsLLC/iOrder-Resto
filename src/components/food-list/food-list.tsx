@@ -7,6 +7,8 @@ import { useGetMenuItems } from 'src/api/menu-items';
 import { useGetMenuCategories } from 'src/api/menu-categories';
 import { MenuItemResponseSchema, MenuCategoryResponseSchema } from 'src/api/api-schemas';
 
+import { useTranslate } from 'src/locales';
+
 import AddOrderDialog from 'src/sections/dialogs/add-order';
 
 import FoodItem from '../food-item';
@@ -14,6 +16,8 @@ import FoodItem from '../food-item';
 const FoodList = ({ searchInput, currentTab }: any) => {
   const [modal, setModal] = useState(false);
   const [foodId, setFoodId] = useState('');
+
+  const { t } = useTranslate();
 
   const { menuCategories, menuCategoriesLoading } = useGetMenuCategories();
 
@@ -46,7 +50,7 @@ const FoodList = ({ searchInput, currentTab }: any) => {
       <Grid container spacing={{ xs: 2, md: 3 }} sx={{ pl: 0 }}>
         {menuItemsData.length === 0 ? (
           <Typography fontSize={17} fontWeight={500} sx={{ m: 2 }}>
-            No result for search "{searchInput}".
+            {t('no_result_for_search')} "{searchInput}".
           </Typography>
         ) : (
           menuItemsData

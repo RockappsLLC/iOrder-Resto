@@ -14,6 +14,8 @@ import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
+import { useTranslate } from 'src/locales';
+
 import AddNote from 'src/sections/dialogs/add-note';
 
 import Iconify from '../iconify';
@@ -54,6 +56,8 @@ const OrderSidebar = (props: OrderSidebarProps) => {
 
   const [currentTab, setCurrentTab] = useState('buy');
   const [addNote, setAddNote] = useState(false);
+
+  const { t } = useTranslate();
 
   const theme = useTheme();
   // const sm = useMediaQuery(theme.breakpoints.down('sm'));
@@ -107,7 +111,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
       >
         <Tab
           value="buy"
-          label="Buy"
+          label={t('buy')}
           sx={{
             width: '50%',
             mx: 'auto',
@@ -118,7 +122,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
         />
         <Tab
           value="reservation"
-          label="Reservation"
+          label={t('reservation')}
           sx={{
             width: '50%',
             // px: 5,
@@ -144,7 +148,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
               style={{ marginLeft: '20px', marginRight: '20px' }}
             >
               <Typography sx={{ fontWeight: 600, fontSize: '20px' }}>
-                Customer Information
+                {t('customer_information')}
               </Typography>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 15, marginTop: 15 }}>
                 <Controller
@@ -154,7 +158,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                   render={({ field: { value, onChange } }) => (
                     <TextField
                       fullWidth
-                      label="Costumer Name"
+                      label={t('customer_name')}
                       value={value}
                       onChange={onChange}
                       placeholder="Leonard"
@@ -188,7 +192,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                 sx={{ width: '100%', borderRadius: '58px', marginTop: '16px' }}
               >
                 <Typography color="#9C9C9C" fontWeight={600} fontSize="16px">
-                  Add Note
+                  {t('add_note')}
                 </Typography>
               </Fab>
             </form>
@@ -200,7 +204,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                   fontWeight={600}
                   sx={{ marginLeft: '20px', marginRight: '20px', marginBottom: 1 }}
                 >
-                  Already ordered
+                  {t('already_ordered')}
                 </Typography>
                 <div
                   style={{
@@ -244,7 +248,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                                 sx={{ mb: 0 }}
                                 component="div"
                               >
-                                Price
+                                {t('price')}
                               </Typography>
                               <Typography
                                 fontSize={16}
@@ -303,10 +307,10 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                   >
                     <div>
                       <Typography fontSize={16} fontWeight={400} color="#828487" mb="12px">
-                        Sub Total
+                        {t('sub_total')}
                       </Typography>
                       <Typography fontSize={16} fontWeight={400} color="#828487">
-                        Tax ({100 * TAX}%)
+                        {t('tax')} ({100 * TAX}%)
                       </Typography>
                     </div>
                     <div>
@@ -321,7 +325,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                   <Divider sx={{ border: '1px dashed #E4E4E4', my: 2 }} />
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography fontSize={16} fontWeight={400} color="#828487">
-                      Total
+                      {t('total')}
                     </Typography>
 
                     <Typography fontSize={16} fontWeight={600} color="#F15F34">
@@ -335,7 +339,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                     color="primary"
                     sx={{ borderRadius: '58px', my: '20px', ':hover': { bgcolor: '#f26f49' } }}
                   >
-                    Place Order
+                    {t('place_order')}
                   </Button>
                 </div>
               </>
@@ -350,7 +354,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
             bgcolor: 'background.neutral',
           }}
         >
-          Reservation
+          {t('reservation')}
         </Box>
       )}
       <AddNote open={addNote} hide={() => setAddNote(false)} />

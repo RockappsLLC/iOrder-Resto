@@ -16,6 +16,8 @@ import DialogContent from '@mui/material/DialogContent';
 import { useGetMenuItem } from 'src/api/menu-items';
 import { MenuItemResponseSchema } from 'src/api/api-schemas';
 
+import { useTranslate } from 'src/locales';
+
 import Iconify from 'src/components/iconify';
 import { useOrderContext } from 'src/components/order-sidebar/context';
 
@@ -43,6 +45,8 @@ const defaultOrder = {
 
 export default function AddOrderDialog({ value, hide, foodId }: any) {
   const { orders, addOrder, setOrdered } = useOrderContext();
+
+  const { t } = useTranslate();
 
   const { menuItem, menuItemLoading } = useGetMenuItem(foodId);
   const [order, setOrder] = useState<
@@ -99,7 +103,7 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
   return (
     <Dialog fullWidth open={value} onClose={hide}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <DialogTitle sx={{ py: 2 }}>Add Order</DialogTitle>
+        <DialogTitle sx={{ py: 2 }}>{t('add_order')}</DialogTitle>
         <Button onClick={hide}>
           <Iconify icon="tabler:x" />
         </Button>
@@ -137,7 +141,7 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
                   sx={{ mb: 0 }}
                   component="div"
                 >
-                  Price
+                  {t('price')}
                 </Typography>
                 <Typography fontSize={16} fontWeight={600} variant="body2" color="#F15F34">
                   $ {menuItem.price}
@@ -169,7 +173,7 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
           </CardContent>
         </Card>
         <Typography fontSize={16} fontWeight={600}>
-          Additional
+          {'additional'}
         </Typography>
 
         {order.extras.map((extra) => (
@@ -242,7 +246,7 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
         <Divider sx={{ my: '24px' }} />
 
         <Typography color="#828487" fontSize={12} fontWeight={500}>
-          Add Note
+          {t('add_note')}
         </Typography>
 
         <TextField
@@ -250,14 +254,14 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
           multiline
           rows={4}
           sx={{ mt: '5px' }}
-          placeholder="Type your note here..."
+          placeholder={t('type_your_note_here') + '...'}
         />
       </DialogContent>
 
       <DialogActions sx={{ justifyContent: 'space-between' }}>
         <div>
           <Typography color="#828487" fontSize={14}>
-            Total
+            {t('total')}
           </Typography>
           <Typography color="#19191C" fontSize={16} fontWeight={600}>
             $ {total}
@@ -270,7 +274,9 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
           color="primary"
           variant="contained"
         >
-          {orderObject !== undefined && orderObject.count > 0 ? 'Already ordered' : 'Add to order'}
+          {t(
+            orderObject !== undefined && orderObject.count > 0 ? 'already_ordered' : 'add_to_order'
+          )}
         </Button>
       </DialogActions>
     </Dialog>

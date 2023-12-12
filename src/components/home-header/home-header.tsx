@@ -8,9 +8,12 @@ import Typography from '@mui/material/Typography';
 // import useMediaQuery from '@mui/material/useMediaQuery';
 import InputAdornment from '@mui/material/InputAdornment';
 
+import { useTranslate } from 'src/locales';
+
 import Iconify from '../iconify';
 
 const HomeHeader = ({ searchInput, setSearchInput }: any) => {
+  const { t } = useTranslate();
   // const theme = useTheme();
   // const md = useMediaQuery(theme.breakpoints.up('md'));
   return (
@@ -21,7 +24,7 @@ const HomeHeader = ({ searchInput, setSearchInput }: any) => {
         }}
       >
         <Typography fontWeight={500} color="#F15F34" padding="10px" paddingLeft={3}>
-          Dashboard / <span style={{ color: '#828487' }}>Food</span>
+          {t('dashboard')} / <span style={{ color: '#828487' }}>{t('food')}</span>
         </Typography>
       </div>
       <div
