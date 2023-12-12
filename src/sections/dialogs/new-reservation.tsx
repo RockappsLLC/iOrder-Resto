@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { useState } from 'react';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -10,7 +10,6 @@ import Iconify from 'src/components/iconify';
 import SelectDate from 'src/components/select-date';
 import SelectTime from 'src/components/select-time';
 import SelectPartySize from 'src/components/select-partysize';
-import { useState } from 'react';
 
 const NewReservation = ({ open, hide }: any) => {
   const [partySize, setPartySize] = useState(0);

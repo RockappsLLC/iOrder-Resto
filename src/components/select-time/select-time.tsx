@@ -1,15 +1,9 @@
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { StaticTimePicker } from '@mui/x-date-pickers/StaticTimePicker';
-
 import Container from '@mui/material/Container';
-import { useEffect } from 'react';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { StaticTimePicker } from '@mui/x-date-pickers/StaticTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-const SelectTime = ({time, setTime}: any) => {
-
-
-  // useEffect(() => {console.log(time)}, [time]);
-
+const SelectTime = ({ time, setTime }: any) => {
   return (
     <Container>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -17,6 +11,7 @@ const SelectTime = ({time, setTime}: any) => {
           value={time}
           onChange={(newValue: any) => setTime(newValue)}
           orientation="landscape"
+          minutesStep={5}
         />
       </LocalizationProvider>
     </Container>
