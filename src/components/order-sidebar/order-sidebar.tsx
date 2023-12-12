@@ -193,7 +193,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
               </Fab>
             </form>
             <Divider sx={{ my: 3 }} />
-            {ordered && (
+            {ordered && orders.length > 0 && (
               <>
                 <Typography
                   fontSize={20}
@@ -291,7 +291,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
             )}
           </div>
           <div>
-            {ordered && (
+            {ordered && orders.length > 0 && (
               <>
                 <Divider sx={{ my: '16px' }} />
                 <div style={{ paddingLeft: '24px', paddingRight: '24px' }}>
