@@ -8,7 +8,7 @@ export async function postUpload(
   data: UploadFilesRequest
 ): Promise<{ data: UploadFilesResponse } | ErrorResponse> {
   const URL = endpoints.files.upload.post;
-  return axios.post(URL, data);
+  return axios.post(URL, data, { headers: { 'Content-Type': 'multipart/form-data' } });
 }
 
 // ----------------------------------------------------------------------
