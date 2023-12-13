@@ -15,6 +15,7 @@ import {
   Button,
   Divider,
   Container,
+  TextField,
   Typography,
   IconButton,
   InputAdornment,
@@ -23,6 +24,7 @@ import {
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { getMe } from 'src/api/users';
+import { postUpload } from 'src/api/files';
 import { createRestaurant } from 'src/api/restaurants';
 import { Plus, Home, Staff, RiceBowl, ArrowLeft, LockClose, ArrowRight } from 'src/assets/icons';
 
@@ -112,7 +114,7 @@ export default function OwnerForm() {
     email: Yup.string(),
     password: Yup.string(),
     confirmPassword: Yup.string(),
-    restaurantLogo: Yup.string(),
+    restaurantLogo: Yup.mixed(),
   });
 
   const defaultValues = {
@@ -120,7 +122,7 @@ export default function OwnerForm() {
     email: '',
     password: '',
     confirmPassword: '',
-    restaurantLogo: '',
+    restaurantLogo: [],
   };
 
   const methods = useForm({
@@ -128,14 +130,28 @@ export default function OwnerForm() {
     defaultValues,
   });
 
-  const { reset, handleSubmit } = methods;
+  const { reset, handleSubmit, register, getValues } = methods;
 
-  const onSubmit = handleSubmit(async (dataSubmit) => {
+  const onSubmit = async (dataSubmit: any) => {
     const { data } = await getMe();
     const profile = data.data;
 
     const theStartDate = fromWeek.toDate();
     const theEndDate = toWeek.toDate();
+
+    const formData = new FormData();
+
+    if (dataSubmit.restaurantLogo) {
+      formData.append('files', dataSubmit.restaurantLogo[0]);
+    }
+
+    formData.append('restaurantId', '653590bec665979a76591c9a');
+    try {
+      const response = await postUpload(formData as any);
+      console.log('response', response);
+    } catch (err) {
+      console.error(err);
+    }
 
     try {
       await createRestaurant({
@@ -158,7 +174,7 @@ export default function OwnerForm() {
       reset();
       setErrorMsg(typeof error === 'string' ? error : error.message);
     }
-  });
+  };
 
   const renderForm = (
     <Box
@@ -358,6 +374,13 @@ export default function OwnerForm() {
             </Stack>
           </Stack>
 
+          <TextField
+            type="file"
+            helperText="Restaurant Logo"
+            inputProps={{ accept: 'image/*' }}
+            {...register('restaurantLogo')}
+          />
+
           {/* <Stack spacing={0.1} direction="column">
             <Typography
               variant="caption"
@@ -463,7 +486,7 @@ export default function OwnerForm() {
             data.contentComponent && (
               <Box key={index} sx={{ minHeight: 400 }}>
                 {index === 0 ? (
-                  <FormProvider methods={methods} onSubmit={onSubmit}>
+                  <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
                     {renderForm}
                   </FormProvider>
                 ) : (
@@ -494,7 +517,7 @@ export default function OwnerForm() {
               variant="contained"
               onClick={async () => {
                 if (currentContentIndex === 0) {
-                  await onSubmit();
+                  await onSubmit(getValues());
                 } else {
                   handleNext();
                 }
