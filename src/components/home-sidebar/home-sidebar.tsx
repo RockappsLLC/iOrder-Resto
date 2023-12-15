@@ -6,7 +6,8 @@ import Tabs from '@mui/material/Tabs';
 import { useGetMenuCategories } from 'src/api/menu-categories';
 import { MenuCategoryResponseSchema } from 'src/api/api-schemas';
 
-import SvgColor from 'src/components/svg-color';
+// import SvgColor from 'src/components/svg-color';
+import Iconify from '../iconify';
 
 // const TABS = [
 //   {
@@ -41,7 +42,7 @@ import SvgColor from 'src/components/svg-color';
 //   },
 // ];
 
-const HomeSidebar = ({ currentTab, handleChangeTab }: any) => {
+const HomeSidebar = ({ categoryId, handleCategoryId }: any) => {
   const { menuCategories, menuCategoriesLoading } = useGetMenuCategories();
 
   const [menuCategoriesData, setMenuCategoriesData] = useState<MenuCategoryResponseSchema[]>([]);
@@ -49,6 +50,7 @@ const HomeSidebar = ({ currentTab, handleChangeTab }: any) => {
   useEffect(() => {
     if (!menuCategoriesLoading && menuCategories.length) {
       setMenuCategoriesData(menuCategories);
+      // console.log(menuCategories, 'MENU CATEGORIES');
     } else {
       setMenuCategoriesData([]);
     }
@@ -56,11 +58,12 @@ const HomeSidebar = ({ currentTab, handleChangeTab }: any) => {
 
   return (
     <Tabs
-      value={currentTab}
-      onChange={handleChangeTab}
+      value={categoryId}
+      onChange={handleCategoryId}
       orientation="vertical"
       centered
       variant="standard"
+      sx={{ mt: '12px' }}
     >
       {menuCategoriesData.map((tab: any) => (
         <Tab
@@ -68,20 +71,21 @@ const HomeSidebar = ({ currentTab, handleChangeTab }: any) => {
             mx: 'auto',
             my: '6px',
             px: '6px',
-            py: '12px',
+            py: '10px',
             fontSize: '12px',
             width: '80px',
-            height: '90px',
+            height: '85px',
             borderRadius: '8px',
             background:
-              currentTab === tab._id
+              categoryId === tab._id
                 ? 'linear-gradient(218.57deg, #FFAB18 -6.67%, #FF2197 137.69%)'
                 : '',
-            color: currentTab === tab._id ? 'white' : '',
+            color: categoryId === tab._id ? 'white' : '',
           }}
           iconPosition="top"
           key={tab._id}
-          icon={<SvgColor src="/assets/icons/home/food.svg" sx={{ width: 32, height: 32 }} />}
+          // icon={<SvgColor src="/assets/icons/home/food.svg" sx={{ width: 32, height: 32 }} />}
+          icon={<Iconify icon={`mdi:${tab.icon}`} width={36} height={32} />}
           label={tab.name}
           value={tab._id}
         />

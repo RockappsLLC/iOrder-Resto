@@ -32,7 +32,6 @@ const HomeHeader = ({ searchInput, setSearchInput }: any) => {
           display: 'flex',
           alignItems: 'center',
           height: '68px',
-          marginBottom: '30px',
           padding: '10px 10px 10px 24px',
           backgroundColor: 'white',
           borderTop: '1px #E4E4E4 solid',

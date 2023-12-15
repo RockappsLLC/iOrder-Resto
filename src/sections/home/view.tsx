@@ -14,32 +14,13 @@ import OrderSidebar from 'src/components/order-sidebar/order-sidebar';
 export default function HomeView() {
   const settings = useSettingsContext();
 
-  const [currentTab, setCurrentTab]: any = useState('6535919fc665979a76591ca1');
+  const [categoryId, seCategoryId]: any = useState('6535919fc665979a76591ca1');
 
-  const handleChangeTab = useCallback((event: React.SyntheticEvent, newValue: any) => {
-    setCurrentTab(newValue);
+  const handleCategoryId = useCallback((event: React.SyntheticEvent, newValue: string) => {
+    seCategoryId(newValue);
   }, []);
 
   const [searchInput, setSearchInput] = useState('');
-
-  // const renderSwitch = () => {
-  //   switch (currentTab) {
-  //     case 'one':
-  //       return <div>Coffee</div>;
-  //     case 'two':
-  //       return <div>Beverages</div>;
-  //     case 'three':
-  //       return <FoodList searchInput={searchInput} />;
-  //     case 'four':
-  //       return <div>Appetizer</div>;
-  //     case 'five':
-  //       return <div>Bread</div>;
-  //     case 'six':
-  //       return <div>Snack</div>;
-  //     default:
-  //       return <FoodList searchInput={searchInput} />;
-  //   }
-  // };
 
   return (
     <Grid container columns={15} sx={{ height: '100%' }}>
@@ -54,7 +35,7 @@ export default function HomeView() {
           borderColor: '#E4E4E4',
         }}
       >
-        <HomeSidebar currentTab={currentTab} handleChangeTab={handleChangeTab} />
+        <HomeSidebar categoryId={categoryId} handleCategoryId={handleCategoryId} />
       </Grid>
       <Grid
         item
@@ -66,7 +47,7 @@ export default function HomeView() {
       >
         <HomeHeader searchInput={searchInput} setSearchInput={setSearchInput} />
         <Container maxWidth={settings.themeStretch ? false : 'xl'}>
-          <FoodList searchInput={searchInput} currentTab={currentTab} />
+          <FoodList searchInput={searchInput} categoryId={categoryId} />
         </Container>
       </Grid>
       <Grid item xs={15} sm={5} md={4} lg={3} sx={{ borderTop: 1, borderColor: '#E4E4E4' }}>

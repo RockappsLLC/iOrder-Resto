@@ -13,40 +13,50 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
-import { useTranslate } from 'src/locales';
 import { useGetMenuItem } from 'src/api/menu-items';
 import { MenuItemResponseSchema } from 'src/api/api-schemas';
+
+import { useTranslate } from 'src/locales';
 
 import Iconify from 'src/components/iconify';
 import { useOrderContext } from 'src/components/order-sidebar/context';
 
 // ----------------------------------------------------------------------
 
+const extrasSample = [
+  {
+    _id: '1',
+    name: 'Rice',
+    price: 3,
+    count: 0,
+  },
+  {
+    _id: '2',
+    name: 'Egg',
+    price: 1.2,
+    count: 0,
+  },
+];
+
 const defaultOrder = {
-  name: '',
-  price: 0,
-  restaurantId: '',
-  menuCategoryId: '',
-  icon: '',
-  status: true,
-  preparationTime: 0,
-  isAdditional: false,
   count: 1,
+  extras: extrasSample,
 };
 
-export default function AddOrderDialog({ open, hide, foodId }: any) {
+export default function AddOrderDialog({ value, hide, foodId }: any) {
   const { orders, addOrder, setOrdered } = useOrderContext();
 
   const { t } = useTranslate();
 
   const { menuItem, menuItemLoading } = useGetMenuItem(foodId);
-  const [order, setOrder] = useState<MenuItemResponseSchema & { count: number }>(defaultOrder);
+  const [order, setOrder] = useState<
+    MenuItemResponseSchema & { count: number; extras: typeof extrasSample }
+  >(defaultOrder);
   const orderObject = orders.find((o: any) => o._id === order._id);
 
   useEffect(() => {
     if (!menuItemLoading) {
-      // console.log(defaultOrder);
-      setOrder(menuItem ? { ...menuItem, count: 1 } : defaultOrder);
+      setOrder(menuItem ? { ...defaultOrder, ...menuItem } : defaultOrder);
     }
   }, [menuItemLoading, menuItem]);
 
@@ -60,13 +70,38 @@ export default function AddOrderDialog({ open, hide, foodId }: any) {
     hide();
   };
 
+  const handleDecreaseExtra = (id: string) => {
+    const extras = order.extras.map((extra) => {
+      if (extra._id === id) {
+        return { ...extra, count: extra.count - 1 };
+      }
+      return extra;
+    });
+    setOrder({ ...order, extras });
+  };
+
+  const handleIncreaseExtra = (id: string) => {
+    const extras = order.extras.map((extra) => {
+      if (extra._id === id) {
+        return { ...extra, count: extra.count + 1 };
+      }
+      return extra;
+    });
+    setOrder({ ...order, extras });
+  };
+
   if (!menuItem) return null;
 
+  const extrasTotal = order.extras.reduce(
+    (acc, obj) => acc + Number(obj.price || 0) * Number(obj.count || 0),
+    0
+  );
   const price = Number(order.price || 0);
-  const total = price * Number(order.count || 0);
+
+  const total = (price + extrasTotal) * Number(order.count || 0);
 
   return (
-    <Dialog fullWidth open={open} onClose={hide}>
+    <Dialog fullWidth open={value} onClose={hide}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <DialogTitle sx={{ py: 2 }}>{t('add_order')}</DialogTitle>
         <Button onClick={hide}>
@@ -137,6 +172,76 @@ export default function AddOrderDialog({ open, hide, foodId }: any) {
             </div>
           </CardContent>
         </Card>
+        <Typography fontSize={16} fontWeight={600}>
+          {'additional'}
+        </Typography>
+
+        {order.extras.map((extra) => (
+          <div
+            key={extra._id}
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              paddingLeft: 2,
+              paddingRight: 2,
+              marginTop: 16,
+            }}
+          >
+            <CardMedia
+              sx={{ width: '44px', borderRadius: '12px' }}
+              component="img"
+              height="44px"
+              image="/assets/images/food.png"
+              alt="food"
+            />
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+                paddingLeft: 20,
+              }}
+            >
+              <Typography
+                sx={{ display: 'flex', alignItems: 'center' }}
+                fontSize={14}
+                fontWeight={600}
+              >
+                {extra.name}
+              </Typography>
+              <Typography fontSize={14} variant="body2">
+                $ {extra.price}
+              </Typography>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              {extra.count > 0 && (
+                <>
+                  <Fab
+                    onClick={() => handleDecreaseExtra(extra._id)}
+                    sx={{ width: '36px', height: '36px' }}
+                    color="default"
+                    aria-label="add"
+                  >
+                    <Iconify icon="tabler:minus" width={20} />
+                  </Fab>
+                  <Typography fontSize={16} fontWeight={600}>
+                    {extra.count}
+                  </Typography>
+                </>
+              )}
+              <Fab
+                onClick={() => handleIncreaseExtra(extra._id)}
+                sx={{ width: '36px', height: '36px' }}
+                color="inherit"
+                aria-label="add"
+              >
+                <Iconify icon="tabler:plus" width={20} />
+              </Fab>
+            </div>
+          </div>
+        ))}
 
         <Divider sx={{ my: '24px' }} />
 
@@ -149,7 +254,7 @@ export default function AddOrderDialog({ open, hide, foodId }: any) {
           multiline
           rows={4}
           sx={{ mt: '5px' }}
-          placeholder={`${t('type_your_note_here')}'...'`}
+          placeholder={t('type_your_note_here') + '...'}
         />
       </DialogContent>
 

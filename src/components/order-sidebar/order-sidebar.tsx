@@ -83,12 +83,12 @@ const OrderSidebar = (props: OrderSidebarProps) => {
   };
   // console.log(orders);
   const subTotal = orders.reduce((acc: number, currentItem: any) => {
-    const extrasTotal = currentItem.extras.reduce(
-      (_acc: number, _obj: any) => _acc + Number(_obj.price || 0) * Number(_obj.count || 0),
-      0
-    );
+    // const extrasTotal = currentItem.extras.reduce(
+    //   (_acc: number, _obj: any) => _acc + Number(_obj.price || 0) * Number(_obj.count || 0),
+    //   0
+    // );
     const price = Number(currentItem.price || 0);
-    const total = (price + extrasTotal) * Number(currentItem.count || 0);
+    const total = price * Number(currentItem.count || 0);
     return acc + total;
   }, 0);
 
@@ -196,7 +196,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                 </Typography>
               </Fab>
             </form>
-            <Divider sx={{ my: 3 }} />
+            <Divider sx={{ mt: 2, mb: 1 }} />
             {ordered && orders.length > 0 && (
               <>
                 <Typography
@@ -210,17 +210,17 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                   style={{
                     marginLeft: '20px',
                     marginRight: '20px',
-                    overflowY: orders.length < 4 ? 'hidden' : 'scroll',
-                    height: xl ? '320px' : '200px',
+                    overflowY: orders.length < 5 ? 'hidden' : 'scroll',
+                    height: xl ? '380px' : '200px',
                   }}
                 >
-                  {orders.map((order: any) => (
+                  {orders.map((order: any, index: number) => (
                     <div key={order._id}>
                       <div
                         style={{
                           display: 'flex',
-                          paddingTop: '16px',
-                          paddingBottom: '16px',
+                          paddingTop: '10px',
+                          paddingBottom: '10px',
                         }}
                       >
                         <img
@@ -259,7 +259,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                                 $ {order.price}
                               </Typography>
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                               <Fab
                                 onClick={() => {
                                   updateOrder(order._id, { count: order.count - 1 });
@@ -287,7 +287,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                           </div>
                         </div>
                       </div>
-                      <Divider />
+                      {index + 1 !== orders.length && <Divider />}
                     </div>
                   ))}
                 </div>
@@ -297,7 +297,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
           <div>
             {ordered && orders.length > 0 && (
               <>
-                <Divider sx={{ my: '16px' }} />
+                <Divider sx={{ mb: '12px' }} />
                 <div style={{ paddingLeft: '24px', paddingRight: '24px' }}>
                   <div
                     style={{
@@ -306,7 +306,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                     }}
                   >
                     <div>
-                      <Typography fontSize={16} fontWeight={400} color="#828487" mb="12px">
+                      <Typography fontSize={16} fontWeight={400} color="#828487" mb="10px">
                         {t('sub_total')}
                       </Typography>
                       <Typography fontSize={16} fontWeight={400} color="#828487">
@@ -322,7 +322,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                       </Typography>
                     </div>
                   </div>
-                  <Divider sx={{ border: '1px dashed #E4E4E4', my: 2 }} />
+                  <Divider sx={{ border: '1px dashed #E4E4E4', my: 1 }} />
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography fontSize={16} fontWeight={400} color="#828487">
                       {t('total')}
@@ -337,7 +337,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                     fullWidth
                     variant="contained"
                     color="primary"
-                    sx={{ borderRadius: '58px', my: '20px', ':hover': { bgcolor: '#f26f49' } }}
+                    sx={{ borderRadius: '58px', my: '15px', ':hover': { bgcolor: '#f26f49' } }}
                   >
                     {t('place_order')}
                   </Button>

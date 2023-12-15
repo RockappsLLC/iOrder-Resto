@@ -6,9 +6,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
-import Iconify from 'src/components/iconify';
-
 import { useTranslate } from 'src/locales';
+
+import Iconify from 'src/components/iconify';
 
 const AddNote = ({ open, hide }: any) => {
   const { t } = useTranslate();
@@ -35,7 +35,7 @@ const AddNote = ({ open, hide }: any) => {
           multiline
           rows={5}
           sx={{ mt: '5px' }}
-          placeholder={t('write_your_order_note_here') + '...'}
+          placeholder={`${t('write_your_order_note_here')}...`}
         />
       </DialogContent>
       <DialogActions>
