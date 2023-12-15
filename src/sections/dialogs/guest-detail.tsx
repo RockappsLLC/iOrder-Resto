@@ -60,10 +60,11 @@ const schema = yup.object().shape({
 
 const tags = ['VIP', 'Birthday', 'Anniversary', 'Private Dining', 'First time'];
 
-const GuestDetail = ({ open, hide }: any) => {
+const GuestDetail = ({ open, hide, stepBack }: any) => {
   const [tagName, setTagName] = useState('VIP');
 
   const {
+    reset,
     control,
     handleSubmit,
     formState: { errors },
@@ -77,6 +78,7 @@ const GuestDetail = ({ open, hide }: any) => {
     try {
       console.log({ ...data, tag: tagName });
       hide();
+      reset(defaultValues);
     } catch (error) {
       console.log(error);
     }
@@ -92,7 +94,13 @@ const GuestDetail = ({ open, hide }: any) => {
         }}
       >
         <Grid sx={{ display: 'flex' }}>
-          <Button onClick={hide}>
+          <Button
+            onClick={() => {
+              hide();
+              stepBack();
+              reset(defaultValues);
+            }}
+          >
             <Iconify icon="formkit:arrowleft" width="24px" height="24px" />
           </Button>
           <DialogTitle sx={{ pl: 0 }}>Guest Detail</DialogTitle>
@@ -270,7 +278,10 @@ const GuestDetail = ({ open, hide }: any) => {
         <DialogActions>
           <Button
             fullWidth
-            onClick={hide}
+            onClick={() => {
+              hide();
+              reset(defaultValues);
+            }}
             color="primary"
             variant="outlined"
             sx={{ borderRadius: '58px', p: '10px' }}

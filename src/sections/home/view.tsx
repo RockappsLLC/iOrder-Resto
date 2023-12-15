@@ -13,8 +13,8 @@ import OrderSidebar from 'src/components/order-sidebar/order-sidebar';
 
 export default function HomeView() {
   const settings = useSettingsContext();
-  const [reservationDrawer, setReservationDrawer] = useState(false);
-  const [reservationDialog, setReservationDialog] = useState(false);
+  const [reservationList, setReservationList] = useState(false);
+  const [newReservation, setNewReservation] = useState(false);
   const [guestDetail, setGuestDetail] = useState(false);
 
   const [categoryId, seCategoryId]: any = useState('6535919fc665979a76591ca1');
@@ -64,9 +64,7 @@ export default function HomeView() {
     /*  <>
       <Container maxWidth={settings.themeStretch ? false : 'xl'}>
         <Typography variant="h4"> Page Home </Typography>
-        <Button onClick={() => setReservationDrawer(true)}>Open Drawer</Button>
-        <Button onClick={() => setReservationDialog(true)}>Open Modal</Button>
-        <Button onClick={() => setGuestDetail(true)}>Open GuestDetail</Button>
+        <Button onClick={() => setReservationList(true)}>Reservation</Button>
         <Box
           sx={{
             mt: 5,
@@ -82,6 +80,21 @@ export default function HomeView() {
       <ReservationList open={reservationDrawer} hide={() => setReservationDrawer(false)} />
         </> 
       <GuestDetail open={guestDetail} hide={() => setGuestDetail(false)} />
+      <ReservationList
+        open={reservationList}
+        hide={() => setReservationList(false)}
+        newReservation={() => setNewReservation(true)}
+      />
+      <NewReservation
+        open={newReservation}
+        hide={() => setNewReservation(false)}
+        guestDetail={() => setGuestDetail(true)}
+      />
+      <GuestDetail
+        open={guestDetail}
+        hide={() => setGuestDetail(false)}
+        stepBack={() => setNewReservation(true)}
+      />
     </> */
   );
 }

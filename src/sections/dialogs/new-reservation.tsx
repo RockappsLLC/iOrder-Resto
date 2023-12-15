@@ -11,8 +11,8 @@ import SelectDate from 'src/components/select-date';
 import SelectTime from 'src/components/select-time';
 import SelectPartySize from 'src/components/select-partysize';
 
-const NewReservation = ({ open, hide }: any) => {
-  const [partySize, setPartySize] = useState(0);
+const NewReservation = ({ open, hide, guestDetail }: any) => {
+  const [partySize, setPartySize] = useState(1);
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
 
@@ -28,6 +28,7 @@ const NewReservation = ({ open, hide }: any) => {
       )
     );
     hide();
+    guestDetail();
   };
 
   return (

@@ -38,7 +38,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   borderBottom: '1px solid #E4E4E4',
 }));
 
-const ReservationList = ({ open, hide }: any) => {
+const ReservationList = ({ open, hide, newReservation }: any) => {
   const { reservations, reservationsLoading } = useGetReservations();
 
   const [reservationsData, setReservationsData] = useState<ReservationResponseSchema[]>([]);
@@ -128,6 +128,10 @@ const ReservationList = ({ open, hide }: any) => {
         </TableContainer>
         <Button
           fullWidth
+          onClick={() => {
+            hide();
+            newReservation();
+          }}
           color="primary"
           variant="contained"
           sx={{ borderRadius: '58px', p: '10px', ':hover': { bgcolor: '#f2734e' } }}
