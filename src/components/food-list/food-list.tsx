@@ -6,6 +6,7 @@ import Pagination from '@mui/material/Pagination';
 
 import { useTranslate } from 'src/locales';
 import { useGetMenuItems } from 'src/api/menu-items';
+// import { updateMenuCategoryById } from 'src/api/menu-categories';
 import { MenuItemResponseSchema } from 'src/api/api-schemas';
 
 import AddOrderDialog from 'src/sections/dialogs/add-order';
@@ -61,6 +62,15 @@ const FoodList = ({ searchInput, categoryId }: any) => {
   //   console.log(response);
   // };
 
+  // const fetcher = async () => {
+  //   const data = {
+  //     icon: 'olives',
+  //     name: 'Additionals',
+  //   };
+
+  //   const response = await updateMenuCategoryById('657c1ed2d76971d5f7b56deb', data);
+  //   console.log(response);
+  // };
   return (
     <>
       {/* <Button onClick={fetcher}>update</Button> */}

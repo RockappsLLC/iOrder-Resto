@@ -13,10 +13,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
+import { useTranslate } from 'src/locales';
 import { useGetMenuItem } from 'src/api/menu-items';
 import { MenuItemResponseSchema } from 'src/api/api-schemas';
-
-import { useTranslate } from 'src/locales';
 
 import Iconify from 'src/components/iconify';
 import { useOrderContext } from 'src/components/order-sidebar/context';
@@ -173,7 +172,7 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
           </CardContent>
         </Card>
         <Typography fontSize={16} fontWeight={600}>
-          {'additional'}
+          {t('additional')}
         </Typography>
 
         {order.extras.map((extra) => (
@@ -254,7 +253,7 @@ export default function AddOrderDialog({ value, hide, foodId }: any) {
           multiline
           rows={4}
           sx={{ mt: '5px' }}
-          placeholder={t('type_your_note_here') + '...'}
+          placeholder={`${t('type_your_note_here')}'...'`}
         />
       </DialogContent>
 
