@@ -1,5 +1,10 @@
 import { useState, useCallback } from 'react';
 
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import { alpha } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 
@@ -8,14 +13,15 @@ import { useSettingsContext } from 'src/components/settings';
 import HomeHeader from 'src/components/home-header/home-header';
 import HomeSidebar from 'src/components/home-sidebar/home-sidebar';
 import OrderSidebar from 'src/components/order-sidebar/order-sidebar';
+import RunningOrders from 'src/components/drawers/running-orders';
 
 // ----------------------------------------------------------------------
 
 export default function HomeView() {
   const settings = useSettingsContext();
-  const [reservationList, setReservationList] = useState(false);
-  const [newReservation, setNewReservation] = useState(false);
-  const [guestDetail, setGuestDetail] = useState(false);
+  // const [reservationList, setReservationList] = useState(false);
+  // const [newReservation, setNewReservation] = useState(false);
+  // const [guestDetail, setGuestDetail] = useState(false);
 
   const [categoryId, seCategoryId]: any = useState('6535919fc665979a76591ca1');
 
@@ -65,6 +71,13 @@ export default function HomeView() {
       <Container maxWidth={settings.themeStretch ? false : 'xl'}>
         <Typography variant="h4"> Page Home </Typography>
         <Button onClick={() => setReservationList(true)}>Reservation</Button>
+    const [openDrawer, setOpenDrawer] = useState(false);
+
+  return (
+    <>
+      <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+        <Typography variant="h4"> Page Home </Typography>
+        <Button onClick={() => setOpenDrawer(true)}>Open Drawer</Button>        
         <Box
           sx={{
             mt: 5,
@@ -95,6 +108,7 @@ export default function HomeView() {
         hide={() => setGuestDetail(false)}
         stepBack={() => setNewReservation(true)}
       />
+      <RunningOrders open={openDrawer} hide={() => setOpenDrawer(false)} />
     </> */
   );
 }
