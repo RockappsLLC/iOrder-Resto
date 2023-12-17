@@ -1,79 +1,53 @@
-import { useState } from 'react';
-import Lightbox from 'react-datatrans-light-box';
+// import { useState } from 'react';
 
 import Box from '@mui/material/Box';
-import { Button } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
 import { useSettingsContext } from 'src/components/settings';
 
+// import {
+//   LightboxModal,
+//   TipAmountModal,
+//   OrderPaymentDrawer,
+//   OrderConfirmationModal,
+// } from '../modals';
+
 // ----------------------------------------------------------------------
 
 export default function HomeView() {
   const settings = useSettingsContext();
-  const [lightbox, showLightbox] = useState(false);
-  const [transactionId, setTransactionId] = useState();
 
-  // const transactionId = '231213122734000445';
-
-  const onLoaded = () => console.log('Loaded');
-  const onOpened = () => console.log('Opened');
-  const onCancelled = () => showLightbox(false);
-  const onError = (data: any) => {
-    console.log('Error:', data);
-    showLightbox(false);
-  };
-
-  const handleClick = () => {
-    const myHeaders = new Headers();
-    myHeaders.append(
-      'Authorization',
-      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTY0YWRhMjgxZWU4OTY5ZjBkOTNiNmYiLCJpYXQiOjE3MDI0NjUzNDAsImV4cCI6MTcwMjU1MTc0MH0.8OIbQurV20IXzbL9bH-tbphjtN0pgdtrNlug98ISXNM'
-    );
-    myHeaders.append('Content-Type', 'application/json');
-
-    const raw = JSON.stringify({
-      orderId: '65799401a47e1a5495925265',
-    });
-
-    const requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow',
-    };
-
-    fetch('https://backend.iorder.ch/api/v1/payments', requestOptions as any)
-      .then((response) => response.json())
-      .then((result) => {
-        // console.log(JSON.parse(result));
-        setTransactionId(result.data.transactionId);
-        showLightbox(true);
-      })
-      .catch((error) => console.log('error', error));
-  };
-
-  console.log('lightbox', lightbox);
+  // const [showLightboxModal, setShowLightboxModal] = useState(false);
+  // const [showOrderModal, setShowOrderModal] = useState(false);
+  // const [showTipsModal, setShowTipsModal] = useState(false);
+  // const [showTipModal, setShowTipModal] = useState(false);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Typography variant="h4"> Page Home </Typography>
 
-      {lightbox && transactionId ? (
-        <Lightbox
-          transactionId={transactionId}
-          // production
-          production={false}
-          onLoaded={onLoaded}
-          onOpened={onOpened}
-          onCancelled={onCancelled}
-          onError={onError}
-        />
-      ) : (
-        <Button onClick={handleClick}>Start Lightbox</Button>
-      )}
+      {/* <Button onClick={() => setShowTipModal(true)}> Show Drawer </Button>
+      <Button onClick={() => setShowOrderModal(true)}> Show order modal </Button>
+      <Button onClick={() => setShowTipsModal(true)}> Show tip amount </Button> */}
+
+      {/* <OrderConfirmationModal
+        showOrderModal={showOrderModal}
+        setShowOrderModal={() => setShowOrderModal(false)}
+      />
+
+      <TipAmountModal
+        showTipsModal={showTipsModal}
+        setShowTipsModal={() => setShowTipsModal(false)}
+      />
+
+      <OrderPaymentDrawer showModal={showTipModal} setShowModal={() => setShowTipModal(false)} />
+
+      <LightboxModal
+        showModal={showLightboxModal}
+        setShowModal={() => setShowLightboxModal(false)}
+      /> */}
 
       <Box
         sx={{
