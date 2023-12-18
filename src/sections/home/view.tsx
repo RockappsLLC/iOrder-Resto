@@ -11,6 +11,13 @@ import HomeHeader from 'src/components/home-header/home-header';
 import HomeSidebar from 'src/components/home-sidebar/home-sidebar';
 import OrderSidebar from 'src/components/order-sidebar/order-sidebar';
 
+// import {
+//   LightboxModal,
+//   TipAmountModal,
+//   OrderPaymentDrawer,
+//   OrderConfirmationModal,
+// } from '../modals';
+
 // ----------------------------------------------------------------------
 
 export default function HomeView() {
@@ -39,6 +46,11 @@ export default function HomeView() {
   // <Container maxWidth={settings.themeStretch ? false : 'xl'}>
   // <Button onClick={() => setReservationDrawer(true)}>Open Drawer</Button>
   // <ReservationList open={reservationDrawer} hide={() => setReservationDrawer(false)} />
+
+  // const [showLightboxModal, setShowLightboxModal] = useState(false);
+  // const [showOrderModal, setShowOrderModal] = useState(false);
+  // const [showTipsModal, setShowTipsModal] = useState(false);
+  // const [showTipModal, setShowTipModal] = useState(false);
 
   return (
     <Grid container columns={15} sx={{ height: '100%' }}>
