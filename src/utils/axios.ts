@@ -14,13 +14,18 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.response.use(
   (res) => res,
-  (error) => {
+  async (error) => {
     // if (error.response.s)
     console.log();
     if (error.response.status === 401) {
       setSession(null);
       localStorage.removeItem('accessToken');
-      window.location.href = '/other/locked';
+      const restaurantId = await localStorage.getItem('restaurantId');
+      if (restaurantId) {
+        window.location.href = '/other/locked';
+      } else {
+        window.location.href = '/auth/jwt/login';
+      }
     }
     Promise.reject((error.response && error.response.data) || 'Something went wrong');
   }
