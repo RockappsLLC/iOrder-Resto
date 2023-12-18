@@ -1,4 +1,7 @@
-import { Box } from '@mui/material';
+/* eslint-disable react/destructuring-assignment */
+import { FC } from 'react';
+
+import { Box, StyledComponentProps } from '@mui/material';
 
 export const Chair = (props: any) => (
   <Box
@@ -43,9 +46,23 @@ export const Chair = (props: any) => (
   />
 );
 
-export const ChairWithPosition = (props) => (
+interface ChairWithPositionProps extends StyledComponentProps {
+  minimal?: boolean;
+  vertical?: boolean;
+  height?: any;
+  width?: any;
+  top?: any;
+  left?: any;
+  bottom?: any;
+  right?: any;
+}
+
+export const ChairWithPosition: FC<ChairWithPositionProps> = (props) => (
   <Box
     sx={{
+      ...(props.height || props.width || props.left || props.right || props.top || props.bottom
+        ? {}
+        : {}),
       ...(props?.minimal
         ? {
             width: props.vertical ? 4 : 14,

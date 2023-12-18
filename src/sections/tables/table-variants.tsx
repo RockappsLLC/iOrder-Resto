@@ -112,7 +112,7 @@ export const Rectangle = ({ chairs, vertical, minimal, name }: any) => {
     >
       {vertical
         ? Array(chairsCount)
-            .fill()
+            .fill(0)
             .map((a, i) => (
               <ChairWithPosition
                 minimal={minimal}
@@ -130,7 +130,7 @@ export const Rectangle = ({ chairs, vertical, minimal, name }: any) => {
               />
             ))
         : Array(chairsCount)
-            .fill()
+            .fill(0)
             .map((a, i) => (
               <ChairWithPosition
                 minimal={minimal}
@@ -149,7 +149,7 @@ export const Rectangle = ({ chairs, vertical, minimal, name }: any) => {
 
       {vertical
         ? Array(chairsCount)
-            .fill()
+            .fill(0)
             .map((a, i) => (
               <ChairWithPosition
                 minimal={minimal}
@@ -167,7 +167,7 @@ export const Rectangle = ({ chairs, vertical, minimal, name }: any) => {
               />
             ))
         : Array(chairsCount)
-            .fill()
+            .fill(0)
             .map((a, i) => (
               <ChairWithPosition
                 minimal={minimal}
