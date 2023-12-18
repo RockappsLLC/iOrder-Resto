@@ -14,16 +14,19 @@ jobs:
       - name: Checkout the code
         uses: actions/setup-node@v2
         with:
-          node-version: 18
+          node-version: 16
 
       - name: Echo environmental variable
         run: echo "VITE_HOST_API=https://backend.iorder.ch/api/v1" >> .env
 
+      - name: Install yarn
+        run: npm install -g yarn
+
       - name: Install dependencies
-        run: npm install
+        run: yarn
 
       - name: Build
-        run: npm run build # Replace with your build command
+        run: yarn run build # Replace with your build command
 
       - name: copy file via ssh password
         uses: appleboy/scp-action@v0.1.4
