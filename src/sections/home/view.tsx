@@ -13,6 +13,9 @@ import OrderSidebar from 'src/components/order-sidebar/order-sidebar';
 
 export default function HomeView() {
   const settings = useSettingsContext();
+  const [reservationList, setReservationList] = useState(false);
+  const [newReservation, setNewReservation] = useState(false);
+  const [guestDetail, setGuestDetail] = useState(false);
 
   const [categoryId, seCategoryId]: any = useState('6535919fc665979a76591ca1');
 
@@ -21,6 +24,10 @@ export default function HomeView() {
   }, []);
 
   const [searchInput, setSearchInput] = useState('');
+
+  // <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+  // <Button onClick={() => setReservationDrawer(true)}>Open Drawer</Button>
+  // <ReservationList open={reservationDrawer} hide={() => setReservationDrawer(false)} />
 
   return (
     <Grid container columns={15} sx={{ height: '100%' }}>
@@ -54,5 +61,40 @@ export default function HomeView() {
         <OrderSidebar />
       </Grid>
     </Grid>
+    /*  <>
+      <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+        <Typography variant="h4"> Page Home </Typography>
+        <Button onClick={() => setReservationList(true)}>Reservation</Button>
+        <Box
+          sx={{
+            mt: 5,
+            width: 1,
+            height: 320,
+            borderRadius: 2,
+            bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04),
+            border: (theme) => `dashed 1px ${theme.palette.divider}`,
+          }}
+        />
+      </Container>
+      <NewReservation open={reservationDialog} hide={() => setReservationDialog(false)} />
+      <ReservationList open={reservationDrawer} hide={() => setReservationDrawer(false)} />
+        </> 
+      <GuestDetail open={guestDetail} hide={() => setGuestDetail(false)} />
+      <ReservationList
+        open={reservationList}
+        hide={() => setReservationList(false)}
+        newReservation={() => setNewReservation(true)}
+      />
+      <NewReservation
+        open={newReservation}
+        hide={() => setNewReservation(false)}
+        guestDetail={() => setGuestDetail(true)}
+      />
+      <GuestDetail
+        open={guestDetail}
+        hide={() => setGuestDetail(false)}
+        stepBack={() => setNewReservation(true)}
+      />
+    </> */
   );
 }
