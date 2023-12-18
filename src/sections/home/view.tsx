@@ -1,10 +1,5 @@
 import { useState, useCallback } from 'react';
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import { alpha } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
-
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 
@@ -13,7 +8,6 @@ import { useSettingsContext } from 'src/components/settings';
 import HomeHeader from 'src/components/home-header/home-header';
 import HomeSidebar from 'src/components/home-sidebar/home-sidebar';
 import OrderSidebar from 'src/components/order-sidebar/order-sidebar';
-import RunningOrders from 'src/components/drawers/running-orders';
 
 // ----------------------------------------------------------------------
 
