@@ -13,9 +13,9 @@ import OrderSidebar from 'src/components/order-sidebar/order-sidebar';
 
 export default function HomeView() {
   const settings = useSettingsContext();
-  const [reservationList, setReservationList] = useState(false);
-  const [newReservation, setNewReservation] = useState(false);
-  const [guestDetail, setGuestDetail] = useState(false);
+  // const [reservationList, setReservationList] = useState(false);
+  // const [newReservation, setNewReservation] = useState(false);
+  // const [guestDetail, setGuestDetail] = useState(false);
 
   const [categoryId, seCategoryId]: any = useState('6535919fc665979a76591ca1');
 
@@ -65,6 +65,13 @@ export default function HomeView() {
       <Container maxWidth={settings.themeStretch ? false : 'xl'}>
         <Typography variant="h4"> Page Home </Typography>
         <Button onClick={() => setReservationList(true)}>Reservation</Button>
+    const [openDrawer, setOpenDrawer] = useState(false);
+
+  return (
+    <>
+      <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+        <Typography variant="h4"> Page Home </Typography>
+        <Button onClick={() => setOpenDrawer(true)}>Open Drawer</Button>        
         <Box
           sx={{
             mt: 5,
@@ -95,6 +102,7 @@ export default function HomeView() {
         hide={() => setGuestDetail(false)}
         stepBack={() => setNewReservation(true)}
       />
+      <RunningOrders open={openDrawer} hide={() => setOpenDrawer(false)} />
     </> */
   );
 }

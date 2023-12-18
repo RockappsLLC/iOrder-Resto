@@ -31,6 +31,7 @@
     "@iconify/react": "^4.1.1",
     "@mui/lab": "^5.0.0-alpha.147",
     "@mui/material": "^5.14.12",
+    "@mui/material-next": "^6.0.0-alpha.113",
     "@mui/x-data-grid": "^6.18.4",
     "@mui/x-date-pickers": "^6.18.4",
     "autosuggest-highlight": "^3.3.4",
