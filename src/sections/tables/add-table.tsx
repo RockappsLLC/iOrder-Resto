@@ -68,7 +68,13 @@ const tables: Array<{ text: string } | NodeVariant> = [
   },
 ];
 
-const TableVariants = ({ positionX, positionY, onPress }) => {
+interface TableVariantsProps {
+  positionX: number;
+  positionY: number;
+  onPress: any;
+}
+
+const TableVariants: FC<TableVariantsProps> = ({ positionX, positionY, onPress }) => {
   return (
     <Box sx={{ minWidth: 300, width: 300 }}>
       {tables.map((table) => {
@@ -85,11 +91,7 @@ const TableVariants = ({ positionX, positionY, onPress }) => {
                 ...table,
               })
             }
-            pt={1}
-            pb={1}
-            px={1.5}
-            display="flex"
-            alignItems="center"
+            sx={{ pt: 1, pb: 1, px: 1.5, display: 'flex', alignItems: 'center' }}
             fullWidth
           >
             {getTableByType(table.type, true)}
