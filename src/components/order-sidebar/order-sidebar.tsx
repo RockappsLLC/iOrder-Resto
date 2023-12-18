@@ -186,8 +186,9 @@ const OrderSidebar = (props: OrderSidebarProps) => {
               </div>
               <Fab
                 onClick={() => setAddNote(true)}
+                disabled={!ordered}
                 size="small"
-                color="default"
+                color={ordered ? 'error' : 'default'}
                 variant="soft"
                 sx={{ width: '100%', borderRadius: '58px', marginTop: '16px' }}
               >
