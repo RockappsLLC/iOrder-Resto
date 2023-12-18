@@ -8,7 +8,8 @@ export function tabs(theme: Theme) {
     MuiTabs: {
       styleOverrides: {
         indicator: {
-          backgroundColor: theme.palette.text.primary,
+          // backgroundColor: theme.palette.text.primary,
+          backgroundColor: 'transparent',
         },
         scrollButtons: {
           width: 48,
@@ -24,12 +25,12 @@ export function tabs(theme: Theme) {
           minWidth: 48,
           minHeight: 48,
           fontWeight: theme.typography.fontWeightSemiBold,
-          '&:not(:last-of-type)': {
-            marginRight: theme.spacing(3),
-            [theme.breakpoints.up('sm')]: {
-              marginRight: theme.spacing(5),
-            },
-          },
+          // '&:not(:last-of-type)': {
+          //   marginRight: theme.spacing(3),
+          //   [theme.breakpoints.up('sm')]: {
+          //     marginRight: theme.spacing(5),
+          //   },
+          // },
           [`&:not(.${tabClasses.selected})`]: {
             color: theme.palette.text.secondary,
           },

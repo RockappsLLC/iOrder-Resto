@@ -9,6 +9,8 @@ import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 
 import ThemeProvider from 'src/theme';
 
+import 'src/locales/i18n';
+
 import ProgressBar from 'src/components/progress-bar';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
 import { SettingsDrawer, SettingsProvider } from 'src/components/settings';

@@ -145,13 +145,20 @@ export default function OwnerForm() {
       formData.append('files', dataSubmit.restaurantLogo[0]);
     }
 
-    formData.append('restaurantId', '653590bec665979a76591c9a');
+    let response;
+    const restaurantId = '653590bec665979a76591c9a';
+
+    formData.append('restaurantId', restaurantId);
     try {
-      const response = await postUpload(formData as any);
+      response = await postUpload(formData as any);
       console.log('response', response);
     } catch (err) {
       console.error(err);
     }
+
+    const { data: dataResponse } = response && response.data;
+    const imageName = dataResponse?.files;
+    const urlLink = `https://backend.iorder.ch/uploads/${restaurantId}/${imageName}`;
 
     try {
       await createRestaurant({
@@ -163,7 +170,7 @@ export default function OwnerForm() {
         email: profile.email,
         contactNumber: profile.contactNumber,
         password: dataSubmit.password,
-        icon: 'asd',
+        icon: urlLink,
         startDate: theStartDate,
         endDate: theEndDate,
       });

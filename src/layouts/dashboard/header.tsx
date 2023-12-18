@@ -15,6 +15,7 @@ import Logo from 'src/components/logo';
 import { HEADER } from '../config-layout';
 import NavHorizontal from './nav-horizontal';
 import AccountPopover from '../common/account-popover';
+import LanguagePopover from '../common/language-popover';
 import NotificationsPopover from '../common/notifications-popover';
 import DiningOptionsPopover from '../common/dining-options-popover';
 
@@ -72,6 +73,8 @@ export default function Header({ onOpenNav }: Props) {
 
         <DiningOptionsPopover />
 
+        <LanguagePopover />
+
         <ButtonBase
           component={m.button}
           sx={{
@@ -79,7 +82,7 @@ export default function Header({ onOpenNav }: Props) {
             width: 174,
             bgcolor: theme.palette.secondary.light,
             borderRadius: 40,
-            marginLeft: 2,
+            // marginLeft: 2,
           }}
           disabled
         >
