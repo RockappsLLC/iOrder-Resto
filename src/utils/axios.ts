@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
 import { HOST_API } from 'src/config-global';
-import { setSession } from 'src/auth/context/jwt/utils';
 
 // ----------------------------------------------------------------------
 
@@ -18,14 +17,14 @@ axiosInstance.interceptors.response.use(
     // if (error.response.s)
     console.log();
     if (error.response.status === 401) {
-      setSession(null);
-      localStorage.removeItem('accessToken');
-      const restaurantId = await localStorage.getItem('restaurantId');
-      if (restaurantId) {
-        window.location.href = '/other/locked';
-      } else {
-        window.location.href = '/auth/jwt/login';
-      }
+      // setSession(null);
+      // localStorage.removeItem('accessToken');
+      // const restaurantId = await localStorage.getItem('restaurantId');
+      // if (restaurantId) {
+      //   window.location.href = '/other/locked';
+      // } else {
+      //   window.location.href = '/auth/jwt/login';
+      // }
     }
     Promise.reject((error.response && error.response.data) || 'Something went wrong');
   }

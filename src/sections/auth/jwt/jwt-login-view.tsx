@@ -47,7 +47,7 @@ export default function JwtLoginView() {
 
   const defaultValues = {
     // email: 'info@iorder.ch',
-    email: 'ereza@iorder.ch',
+    email: 'john@doe.com',
     password: 'password',
   };
 
