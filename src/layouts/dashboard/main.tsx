@@ -36,6 +36,12 @@ export default function Main({ children, sx, ...other }: BoxProps) {
             pt: 10,
             pb: 0,
           }),
+          // pt: `${HEADER.H_MOBILE + 24}px`,
+          // // pb: 10,
+          // // ...(lgUp && {
+          // //   pt: `${HEADER.H_MOBILE * 2 + 40}px`,
+          // //   pb: 15,
+          // // }),
         }}
       >
         {children}
