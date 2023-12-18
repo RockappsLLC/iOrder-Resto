@@ -31,7 +31,7 @@ export function useGetTables(params?: IGetTablesQueryParams) {
   const URL = [endpoints.tables.get, { params }];
 
   const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
-
+  console.log(data);
   const memoizedValue = useMemo(
     () => ({
       tables: (data as GetTablesResponse['data'])?.tables || [],
