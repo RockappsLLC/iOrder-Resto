@@ -1,7 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
+
+import { useGetMenuCategories } from 'src/api/menu-categories';
 
 import FoodList from 'src/components/food-list';
 import { useSettingsContext } from 'src/components/settings';
@@ -17,7 +19,16 @@ export default function HomeView() {
   // const [newReservation, setNewReservation] = useState(false);
   // const [guestDetail, setGuestDetail] = useState(false);
 
-  const [categoryId, seCategoryId]: any = useState('6535919fc665979a76591ca1');
+  const { menuCategories, menuCategoriesLoading } = useGetMenuCategories();
+  const [categoryId, seCategoryId]: any = useState('');
+
+  useEffect(() => {
+    if (!menuCategoriesLoading && menuCategories.length) {
+      seCategoryId(menuCategories[0]?._id as string);
+    } else {
+      seCategoryId('');
+    }
+  }, [menuCategoriesLoading, menuCategories]);
 
   const handleCategoryId = useCallback((event: React.SyntheticEvent, newValue: string) => {
     seCategoryId(newValue);
