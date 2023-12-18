@@ -208,6 +208,7 @@ export interface MenuItemResponseSchema {
   icon?: string;
   status?: boolean;
   preparationTime?: number;
+  isAdditional?: boolean;
 }
 export interface MenuItemsResponseSchema {
   menuItems?: MenuItemResponseSchema[];
