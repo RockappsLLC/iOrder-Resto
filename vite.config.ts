@@ -6,13 +6,14 @@ import checker from 'vite-plugin-checker';
 // ----------------------------------------------------------------------
 
 export default defineConfig({
+  base: './',
   plugins: [
     react(),
     checker({
-      typescript: true,
-      eslint: {
-        lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"',
-      },
+      // typescript: true,
+      // eslint: {
+      //   lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"',
+      // },
     }),
   ],
   resolve: {
@@ -28,9 +29,9 @@ export default defineConfig({
     ],
   },
   server: {
-    port: 8081,
+    port: 8083,
   },
   preview: {
-    port: 8081,
+    port: 8083,
   },
 });

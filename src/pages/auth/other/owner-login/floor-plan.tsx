@@ -1,5 +1,9 @@
-import { Box } from '@mui/material';
+import { useGetMenuItems } from 'src/api/menu-items';
 
-export default function JwtLoginView() {
-  return <Box>Floor Plan</Box>;
+import TablesView from 'src/sections/tables/view';
+
+export default function FloorPlanView() {
+  const { menuItems, menuItemsLoading } = useGetMenuItems();
+  console.log(menuItems);
+  return <TablesView />;
 }
