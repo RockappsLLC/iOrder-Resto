@@ -17,6 +17,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTranslate } from 'src/locales';
 
 import AddNote from 'src/sections/dialogs/add-note';
+import { OrderPaymentDrawer } from 'src/sections/modals';
 
 import Iconify from '../iconify';
 import { useOrderContext } from './context';
@@ -52,10 +53,11 @@ const schema = yup.object().shape({
 });
 
 const OrderSidebar = (props: OrderSidebarProps) => {
-  const { orders, ordered, updateOrder, removeOrder } = useOrderContext();
+  const { orders, ordered, updateOrder, removeOrder, total, subTotal } = useOrderContext();
 
   const [currentTab, setCurrentTab] = useState('buy');
   const [addNote, setAddNote] = useState(false);
+  const [showOrderModal, setShowOrderModal] = useState(false);
 
   const { t } = useTranslate();
 
@@ -81,20 +83,8 @@ const OrderSidebar = (props: OrderSidebarProps) => {
   const onSubmit = (data: any) => {
     // addData(data)
   };
-  // console.log(orders);
-  const subTotal = orders.reduce((acc: number, currentItem: any) => {
-    // const extrasTotal = currentItem.extras.reduce(
-    //   (_acc: number, _obj: any) => _acc + Number(_obj.price || 0) * Number(_obj.count || 0),
-    //   0
-    // );
-    const price = Number(currentItem.price || 0);
-    const total = price * Number(currentItem.count || 0);
-    return acc + total;
-  }, 0);
 
   const taxTotal = Math.round(Number(subTotal * TAX) * 10) / 10;
-
-  const totalPrice = subTotal + taxTotal;
 
   return (
     <div style={{ height: '90%' }}>
@@ -330,7 +320,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                     </Typography>
 
                     <Typography fontSize={16} fontWeight={600} color="#F15F34">
-                      $ {totalPrice.toFixed(2)}
+                      $ {total.toFixed(2)}
                     </Typography>
                   </div>
                   <Button
@@ -338,6 +328,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                     fullWidth
                     variant="contained"
                     color="primary"
+                    onClick={() => setShowOrderModal(true)}
                     sx={{ borderRadius: '58px', my: '15px', ':hover': { bgcolor: '#f26f49' } }}
                   >
                     {t('place_order')}
@@ -359,6 +350,11 @@ const OrderSidebar = (props: OrderSidebarProps) => {
         </Box>
       )}
       <AddNote open={addNote} hide={() => setAddNote(false)} />
+
+      <OrderPaymentDrawer
+        showModal={showOrderModal}
+        setShowModal={() => setShowOrderModal(false)}
+      />
     </div>
   );
 };
