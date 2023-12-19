@@ -25,6 +25,7 @@ interface IGetCustomersQueryParams {
   restaurantId?: string;
   offset?: number;
   limit?: number;
+  search?: string;
 }
 
 export function useGetCustomers(params?: IGetCustomersQueryParams) {
@@ -39,6 +40,7 @@ export function useGetCustomers(params?: IGetCustomersQueryParams) {
       customersError: error,
       customersValidating: isValidating,
       customersEmpty: !isLoading && !data?.customers.length,
+      totalLength: data?.totalLength,
     }),
     [data, error, isLoading, isValidating]
   );
