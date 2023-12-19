@@ -2,14 +2,10 @@ import { m } from 'framer-motion';
 import { useState, useCallback } from 'react';
 
 import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import List from '@mui/material/List';
 import Stack from '@mui/material/Stack';
 import Badge from '@mui/material/Badge';
-import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -23,6 +19,8 @@ import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
 import Scrollbar from 'src/components/scrollbar';
+
+import { NotificationsModal } from 'src/sections/modals';
 
 import NotificationItem from './notification-item';
 
@@ -162,9 +160,11 @@ export default function NotificationsPopover() {
         </Badge>
       </IconButton>
 
-      <Drawer
+      <NotificationsModal showModal={drawer.value} setShowModal={drawer.setValue} />
+
+      {/* <Drawer
         open={drawer.value}
-        onClose={drawer.onFalse}
+        onClose={drawer.onFalse
         anchor="right"
         slotProps={{
           backdrop: { invisible: true },
@@ -198,7 +198,7 @@ export default function NotificationsPopover() {
             View All
           </Button>
         </Box>
-      </Drawer>
+      </Drawer> */}
     </>
   );
 }

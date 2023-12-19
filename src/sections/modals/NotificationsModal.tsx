@@ -9,11 +9,6 @@ interface NotificationsModalProps {
   setShowModal: (value: boolean) => void;
 }
 
-// available -1 - blue
-// reserved -2 - orange
-// billed-3 - green
-// available soon-4 - yellow
-
 const data = [
   {
     tableName: 'Table 06',
@@ -21,7 +16,7 @@ const data = [
     status: 2,
     orderID: '#256434',
     tableDec: 'New order',
-    time: 'time',
+    time: '14min',
     tableButton: 'View order',
   },
   {
@@ -30,7 +25,7 @@ const data = [
     status: 3,
     orderID: '#256873',
     tableDec: 'New call from the table',
-    time: 'time',
+    time: '14min',
     tableButton: 'View order',
   },
   {
@@ -39,20 +34,32 @@ const data = [
     status: 4,
     orderID: '#256873',
     tableDec: 'Failed payment. Offer help',
-    time: 'time',
+    time: '14min',
     tableButton: 'View order',
   },
 ];
 
 const NotificationsModal = ({ showModal, setShowModal }: NotificationsModalProps) => {
+  const handleViewOrderButton = () => {
+    console.log('view order button  clicked');
+  };
+
   return (
-    <Drawer open={showModal} onClose={() => setShowModal(false)} anchor="right">
+    <Drawer
+      open={showModal}
+      onClose={() => setShowModal(false)}
+      anchor="right"
+      PaperProps={{
+        style: {
+          backgroundColor: 'white',
+        },
+      }}
+    >
       <Container
         sx={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          bgcolor: 'white',
         }}
       >
         <Stack
@@ -61,9 +68,11 @@ const NotificationsModal = ({ showModal, setShowModal }: NotificationsModalProps
           justifyContent="space-between"
           marginY={2}
         >
-          <Stack direction="row">
-            <Typography variant="h5"> Notifications</Typography>
-            <Label color="error">asd</Label>
+          <Stack direction="row" justifyContent="center" alignItems="center">
+            <Typography variant="h5"> Upcoming Orders</Typography>
+            <Label color="error" ml={1} sx={{ borderRadius: 5 }}>
+              1
+            </Label>
           </Stack>
 
           <CloseIcon onClick={() => setShowModal(false)} />
@@ -73,8 +82,86 @@ const NotificationsModal = ({ showModal, setShowModal }: NotificationsModalProps
 
         <Stack>
           <Typography variant="body1" marginY={2} color="#828487">
-            All notifications are listed here
+            Additional order are almost ready. Would you like to take them with you?
           </Typography>
+        </Stack>
+
+        <Stack
+          sx={{ backgroundColor: '#F15F34', border: '1px solid #E4E4E4' }}
+          borderRadius={3}
+          mb={2}
+        >
+          <Stack direction="row" padding={2}>
+            <Box
+              borderRadius={30}
+              width={50}
+              height={50}
+              sx={{
+                backgroundColor: '#FFF',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <i className="fi fi-tr-beacon" style={{ fontSize: '20px' }} />
+            </Box>
+
+            <Stack direction="row" justifyContent="space-between" sx={{ width: '100%' }}>
+              <Stack direction="column" ml={1}>
+                <Stack direction="row">
+                  <Typography variant="body2" color="#FFF">
+                    Table 08
+                  </Typography>
+
+                  <Label
+                    ml={1}
+                    sx={{ borderRadius: 10, backgroundColor: '#fff', color: '#F15F34' }}
+                    fontWeight={400}
+                  >
+                    Unpaid
+                  </Label>
+                </Stack>
+
+                <Typography variant="subtitle1" color="#fff">
+                  New call from the table
+                </Typography>
+              </Stack>
+
+              <Stack direction="row" gap={1}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  sx={{
+                    borderRadius: 5,
+                    height: '30px',
+                    backgroundColor: '#fff',
+                    color: '#F15F34',
+                  }}
+                  onClick={handleViewOrderButton}
+                >
+                  Respond
+                </Button>
+              </Stack>
+            </Stack>
+          </Stack>
+
+          <Divider sx={{ color: '#fff', backgroundColor: '#fff' }} />
+
+          <Stack direction="row" my={2} justifyContent="space-between" px={2}>
+            <Typography marginLeft={2} color="#FFF">
+              Order ID #256873
+            </Typography>
+
+            <Label
+              variant="filled"
+              startIcon={<i className="fi fi-tr-clock-seven" style={{ color: '#fff' }} />}
+              sx={{ backgroundColor: '#FFF' }}
+            >
+              <Typography ml={1} variant="caption" color="#000">
+                18:12
+              </Typography>
+            </Label>
+          </Stack>
         </Stack>
 
         <Stack>
@@ -84,7 +171,7 @@ const NotificationsModal = ({ showModal, setShowModal }: NotificationsModalProps
               borderRadius={3}
               mb={2}
             >
-              <Stack direction="row" padding={2} justifyContent="space-between">
+              <Stack direction="row" padding={2}>
                 <Box
                   borderRadius={30}
                   width={50}
@@ -100,25 +187,53 @@ const NotificationsModal = ({ showModal, setShowModal }: NotificationsModalProps
                 >
                   <i className="fi fi-tr-restaurant" style={{ fontSize: '20px' }} />
                 </Box>
-                <Stack direction="column">
-                  <Stack direction="row">
-                    <Typography>{item.tableName}</Typography>
-                    <Label color="error" ml={1} sx={{ borderRadius: 10 }}>
-                      {item.tableStatus}
-                    </Label>
+
+                <Stack direction="row" justifyContent="space-between" sx={{ width: '100%' }}>
+                  <Stack direction="column" ml={1}>
+                    <Stack direction="row">
+                      <Typography variant="body2" color="#828487">
+                        {item.tableName}
+                      </Typography>
+
+                      <Label
+                        color={item.status === 0 ? 'success' : 'error'}
+                        ml={1}
+                        sx={{ borderRadius: 10 }}
+                        fontWeight={400}
+                      >
+                        {item.status === 0 ? 'Paid' : 'Unpaid'}
+                      </Label>
+                    </Stack>
+
+                    <Typography variant="subtitle1">{item.tableDec}</Typography>
                   </Stack>
-                  <Typography>{item.tableDec}</Typography>
+
+                  <Stack direction="row" gap={1}>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      sx={{ borderRadius: 5, height: '30px' }}
+                      onClick={handleViewOrderButton}
+                    >
+                      View Order
+                    </Button>
+                  </Stack>
                 </Stack>
-                <Button variant="contained" color="error" sx={{ borderRadius: 5, height: '30px' }}>
-                  {item.tableButton}
-                </Button>
               </Stack>
 
               <Divider sx={{ color: '#fff', backgroundColor: '#fff' }} />
 
-              <Stack direction="row" my={2} justifyContent="space-between">
-                <Typography marginLeft={2}>Order id {item.orderID}</Typography>
-                <Label marginRight={2}>asd</Label>
+              <Stack direction="row" my={2} justifyContent="space-between" px={2}>
+                <Typography marginLeft={2} color="#828487">
+                  Order ID {item.orderID}
+                </Typography>
+
+                <Label>
+                  <i className="fi fi-tr-clock-seven" />
+                  <Typography ml={1} variant="caption">
+                    {item.time}
+                  </Typography>
+                </Label>
               </Stack>
             </Stack>
           ))}
