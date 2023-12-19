@@ -14,16 +14,7 @@ import {
 
 import Scrollbar from 'src/components/scrollbar';
 import { TableHeadCustom } from 'src/components/table';
-
-function createData(name: string, calories: number, fat: number, carbs: number, protein: number) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const TABLE_DATA = [
-  createData('Frozen', 1, 6.0, 24, 4.0),
-  createData('Ice', 1, 9.0, 37, 4.3),
-  createData('Eclair', 1, 16.0, 24, 6.0),
-];
+import { useOrderContext } from 'src/components/order-sidebar/context';
 
 const TABLE_HEAD = [
   { id: 'item-name', label: 'Item Name' },
@@ -43,6 +34,16 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
     setShowOrderModal(false);
   };
 
+  const { inputAmount, subTotal, total, orders, paymentMethod } = useOrderContext();
+
+  let change;
+
+  if (inputAmount !== '') {
+    change = inputAmount - total;
+  } else {
+    change = 0;
+  }
+
   return (
     <Modal open={showOrderModal} onClose={handleCloseModal}>
       <Box
@@ -51,7 +52,6 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          // width: 400,
           borderRadius: 2,
           bgcolor: 'background.paper',
           boxShadow: 24,
@@ -73,13 +73,13 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
               <TableHeadCustom headLabel={TABLE_HEAD} sx={{ textTransform: 'uppercase' }} />
 
               <TableBody>
-                {TABLE_DATA.map((row) => (
-                  <TableRow key={row.name}>
-                    <TableCell>{row.name}</TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">${row.fat}</TableCell>
-                    <TableCell align="right">${row.carbs}</TableCell>
-                    <TableCell align="right">${row.protein}</TableCell>
+                {orders.map((order: any, index: number) => (
+                  <TableRow key={order._id}>
+                    <TableCell>{order.name}</TableCell>
+                    <TableCell align="right">{order.count}</TableCell>
+                    <TableCell align="right">${order.price}</TableCell>
+                    <TableCell align="right">${order.carbs}</TableCell>
+                    <TableCell align="right">${order.price * order.count}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -101,7 +101,7 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
           <Stack width="50%" ml={5}>
             <Stack direction="row" justifyContent="space-between" mb={1.5}>
               <Typography color="#9C9C9C">SUBTOTAL</Typography>
-              <Typography>$0</Typography>
+              <Typography>${subTotal}</Typography>
             </Stack>
 
             <Stack direction="row" justifyContent="space-between" mb={1.5}>
@@ -122,7 +122,14 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
             <Stack direction="row" justifyContent="space-between" mb={1.5}>
               <Typography>BILL AMOUNT</Typography>
               <Typography color="#F15F34" fontWeight={600}>
-                $111
+                ${total}
+              </Typography>
+            </Stack>
+
+            <Stack direction="row" justifyContent="space-between" mb={1.5}>
+              <Typography>CHANGE</Typography>
+              <Typography color="#F15F34" fontWeight={600}>
+                ${change}
               </Typography>
             </Stack>
           </Stack>
@@ -141,8 +148,7 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
           <Stack width="60%">
             <Typography>Payment method</Typography>
             <Stack direction="row">
-              <Typography>Cash</Typography>
-              {/* <MoneyIcon /> */}
+              <Typography>{paymentMethod}</Typography>
             </Stack>
           </Stack>
 
