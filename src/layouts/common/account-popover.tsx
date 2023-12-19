@@ -48,7 +48,7 @@ export default function AccountPopover() {
       popover.onClose();
       localStorage.removeItem('accessToken');
       localStorage.removeItem('restaurantId');
-      router.replace('/');
+      router.replace('/auth/jwt/login');
     } catch (error) {
       console.error(error);
     }

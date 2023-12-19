@@ -26,7 +26,7 @@ export default function DateScreen() {
       if (restaurnatId) {
         router.replace('/auth/other/pin-screen');
       } else {
-        router.replace('/');
+        router.replace('/auth/jwt/login');
       }
     } catch (error) {
       console.error(error);

@@ -208,6 +208,7 @@ export interface MenuItemResponseSchema {
   icon?: string;
   status?: boolean;
   preparationTime?: number;
+  isAdditional?: boolean;
 }
 export interface MenuItemsResponseSchema {
   menuItems?: MenuItemResponseSchema[];
@@ -343,6 +344,7 @@ export interface GetReservationByIdResponse {
   data?: ReservationResponseSchema;
 }
 export interface ReservationResponseSchema {
+  _id: string;
   name?: string;
   tableId?: string;
   restaurantId?: string;

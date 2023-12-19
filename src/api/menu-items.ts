@@ -25,6 +25,7 @@ interface IGetMenuItemsQueryParams {
   offset?: number;
   limit?: number;
   search?: string;
+  categoryId?: string;
 }
 
 export function useGetMenuItems(params?: IGetMenuItemsQueryParams) {
@@ -39,6 +40,7 @@ export function useGetMenuItems(params?: IGetMenuItemsQueryParams) {
       menuItemsError: error,
       menuItemsValidating: isValidating,
       menuItemsEmpty: !isLoading && !data?.menuItems.length,
+      totalLength: data?.totalLength,
     }),
     [data, error, isLoading, isValidating]
   );

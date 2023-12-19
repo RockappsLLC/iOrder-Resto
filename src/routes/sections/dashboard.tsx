@@ -7,6 +7,7 @@ import DashboardLayout from 'src/layouts/dashboard';
 import { LoadingScreen } from 'src/components/loading-screen';
 
 // ----------------------------------------------------------------------
+const TablesPage = lazy(() => import('src/pages/dashboard/tables'));
 
 const IndexPage = lazy(() => import('src/pages/dashboard/home'));
 const BillsPage = lazy(() => import('src/pages/dashboard/bills'));
@@ -29,6 +30,7 @@ export const dashboardRoutes = [
       </AuthGuard>
     ),
     children: [
+      { path: 'tables', element: <TablesPage /> },
       { element: <IndexPage />, index: true },
       { path: 'bills', element: <BillsPage /> },
       { path: 'customers', element: <CustomersPage /> },

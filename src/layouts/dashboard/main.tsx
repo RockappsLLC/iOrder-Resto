@@ -24,15 +24,24 @@ export default function Main({ children, sx, ...other }: BoxProps) {
       <Box
         component="main"
         sx={{
+          height: '100%',
           minHeight: 1,
           display: 'flex',
           flexDirection: 'column',
-          pt: `${HEADER.H_MOBILE + 24}px`,
-          pb: 10,
+          // pt: `${HEADER.H_MOBILE + 24}px`,
+          pt: 10,
+          pb: 0,
           ...(lgUp && {
-            pt: `${HEADER.H_MOBILE * 2 + 40}px`,
-            pb: 15,
+            // pt: `${HEADER.H_MOBILE * 2 + 40}px`,
+            pt: 10,
+            pb: 0,
           }),
+          // pt: `${HEADER.H_MOBILE + 24}px`,
+          // // pb: 10,
+          // // ...(lgUp && {
+          // //   pt: `${HEADER.H_MOBILE * 2 + 40}px`,
+          // //   pb: 15,
+          // // }),
         }}
       >
         {children}
