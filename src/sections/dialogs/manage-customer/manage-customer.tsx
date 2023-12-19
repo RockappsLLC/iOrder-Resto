@@ -57,8 +57,8 @@ const ManageCustomer = ({ open, hide }: any) => {
   useEffect(() => {
     if (!customersLoading && customers.length) {
       setCustomersData(customers);
-      console.log(customers);
     }
+    // console.log(customers);
   }, [customersLoading, customers]);
 
   return (
@@ -116,26 +116,17 @@ const ManageCustomer = ({ open, hide }: any) => {
                 {customersData !== undefined &&
                   customersData.map((customer: CustomerResponseSchema) => (
                     <StyledTableRow
-                      // key={customer._id}
+                      key={customer._id}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                       <TableCell>
-                        <Typography fontSize={14}>
-                          {/* {customer.name} */}
-                          John sparrow
-                        </Typography>
+                        <Typography fontSize={14}>{customer.name}</Typography>
                       </TableCell>
                       <TableCell align="center">
-                        <Typography fontSize={14}>
-                          {/* {customer.contactNumber} */}
-                          0038345786903
-                        </Typography>
+                        <Typography fontSize={14}>{customer.contactNumber}</Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography>
-                          {/* {customer.email} */}
-                          john.sparrow@mail.com
-                        </Typography>
+                        <Typography>{customer.email}</Typography>
                       </TableCell>
                       <TableCell align="center">-</TableCell>
                       <TableCell
@@ -192,7 +183,7 @@ const ManageCustomer = ({ open, hide }: any) => {
       <DialogActions
         sx={{
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: totalLength > 6 ? 'space-between' : 'flex-end',
           width: '100%',
           p: matches ? '10px' : '24px',
         }}
