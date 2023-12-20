@@ -72,7 +72,6 @@ export default function Header({ onOpenNav }: Props) {
         <NotificationsPopover />
 
         <DiningOptionsPopover />
-
         <LanguagePopover />
 
         <ButtonBase

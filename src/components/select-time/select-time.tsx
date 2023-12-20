@@ -12,6 +12,12 @@ const SelectTime = ({ time, setTime }: any) => {
           onChange={(newValue: any) => setTime(newValue)}
           orientation="landscape"
           minutesStep={5}
+          componentsProps={{
+            actionBar: {
+              // The actions will be the same between desktop and mobile
+              actions: [],
+            },
+          }}
         />
       </LocalizationProvider>
     </Container>

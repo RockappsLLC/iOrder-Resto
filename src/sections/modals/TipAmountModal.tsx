@@ -15,7 +15,7 @@ const TipAmountModal = ({ showTipsModal, setShowTipsModal }: TipAmountProps) => 
   const [inputValue, setInputValue] = useState('');
   const { tipAmount, setTipAmount } = useOrderContext();
 
-  console.log('tipAmount', tipAmount);
+  // console.log('tipAmount', tipAmount);
 
   const handleCloseTipModal = () => {
     setShowTipsModal(false);

@@ -14,7 +14,13 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 
+import { createCustomer } from 'src/api/customers';
+import { createReservation } from 'src/api/reservations';
+
 import Iconify from 'src/components/iconify';
+import { useOrderContext } from 'src/components/order-sidebar/context';
+
+import { useReservationContext } from '../reservation';
 
 const defaultValues = {
   fullName: '',
@@ -60,8 +66,10 @@ const schema = yup.object().shape({
 
 const tags = ['VIP', 'Birthday', 'Anniversary', 'Private Dining', 'First time'];
 
-const GuestDetail = ({ open, hide, stepBack }: any) => {
+const GuestDetail = ({ open }: any) => {
   const [tagName, setTagName] = useState('VIP');
+  const { reservation, setReservation, setReservationTab } = useReservationContext();
+  const { activeTable, setActiveTable } = useOrderContext();
 
   const {
     reset,
@@ -74,18 +82,52 @@ const GuestDetail = ({ open, hide, stepBack }: any) => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     try {
       console.log({ ...data, tag: tagName });
-      hide();
+      const restaurantId = await localStorage.getItem('restaurantId');
+      const {
+        data: { _id },
+      } = await createCustomer({
+        name: data.fullName,
+        email: data.email,
+        contactNumber: data.phoneNumber,
+        // Todo update (make Mr Ms option)
+        sex: 'male',
+        restaurantId: String(restaurantId),
+        // Todo remove (not required)
+        //   street: '',
+        //   city: '',
+        //   canton: '',
+        //   dateOfBirth: null
+      });
+
+      createReservation({
+        ...reservation,
+        name: data.fullName,
+        initials: data.initials,
+        pagerNumber: data.pagerNumber,
+        tag: data.tag,
+        visitNote: data.visitNote,
+        userId: _id,
+        restaurantId: String(restaurantId),
+        tableId: activeTable._id,
+      });
+
+      handleClose();
       reset(defaultValues);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const handleClose = () => {
+    setReservation(null);
+    setReservationTab(null);
+  };
+
   return (
-    <Dialog open={open} onClose={hide}>
+    <Dialog open={open} onClose={handleClose}>
       <Box
         sx={{
           display: 'flex',
@@ -96,8 +138,7 @@ const GuestDetail = ({ open, hide, stepBack }: any) => {
         <Grid sx={{ display: 'flex' }}>
           <Button
             onClick={() => {
-              hide();
-              stepBack();
+              setReservationTab('new');
               reset(defaultValues);
             }}
           >
@@ -105,7 +146,7 @@ const GuestDetail = ({ open, hide, stepBack }: any) => {
           </Button>
           <DialogTitle sx={{ pl: 0 }}>Guest Detail</DialogTitle>
         </Grid>
-        <Button onClick={hide}>
+        <Button onClick={handleClose}>
           <Iconify icon="tabler:x" />
         </Button>
       </Box>
@@ -122,12 +163,6 @@ const GuestDetail = ({ open, hide, stepBack }: any) => {
                     label="Full name"
                     placeholder="Enter name"
                     {...field}
-                    InputProps={{
-                      inputProps: {
-                        pattern: '^[A-Za-züöäÜÖÄ]+$',
-                        title: 'Only characters from A to Z are allowed',
-                      },
-                    }}
                     error={Boolean(errors.fullName)}
                     {...(errors.fullName && { helperText: errors.fullName.message })}
                   />
@@ -146,12 +181,6 @@ const GuestDetail = ({ open, hide, stepBack }: any) => {
                       label="Email"
                       placeholder="Enter email address"
                       {...field}
-                      InputProps={{
-                        inputProps: {
-                          pattern: '^[A-Za-züöäÜÖÄ0-9._@]+$',
-                          title: 'Only A-Z, 0-9, @, period and underscore are allowed',
-                        },
-                      }}
                       error={Boolean(errors.email)}
                       {...(errors.email && { helperText: errors.email.message })}
                     />
@@ -169,12 +198,6 @@ const GuestDetail = ({ open, hide, stepBack }: any) => {
                       label="Phone number"
                       placeholder="Enter phone number"
                       {...field}
-                      InputProps={{
-                        inputProps: {
-                          pattern: '^[0-9+]*$',
-                          title: 'Only + and 0-9 numbers are allowed',
-                        },
-                      }}
                       error={Boolean(errors.phoneNumber)}
                       {...(errors.phoneNumber && { helperText: errors.phoneNumber.message })}
                     />
@@ -279,7 +302,7 @@ const GuestDetail = ({ open, hide, stepBack }: any) => {
           <Button
             fullWidth
             onClick={() => {
-              hide();
+              handleClose();
               reset(defaultValues);
             }}
             color="primary"

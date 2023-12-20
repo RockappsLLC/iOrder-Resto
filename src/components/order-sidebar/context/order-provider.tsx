@@ -8,6 +8,8 @@ interface IOrder extends OrderResponseSchema {}
 const TAX = 0.1;
 
 export const OrderProvider = ({ children }: any) => {
+  const [activeTable, setActiveTable] = useState(null);
+
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [ordered, setOrdered] = useState(false);
 
@@ -73,6 +75,8 @@ export const OrderProvider = ({ children }: any) => {
 
   const providerValues = useMemo(
     () => ({
+      activeTable,
+      setActiveTable,
       ordered,
       setOrdered,
       total,
@@ -91,6 +95,8 @@ export const OrderProvider = ({ children }: any) => {
       updateOrder,
     }),
     [
+      activeTable,
+      setActiveTable,
       ordered,
       setOrdered,
       orders,

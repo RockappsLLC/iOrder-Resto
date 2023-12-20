@@ -62,7 +62,6 @@ export function useNavData() {
             path: paths.dashboard.customers,
             icon: ICONS.user,
           },
-          { title: 'tables', path: paths.dashboard.tables, icon: ICONS.dashboard },
         ],
       },
     ],

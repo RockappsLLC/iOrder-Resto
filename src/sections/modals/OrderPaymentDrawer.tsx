@@ -41,7 +41,7 @@ interface OrderPaymentProps {
 
 const OrderPaymentDrawer = ({ showModal, setShowModal }: OrderPaymentProps) => {
   const [selectedBox, setSelectedBox] = useState(null);
-  console.log('selectedBox', selectedBox);
+  // console.log('selectedBox', selectedBox);
   const [selectedPaymentBox, setSelectedPaymentBox] = useState(0);
 
   const [showTipModal, setShowTipModal] = useState(false);

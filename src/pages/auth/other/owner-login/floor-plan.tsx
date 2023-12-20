@@ -4,6 +4,6 @@ import TablesView from 'src/sections/tables/view';
 
 export default function FloorPlanView() {
   const { menuItems, menuItemsLoading } = useGetMenuItems();
-  console.log(menuItems);
+  // console.log(menuItems);
   return <TablesView />;
 }

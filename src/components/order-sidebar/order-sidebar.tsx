@@ -18,9 +18,11 @@ import { useTranslate } from 'src/locales';
 
 import AddNote from 'src/sections/dialogs/add-note';
 import { OrderPaymentDrawer } from 'src/sections/modals';
+import { useDiningOptionsContext } from 'src/sections/dining-options';
 
 import Iconify from '../iconify';
 import { useOrderContext } from './context';
+import OrderReservations from './reservations';
 
 interface OrderSidebarProps {}
 
@@ -53,7 +55,10 @@ const schema = yup.object().shape({
 });
 
 const OrderSidebar = (props: OrderSidebarProps) => {
-  const { orders, ordered, updateOrder, removeOrder, total, subTotal } = useOrderContext();
+  const { orders, ordered, updateOrder, removeOrder, total, subTotal, activeTable } =
+    useOrderContext();
+
+  const { diningOption } = useDiningOptionsContext();
 
   const [currentTab, setCurrentTab] = useState('buy');
   const [addNote, setAddNote] = useState(false);
@@ -88,44 +93,47 @@ const OrderSidebar = (props: OrderSidebarProps) => {
 
   return (
     <div style={{ height: '90%' }}>
-      <Tabs
-        value={currentTab}
-        onChange={handleChangeTab2}
-        sx={{
-          bgcolor: '#F8F9FD',
-          borderRadius: '80px',
-          my: 2,
-          mx: '20px',
-          px: 1,
-        }}
-      >
-        <Tab
-          value="buy"
-          label={t('buy')}
+      {diningOption !== 'takeaway' && (
+        <Tabs
+          value={currentTab}
+          onChange={handleChangeTab2}
           sx={{
-            width: '50%',
-            mx: 'auto',
-            my: '6px',
+            bgcolor: '#F8F9FD',
             borderRadius: '80px',
-            bgcolor: currentTab === 'buy' ? 'white' : '',
+            mt: 2,
+            mx: '20px',
+            px: 1,
           }}
-        />
-        <Tab
-          value="reservation"
-          label={t('reservation')}
-          sx={{
-            width: '50%',
-            // px: 5,
-            mx: 'auto',
-            my: '6px',
-            borderRadius: '80px',
-            bgcolor: currentTab === 'reservation' ? 'white' : '',
-          }}
-        />
-      </Tabs>
+        >
+          <Tab
+            value="buy"
+            label={t('buy')}
+            sx={{
+              width: '50%',
+              mx: 'auto',
+              my: '6px',
+              borderRadius: '80px',
+              bgcolor: currentTab === 'buy' ? 'white' : '',
+            }}
+          />
+          <Tab
+            value="reservation"
+            label={t('reservation')}
+            sx={{
+              width: '50%',
+              // px: 5,
+              mx: 'auto',
+              my: '6px',
+              borderRadius: '80px',
+              bgcolor: currentTab === 'reservation' ? 'white' : '',
+            }}
+          />
+        </Tabs>
+      )}
       {currentTab === 'buy' ? (
         <Box
           sx={{
+            mt: 2,
             height: '100%',
             display: 'flex',
             flexDirection: 'column',
@@ -157,22 +165,25 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                     />
                   )}
                 />
-                <Controller
-                  name="code"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <TextField
-                      fullWidth
-                      label="T-08"
-                      value={value}
-                      onChange={onChange}
-                      placeholder="T-08"
-                      error={Boolean(errors.code)}
-                      {...(errors.code && { helperText: errors.code.message })}
-                    />
-                  )}
-                />
+                {diningOption !== 'takeaway' && activeTable && (
+                  <Controller
+                    name="code"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        fullWidth
+                        label="Table"
+                        value={activeTable.name}
+                        onChange={onChange}
+                        placeholder={activeTable.name}
+                        disabled
+                        error={Boolean(errors.code)}
+                        {...(errors.code && { helperText: errors.code.message })}
+                      />
+                    )}
+                  />
+                )}
               </div>
               <Fab
                 onClick={() => setAddNote(true)}
@@ -341,12 +352,23 @@ const OrderSidebar = (props: OrderSidebarProps) => {
       ) : (
         <Box
           sx={{
-            p: 2,
+            // p: 2,
             borderRadius: 1,
-            bgcolor: 'background.neutral',
+            // bgcolor: 'background.neutral',
           }}
         >
-          {t('reservation')}
+          <Typography
+            sx={{
+              fontWeight: 600,
+              fontSize: '20px',
+              mr: '20px',
+              ml: '20px',
+              mt: 2,
+            }}
+          >
+            {t('reservations')}
+          </Typography>
+          <OrderReservations />
         </Box>
       )}
       <AddNote open={addNote} hide={() => setAddNote(false)} />

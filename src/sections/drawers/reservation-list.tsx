@@ -18,13 +18,15 @@ import { useGetTables } from 'src/api/tables';
 import { useGetReservations } from 'src/api/reservations';
 import {
   // TableResponseSchema,
-  // TablesResponseSchema,
+  TableResponseSchema, // TablesResponseSchema,
   ReservationResponseSchema,
   // ReservationsResponseSchema,
 } from 'src/api/api-schemas';
 
 import Iconify from 'src/components/iconify';
 import SelectDate from 'src/components/select-date/select-date';
+
+import { useReservationContext } from '../reservation';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -38,29 +40,35 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   borderBottom: '1px solid #E4E4E4',
 }));
 
-const ReservationList = ({ open, hide, newReservation }: any) => {
+type ReservationWithTable = ReservationResponseSchema & { table?: TableResponseSchema };
+
+const ReservationList = ({ open }: any) => {
+  const { setReservationTab, setReservation } = useReservationContext();
+
   const { reservations, reservationsLoading } = useGetReservations();
-
-  const [reservationsData, setReservationsData] = useState<ReservationResponseSchema[]>([]);
-
-  useEffect(() => {
-    if (!reservationsLoading && reservations.length) {
-      setReservationsData(reservations as any);
-    }
-  }, [reservationsLoading, reservations]);
-
   const { tables, tablesLoading } = useGetTables();
 
-  const [tablesData, setTablesData] = useState<ReservationResponseSchema[]>([]);
+  const [reservationsData, setReservationsData] = useState<ReservationWithTable[]>([]);
 
   useEffect(() => {
-    if (!tablesLoading && tables.length) {
-      setTablesData(tables as any);
+    if (!reservationsLoading && !tablesLoading) {
+      setReservationsData(
+        reservations.map((reservation) => {
+          const table = tables.find((_table) => _table._id === reservation.tableId);
+          return { ...reservation, table } as ReservationWithTable;
+        })
+      );
     }
-  }, [tablesLoading, tables]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reservationsLoading, tablesLoading]);
+
+  const handleClose = () => {
+    setReservation(null);
+    setReservationTab(null);
+  };
 
   return (
-    <Drawer open={open} onClose={hide} anchor="right">
+    <Drawer open={open} onClose={handleClose} anchor="right">
       <SelectDate />
       <Container
         sx={{
@@ -83,54 +91,44 @@ const ReservationList = ({ open, hide, newReservation }: any) => {
               </StyledTableRow>
             </TableHead>
             <TableBody>
-              {reservationsData !== undefined &&
-                reservationsData.map((reservation: ReservationResponseSchema) => (
-                  <StyledTableRow
-                    key={reservation._id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              {reservationsData.map((reservation) => (
+                <StyledTableRow
+                  key={reservation._id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="reservation">
+                    {reservation.name}
+                  </TableCell>
+                  <TableCell align="center">
+                    {format(
+                      new Date(reservation.startTime !== undefined ? reservation.startTime : ''),
+                      'hh:mm a'
+                    )}
+                    {/* {format(new Date(), 'hh:mm a')} */}
+                  </TableCell>
+
+                  <TableCell align="center">{reservation.table?.name || ''}</TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 1,
+                    }}
                   >
-                    <TableCell component="th" scope="reservation">
-                      {reservation.name}
-                    </TableCell>
-                    <TableCell align="center">
-                      {format(
-                        new Date(reservation.startTime !== undefined ? reservation.startTime : ''),
-                        'hh:mm a'
-                      )}
-                      {/* {format(new Date(), 'hh:mm a')} */}
-                    </TableCell>
-
-                    <TableCell align="center">
-                      {tablesData.map((table: any) => {
-                        if (table._id === reservation.tableId) {
-                          return table.name;
-                        }
-
-                        return null;
-                      })}
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 1,
-                      }}
-                    >
-                      <Iconify icon="tabler:user" width="16px" height="16px" />
-                      <Typography>{reservation.guestNumber}</Typography>
-                    </TableCell>
-                  </StyledTableRow>
-                ))}
+                    <Iconify icon="tabler:user" width="16px" height="16px" />
+                    <Typography>{reservation.guestNumber}</Typography>
+                  </TableCell>
+                </StyledTableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
         <Button
           fullWidth
           onClick={() => {
-            hide();
-            newReservation();
+            setReservationTab('new');
           }}
           color="primary"
           variant="contained"

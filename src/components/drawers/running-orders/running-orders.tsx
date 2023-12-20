@@ -48,7 +48,7 @@ const RunningOrders = ({ open, hide }: any) => {
   useEffect(() => {
     if (!ordersLoading && orders.length) {
       setOrdersData(orders);
-      console.log(orders);
+      // console.log(orders);
     }
   }, [ordersLoading, orders]);
 
