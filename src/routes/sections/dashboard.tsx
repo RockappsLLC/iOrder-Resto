@@ -5,6 +5,10 @@ import { AuthGuard } from 'src/auth/guard';
 import DashboardLayout from 'src/layouts/dashboard';
 
 import { LoadingScreen } from 'src/components/loading-screen';
+import { OrderProvider } from 'src/components/order-sidebar/context';
+
+import { ReservationProvider } from 'src/sections/reservation';
+import { DiningOptionsProvider } from 'src/sections/dining-options';
 
 // ----------------------------------------------------------------------
 const TablesPage = lazy(() => import('src/pages/dashboard/tables'));
@@ -22,11 +26,17 @@ export const dashboardRoutes = [
     path: 'dashboard',
     element: (
       <AuthGuard>
-        <DashboardLayout>
-          <Suspense fallback={<LoadingScreen />}>
-            <Outlet />
-          </Suspense>
-        </DashboardLayout>
+        <DiningOptionsProvider>
+          <ReservationProvider>
+            <OrderProvider>
+              <DashboardLayout>
+                <Suspense fallback={<LoadingScreen />}>
+                  <Outlet />
+                </Suspense>
+              </DashboardLayout>
+            </OrderProvider>
+          </ReservationProvider>
+        </DiningOptionsProvider>
       </AuthGuard>
     ),
     children: [

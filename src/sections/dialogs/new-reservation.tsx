@@ -11,28 +11,35 @@ import SelectDate from 'src/components/select-date';
 import SelectTime from 'src/components/select-time';
 import SelectPartySize from 'src/components/select-partysize';
 
-const NewReservation = ({ open, hide, guestDetail }: any) => {
+import { useReservationContext } from '../reservation';
+
+const NewReservation = ({ open }: any) => {
+  const { reservation, setReservation, setReservationTab } = useReservationContext();
   const [partySize, setPartySize] = useState(1);
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
 
   const handleReservation = () => {
-    console.log(
-      partySize,
-      new Date(
+    setReservation({
+      ...reservation,
+      startTime: new Date(
         date.getFullYear(),
         date.getMonth(),
         date.getDate(),
         time.getHours(),
         time.getMinutes()
-      )
-    );
-    hide();
-    guestDetail();
+      ),
+      guestNumber: partySize,
+    });
+    setReservationTab('guest');
+  };
+  const handleClose = () => {
+    setReservation(null);
+    setReservationTab(null);
   };
 
   return (
-    <Dialog open={open} onClose={hide}>
+    <Dialog open={open} onClose={handleClose}>
       <div
         style={{
           display: 'flex',
@@ -41,7 +48,7 @@ const NewReservation = ({ open, hide, guestDetail }: any) => {
         }}
       >
         <DialogTitle sx={{ py: 2 }}>New Reservation</DialogTitle>
-        <Button onClick={hide}>
+        <Button onClick={handleClose}>
           <Iconify icon="tabler:x" />
         </Button>
       </div>
@@ -51,7 +58,7 @@ const NewReservation = ({ open, hide, guestDetail }: any) => {
       <DialogActions>
         <Button
           fullWidth
-          onClick={hide}
+          onClick={handleClose}
           color="primary"
           variant="outlined"
           sx={{ borderRadius: '58px', p: '10px' }}

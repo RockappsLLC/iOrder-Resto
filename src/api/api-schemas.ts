@@ -198,6 +198,7 @@ export interface CreateMenuItemRequestSchema {
   icon?: string;
   status?: boolean;
   preparationTime?: number;
+  isAdditional?: boolean;
 }
 export interface MenuItemResponseSchema {
   _id?: string;
@@ -277,6 +278,10 @@ export interface CreateCustomerRequestSchema {
   city?: string;
   canton?: string;
   dateOfBirth?: Date;
+  initials?: string;
+  pagerNumber?: number;
+  tag?: string;
+  visitNote?: string;
 }
 export interface UpdateCustomerRequestSchema {
   name?: string;
@@ -288,6 +293,10 @@ export interface UpdateCustomerRequestSchema {
   city?: string;
   canton?: string;
   dateOfBirth?: Date;
+  initials?: string;
+  pagerNumber?: number;
+  tag?: string;
+  visitNote?: string;
 }
 export interface CustomerResponseSchema {
   _id?: string;
@@ -300,6 +309,10 @@ export interface CustomerResponseSchema {
   city?: string;
   canton?: string;
   dateOfBirth?: Date;
+  initials?: string;
+  pagerNumber?: number;
+  tag?: string;
+  visitNote?: string;
 }
 export interface GetCustomerByIdResponse {
   success?: boolean;
@@ -344,7 +357,6 @@ export interface GetReservationByIdResponse {
   data?: ReservationResponseSchema;
 }
 export interface ReservationResponseSchema {
-  _id: string;
   name?: string;
   tableId?: string;
   restaurantId?: string;
@@ -529,7 +541,7 @@ export interface PricingPlanResponseSchema {
   popular?: boolean;
 }
 export interface PricingPlansResponseSchema {
-  pricingPlanss?: PricingPlanResponseSchema[];
+  pricingPlans?: PricingPlanResponseSchema[];
   offset?: number;
   limit?: number;
   totalLength?: number;
@@ -708,4 +720,56 @@ export interface UploadFilesRequest {
 export interface UploadFilesResponse {
   success?: boolean;
   data?: FilesResponseSchema;
+}
+export interface FloorRequestSchema {
+  name: string;
+  restaurantId: string;
+}
+export interface FloorsResponseSchema {
+  floors?: FloorResponseSchema[];
+  offset?: number;
+  limit?: number;
+  totalLength?: number;
+}
+export interface UpdateFloorRequestSchema {
+  name?: string;
+  restaurantId?: string;
+}
+export interface GetFloorByIdResponse {
+  success?: boolean;
+  data?: FloorResponseSchema;
+}
+export interface GetFloorsResponse {
+  success?: boolean;
+  data?: FloorsResponseSchema;
+}
+export interface FloorResponseSchema {
+  name?: string;
+  restaurantId?: string;
+}
+export interface TransactionResponseSchema {
+  name?: string;
+  restaurantId?: string;
+  transactionId?: string;
+  merchantId?: string;
+  type?: string;
+  status?: string;
+  currency?: string;
+  refno?: string;
+  detail?: object;
+  history?: object;
+}
+export interface TransactionsResponseSchema {
+  transactions?: TransactionResponseSchema[];
+  offset?: number;
+  limit?: number;
+  totalLength?: number;
+}
+export interface GetTransactionByIdResponse {
+  success?: boolean;
+  data?: TransactionResponseSchema;
+}
+export interface GetTransactionsResponse {
+  success?: boolean;
+  data?: TransactionsResponseSchema;
 }
