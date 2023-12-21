@@ -167,6 +167,7 @@ const NotificationsModal = ({ showModal, setShowModal }: NotificationsModalProps
         <Stack>
           {data.map((item) => (
             <Stack
+              key={item.orderID}
               sx={{ backgroundColor: '#fff', border: '1px solid #E4E4E4' }}
               borderRadius={3}
               mb={2}
