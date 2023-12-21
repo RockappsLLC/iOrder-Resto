@@ -1,26 +1,49 @@
 import { useForm } from 'react-hook-form';
 import { m, useDragControls } from 'framer-motion';
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import { Button } from '@mui/material';
-import { alpha } from '@mui/material/styles';
-import Container from '@mui/material/Container';
+import { alpha, useTheme } from '@mui/material/styles';
+import { Grid, Button, InputBase, Typography, InputAdornment } from '@mui/material';
 
+import { useTranslate } from 'src/locales';
 import { useGetTables } from 'src/api/tables';
+import { TableResponseSchema } from 'src/api/api-schemas';
 
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
+import { useOrderContext } from 'src/components/order-sidebar/context';
 
-import { AddTable } from './add-table';
 import { Node, getTableByType } from './table-variants';
+import { useDiningOptionsContext } from '../dining-options';
 
 // ----------------------------------------------------------------------
 
 const MIN_HEIGHT = 1000;
 const MIN_WIDTH = 2000;
 
-export default function TablesView() {
+const FILTERS = [
+  { label: 'Available', name: 'available', value: 0, color: '#3395F0', border: '#e0eefc' },
+  { label: 'Reserved', name: 'reserved', value: 1, color: '#F15F34', border: '#ffe9de' },
+  { label: 'Billed', name: 'billed', value: 2, color: '#13C91B', border: '#e1f7de' },
+  {
+    label: 'Available Soon',
+    name: 'available-soon',
+    value: 3,
+    color: '#F0B433',
+    border: '#fdf3e1',
+  },
+];
+
+export default function TablesView({ onTableSelect }: any) {
+  const { t } = useTranslate();
+  const theme = useTheme();
+
+  const [selectedFilter, setSelectedFilter] = useState<'all' | 'reservation' | 'running-orders'>(
+    'all'
+  );
+  const [searchInput, setSearchInput] = useState();
+
   const constraintsRef = useRef(null);
   const methods = useForm({
     defaultValues: {
@@ -38,52 +61,13 @@ export default function TablesView() {
   } = methods;
   const [activeNodes, setActiveNodes] = useState<{ [key: string]: boolean }>({});
 
+  const { diningOption } = useDiningOptionsContext();
+  const { activeTable, setActiveTable } = useOrderContext();
+
   const { tables, tablesLoading } = useGetTables();
-  console.log(tables);
-  const [nodes, setNodes] = useState<Node[]>([
-    {
-      _id: '1',
-      name: '1',
-      type: 'square-table-of-four',
-      positionX: 0,
-      positionY: 0,
-      height: 170,
-      width: 170,
-    },
-    // {
-    //   id: 2,
-    //   name: '2',
-    //   type: 'circle-table-of-four',
-    //   position: {
-    //     x: 200,
-    //     y: 0,
-    //   },
-    //   height: 170,
-    //   width: 170,
-    // },
-    // {
-    //   id: 3,
-    //   name: '3',
-    //   type: 'square-table-of-two-vertical',
-    //   position: {
-    //     x: 400,
-    //     y: 0,
-    //   },
-    //   height: 170,
-    //   width: 170,
-    // },
-    // {
-    //   id: 4,
-    //   name: '4',
-    //   type: 'square-table-of-two-horizontal',
-    //   position: {
-    //     x: 600,
-    //     y: 0,
-    //   },
-    //   height: 170,
-    //   width: 170,
-    // },
-  ]);
+
+  const [nodes, setNodes] = useState<Node[]>([]);
+
   const settings = useSettingsContext();
   const controls = useDragControls();
 
@@ -119,57 +103,152 @@ export default function TablesView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tablesLoading]);
 
-  const handleDragEnd = (position: any, id: string | undefined) => {
-    const updatedNodes = nodes.map((node) => {
-      if (node._id === id) {
-        let x = Number(node.positionX || 0) + position.offset.x;
-        if (x < 0) x = 0;
-        let y = Number(node.positionY || 0) + position.offset.y;
-        if (y < 0) y = 0;
-        setAllowSave(true);
-        return { ...node, positionX: x, positionY: y, updated: true };
-      }
-      return node;
-    });
-    console.log(updatedNodes);
-    setNodes(updatedNodes);
-  };
-  const handleAdd = useCallback(
-    (node: any) => {
-      setNodes((_nodes) => [..._nodes, { ...node, new: true }]);
-      setAllowSave(true);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [nodes]
-  );
-
-  const handleRemoveNode = (id: string | undefined) => {
-    const updatedNodes = nodes.map((node) => (node._id !== id ? node : { ...node, removed: true }));
-    setNodes(updatedNodes);
+  const handleClick = (table: TableResponseSchema) => {
+    onTableSelect();
+    setActiveTable(table);
   };
 
-  const handleUpdateNode = (id?: string) => console.log(id);
-  //   const handleFocusNode = (id: string | number) => {
-  //     const updatedNodes = nodes.map((node) => {
-  //       if (node.id === id) {
-  //         return { ...node, active: true };
-  //       }
-  //       return node;
-  //     });
-  //     setNodes(updatedNodes);
-  //   };
-
-  const lastNode = nodes[nodes.length - 1];
-  // console.log('nodes',nodes)
   return (
-    <Container maxWidth={settings.themeStretch ? false : 'xl'} sx={{ p: 0 }}>
+    <Grid container columns={15} sx={{ height: '100%' }}>
+      {/* <Container maxWidth={settings.themeStretch ? false : 'xl'} sx={{ p: 0 }}> */}
+      <Typography
+        fontWeight={500}
+        color="#F15F34"
+        padding="10px"
+        // paddingTop="0"
+        paddingLeft={3}
+        sx={{
+          backgroundColor: '#fff',
+
+          display: 'flex',
+          py: 0,
+          alignItems: 'center',
+          borderTop: 1,
+          borderColor: '#E4E4E4',
+          borderBottomColor: '#E4E4E4!important',
+          borderBottom: 1,
+          width: '100%',
+          height: 44,
+        }}
+      >
+        {t('dashboard')}
+      </Typography>
+      <Box
+        fontWeight={500}
+        color="#F15F34"
+        padding="10px"
+        // paddingTop="0"
+        paddingLeft={3}
+        sx={{
+          backgroundColor: '#fff',
+
+          display: 'flex',
+          py: 0,
+          alignItems: 'center',
+          borderTop: 1,
+          borderColor: '#E4E4E4',
+          borderBottomColor: '#E4E4E4!important',
+          borderBottom: 1,
+          width: '100%',
+          height: 68,
+        }}
+      >
+        {FILTERS.map((filter) => (
+          <Box display="flex" alignItems="center" sx={{ mr: 4 }}>
+            <Box
+              sx={{
+                backgroundColor: filter.color,
+                height: 20,
+                width: 20,
+                borderRadius: '50%',
+                mr: 1,
+
+                border: `5px solid ${filter.border}`,
+              }}
+            />
+            <Typography color={theme.palette.primary.dark}>{filter.label}</Typography>
+          </Box>
+        ))}
+
+        <Box display="flex" ml="auto">
+          <Box display="flex" gap={2} mr={3}>
+            <Button
+              fullWidth
+              onClick={() => setSelectedFilter('all')}
+              color={selectedFilter === 'all' ? 'primary' : 'inherit'}
+              variant="outlined"
+              sx={{
+                borderRadius: '58px',
+                p: '2px',
+                width: 150,
+                color: selectedFilter === 'all' ? 'primary' : 'rgba(145, 158, 171, 0.32)',
+              }}
+            >
+              <Typography fontSize={14} fontWeight={600}>
+                All Tables
+              </Typography>
+            </Button>
+            <Button
+              fullWidth
+              onClick={() => setSelectedFilter('reservation')}
+              color={selectedFilter === 'reservation' ? 'primary' : 'inherit'}
+              variant="outlined"
+              sx={{
+                borderRadius: '58px',
+                p: '2px',
+                width: 150,
+                color: selectedFilter === 'reservation' ? 'primary' : 'rgba(145, 158, 171, 0.32)',
+              }}
+
+              //   borderColor: isChecked ? '#FF5C00' : '#E4E4E4',
+              // backgroundColor: isChecked ? '#FFF5EE' : '#FFF',
+            >
+              <Typography fontSize={14} fontWeight={600}>
+                Reservation
+              </Typography>
+            </Button>
+            <Button
+              fullWidth
+              onClick={() => setSelectedFilter('running-orders')}
+              color={selectedFilter === 'running-orders' ? 'primary' : 'inherit'}
+              variant="outlined"
+              sx={{
+                borderRadius: '58px',
+                p: '2px',
+                width: 150,
+                color:
+                  selectedFilter === 'running-orders' ? 'primary' : 'rgba(145, 158, 171, 0.32)',
+              }}
+            >
+              <Typography fontSize={14} fontWeight={600}>
+                Running Orders
+              </Typography>
+            </Button>
+          </Box>
+          <InputBase
+            fullWidth
+            autoFocus
+            placeholder="Search tables..."
+            value={searchInput}
+            onChange={(e: any) => setSearchInput(e.target.value)}
+            startAdornment={
+              <InputAdornment position="start">
+                <Iconify icon="eva:search-fill" width={26} sx={{ color: 'text.disabled' }} />
+              </InputAdornment>
+            }
+            inputProps={{
+              sx: { fontSize: '16px', width: 500 },
+            }}
+          />
+        </Box>
+      </Box>
       {/* <FormProvider methods={methods}>
         <Box display="flex" flexDirection="row">
           <RHFTextField name="height" label="Height" type="number" />
           <RHFTextField name="width" label="Width" type="number" />
         </Box>
           </FormProvider> */}
-      <Box display="flex" sx={{ justifyContent: 'flex-end', mt: 5 }}>
+      {/* <Box display="flex" sx={{ justifyContent: 'flex-end', mt: 5 }}>
         <Button
           disabled={!allowSave}
           variant={allowSave ? 'contained' : 'text'}
@@ -182,7 +261,7 @@ export default function TablesView() {
         <Button color="primary" sx={{ fontWeight: 400 }} onClick={renderNodesDefault}>
           Reset
         </Button>
-      </Box>
+      </Box> */}
 
       {/* <Typography variant="h4"> Page Tables </Typography> */}
       <Box
@@ -192,7 +271,7 @@ export default function TablesView() {
           // width: 1,
           // height: 320,
           width: watch('width'),
-          maxWidth: '100vw',
+          maxWidth: '100%',
           overflow: 'scroll',
           p: 3,
           borderRadius: 2,
@@ -210,13 +289,11 @@ export default function TablesView() {
             nodes.map((node, i) => (
               <m.div
                 key={Math.random()}
-                drag
-                dragConstraints={constraintsRef}
                 style={{
                   position: 'absolute',
                   top: node.positionY || 0,
                   left: node.positionX || 0,
-
+                  cursor: 'pointer',
                   // height: getTableSizeByType(type),
                   //   width: getTableSizeByType(node.height),
                   borderRadius: 20,
@@ -226,38 +303,18 @@ export default function TablesView() {
                     ? 'rgba(0,0,0,0.05)'
                     : 'transparent',
                 }}
-                dragMomentum={false}
-                onDragEnd={(e, position) => handleDragEnd(position, node._id)}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setActiveNodes(() => (node._id ? { [node._id]: true } : {}));
+                  handleClick(node);
+                  // setActiveNodes(() => (node._id ? { [node._id]: true } : {}));
                 }}
               >
                 {getTableByType(node.type, false, node.name)}
-                {node._id && activeNodes[node._id] && (
-                  <>
-                    <Iconify
-                      icon="solar:close-circle-bold"
-                      sx={{ position: 'absolute', right: 0, top: 0, cursor: 'pointer' }}
-                      onClick={() => handleUpdateNode(node._id)}
-                    />
-                    <Iconify
-                      icon="dashicons:update-alt"
-                      sx={{ position: 'absolute', right: 0, top: 20, cursor: 'pointer' }}
-                      onClick={() => handleRemoveNode(node._id)}
-                    />
-                  </>
-                )}
               </m.div>
             ))}
         </m.div>
       </Box>
-      <AddTable
-        onAdd={handleAdd}
-        horizontalPosition={Number(lastNode.positionX || 0) + Number(lastNode.width || 240)}
-        verticalPosition={Number(lastNode.positionY || 0)}
-      />
-    </Container>
+    </Grid>
   );
 }

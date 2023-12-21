@@ -1,4 +1,6 @@
-export { default as LightboxModal } from './LightboxModal';
-export { default as TipAmountModal } from './TipAmountModal';
-export { default as OrderPaymentDrawer } from './OrderPaymentDrawer';
-export { default as OrderConfirmationModal } from './OrderConfirmationModal';
+export { default as LightboxModal } from './lightbox-modal';
+export { default as TipAmountModal } from './tip-amount-modal';
+export { default as NotificationsModal } from './notifications-modal';
+export { default as OrderPaymentDrawer } from './order-payment-drawer';
+export { default as UpcomingOrdersDrawer } from './upcoming-orders-drawer';
+export { default as OrderConfirmationModal } from './order-confirmation-modal';

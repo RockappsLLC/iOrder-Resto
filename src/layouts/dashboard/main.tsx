@@ -29,13 +29,14 @@ export default function Main({ children, sx, ...other }: BoxProps) {
           display: 'flex',
           flexDirection: 'column',
           // pt: `${HEADER.H_MOBILE + 24}px`,
-          pt: 10,
+          pt: 8,
           pb: 0,
           ...(lgUp && {
             // pt: `${HEADER.H_MOBILE * 2 + 40}px`,
-            pt: 10,
+            pt: 8,
             pb: 0,
           }),
+          pl: 0,
           // pt: `${HEADER.H_MOBILE + 24}px`,
           // // pb: 10,
           // // ...(lgUp && {

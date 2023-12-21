@@ -1,6 +1,10 @@
+import { useState } from 'react';
+
 import { Box, Modal, Stack, Button, Divider, TextField, Typography } from '@mui/material';
 
 import { CloseIcon } from 'src/assets/icons';
+
+import { useOrderContext } from 'src/components/order-sidebar/context';
 
 interface TipAmountProps {
   showTipsModal: boolean;
@@ -8,12 +12,36 @@ interface TipAmountProps {
 }
 
 const TipAmountModal = ({ showTipsModal, setShowTipsModal }: TipAmountProps) => {
+  const [inputValue, setInputValue] = useState('');
+  const { tipAmount, setTipAmount } = useOrderContext();
+
   const handleCloseTipModal = () => {
     setShowTipsModal(false);
   };
 
+  const handleAmountInput = (event: any) => {
+    const numericValue = event.target.value.replace(/[^0-9.]/g, '');
+    setInputValue(numericValue);
+  };
+
+  const handleButtonClick = () => {
+    setTipAmount(inputValue);
+    setShowTipsModal(false);
+  };
+
   return (
-    <Modal open={showTipsModal} onClose={handleCloseTipModal}>
+    <Modal
+      open={showTipsModal}
+      onClose={handleCloseTipModal}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+      style={{ backdropFilter: 'blur(0px)' }}
+      sx={{
+        '& .MuiBackdrop-root': {
+          backgroundColor: 'transparent',
+        },
+      }}
+    >
       <Box
         sx={{
           position: 'absolute' as const,
@@ -42,6 +70,9 @@ const TipAmountModal = ({ showTipsModal, setShowTipsModal }: TipAmountProps) => 
         <Stack p={2.5}>
           <TextField
             placeholder="Input amount"
+            type="text"
+            value={inputValue}
+            onChange={handleAmountInput}
             sx={{
               mt: 2,
               '& .MuiInputBase-root': {
@@ -67,6 +98,7 @@ const TipAmountModal = ({ showTipsModal, setShowTipsModal }: TipAmountProps) => 
               variant="contained"
               color="error"
               sx={{ height: '50px', borderRadius: 10, px: 5, width: '50%' }}
+              onClick={handleButtonClick}
             >
               Add tip amount
             </Button>

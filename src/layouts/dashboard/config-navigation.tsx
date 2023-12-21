@@ -57,12 +57,11 @@ export function useNavData() {
         items: [
           { title: 'home', path: paths.dashboard.root, icon: ICONS.home },
           { title: 'bills', path: paths.dashboard.bills, icon: ICONS.receipt },
-          {
-            title: 'customers',
-            path: paths.dashboard.customers,
-            icon: ICONS.user,
-          },
-          { title: 'tables', path: paths.dashboard.tables, icon: ICONS.dashboard },
+          // {
+          //   title: 'customers',
+          //   path: paths.dashboard.customers,
+          //   icon: ICONS.user,
+          // },
         ],
       },
     ],

@@ -50,7 +50,7 @@ const HomeSidebar = ({ categoryId, handleCategoryId }: any) => {
   useEffect(() => {
     if (!menuCategoriesLoading && menuCategories.length) {
       setMenuCategoriesData(menuCategories);
-      console.log(menuCategories, 'MENU CATEGORIES');
+      // console.log(menuCategories, 'MENU CATEGORIES');
     } else {
       setMenuCategoriesData([]);
     }

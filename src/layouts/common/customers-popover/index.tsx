@@ -5,7 +5,6 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import List from '@mui/material/List';
 import Stack from '@mui/material/Stack';
-import Badge from '@mui/material/Badge';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -20,9 +19,11 @@ import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
 import Scrollbar from 'src/components/scrollbar';
 
-import { NotificationsModal } from 'src/sections/modals';
+import ManageCustomer from 'src/sections/dialogs/manage-customer';
 
-import NotificationItem from './notification-item';
+import NotificationItem from '../notifications-popover/notification-item';
+
+// import NotificationItem from './notification-item';
 
 // ----------------------------------------------------------------------
 
@@ -46,7 +47,7 @@ const TABS = [
 
 // ----------------------------------------------------------------------
 
-export default function NotificationsPopover() {
+export default function CustomersPopover() {
   const drawer = useBoolean();
 
   const smUp = useResponsive('up', 'sm');
@@ -154,13 +155,15 @@ export default function NotificationsPopover() {
           },
         }}
       >
-        <Badge badgeContent={totalUnRead} color="error">
-          <SvgColor src="/assets/icons/navbar/notification.svg" sx={{ width: 24, height: 24 }} />
-          <Typography marginLeft={0.5}>Notifications</Typography>
-        </Badge>
+        {/* <Badge badgeContent={totalUnRead} color="error"> */}
+        <SvgColor src="/assets/icons/navbar/user.svg" sx={{ width: 24, height: 24 }} />
+        <Typography marginLeft={0.5}>Customers</Typography>
+        {/* </Badge> */}
       </IconButton>
 
-      <NotificationsModal showModal={drawer.value} setShowModal={drawer.setValue} />
+      {/* <NotificationsModal showModal={drawer.value} setShowModal={drawer.setValue} /> */}
+
+      <ManageCustomer open={drawer.value} hide={drawer.onFalse} />
 
       {/* <Drawer
         open={drawer.value}

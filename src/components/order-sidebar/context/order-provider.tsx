@@ -1,14 +1,63 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 
 import { OrderResponseSchema } from 'src/api/api-schemas';
 
 import { OrderContext } from './order-context';
 
 interface IOrder extends OrderResponseSchema {}
+const TAX = 0.1;
 
 export const OrderProvider = ({ children }: any) => {
+  const [activeTable, setActiveTable] = useState(null);
+
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [ordered, setOrdered] = useState(false);
+  const [orderId, setOrderId] = useState('');
+
+  const [total, setTotal] = useState(0);
+  const [subTotal, setSubTotal] = useState(0);
+  const [tipAmount, setTipAmount] = useState(0);
+
+  const [paymentMethod, setPaymentMethod] = useState('cash');
+  const [inputAmount, setInputAmount] = useState('');
+  const [totalWithTip, setTotalWithTip] = useState(null);
+
+  const calculateSubTotal = useCallback(() => {
+    return orders.reduce((acc: number, currentItem: any) => {
+      const price = Number(currentItem.price || 0);
+      const total1 = price * Number(currentItem.count || 0);
+      return acc + total1;
+    }, 0);
+  }, [orders]);
+
+  const newSubTotal = calculateSubTotal();
+  const taxTotal = Math.round(Number(newSubTotal * TAX) * 10) / 10;
+  const totalPrice = newSubTotal + taxTotal;
+
+  useEffect(() => {
+    setSubTotal(newSubTotal);
+    setTotal(totalPrice);
+  }, [orders, calculateSubTotal, newSubTotal, totalPrice, subTotal]);
+
+  useEffect(() => {
+    setTipAmount(tipAmount);
+  }, [tipAmount, orders]);
+
+  useEffect(() => {
+    setPaymentMethod(paymentMethod);
+  }, [paymentMethod, orders]);
+
+  useEffect(() => {
+    setInputAmount(inputAmount);
+  }, [inputAmount, orders]);
+
+  useEffect(() => {
+    setTotalWithTip(totalWithTip);
+  }, [totalWithTip, orders]);
+
+  useEffect(() => {
+    setOrderId(orderId);
+  }, [orderId, orders]);
 
   const addOrder = useCallback(
     (order: IOrder) => {
@@ -35,8 +84,50 @@ export const OrderProvider = ({ children }: any) => {
   );
 
   const providerValues = useMemo(
-    () => ({ ordered, setOrdered, orders, addOrder, removeOrder, updateOrder }),
-    [ordered, setOrdered, orders, addOrder, removeOrder, updateOrder]
+    () => ({
+      ordered,
+      setOrdered,
+      total,
+      setTotal,
+      subTotal,
+      setSubTotal,
+      tipAmount,
+      setTipAmount,
+      paymentMethod,
+      setPaymentMethod,
+      inputAmount,
+      setInputAmount,
+      totalWithTip,
+      setTotalWithTip,
+      orderId,
+      setOrderId,
+      orders,
+      addOrder,
+      removeOrder,
+      updateOrder,
+    }),
+    [
+      ordered,
+      setOrdered,
+      total,
+      setTotal,
+      subTotal,
+      setSubTotal,
+      tipAmount,
+      setTipAmount,
+      paymentMethod,
+      setPaymentMethod,
+      inputAmount,
+      setInputAmount,
+      totalWithTip,
+      setTotalWithTip,
+      orderId,
+      setOrderId,
+      orders,
+      addOrder,
+      removeOrder,
+      updateOrder,
+    ]
   );
   return <OrderContext.Provider value={providerValues}>{children}</OrderContext.Provider>;
 };
