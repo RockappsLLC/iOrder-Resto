@@ -12,6 +12,7 @@ export const OrderProvider = ({ children }: any) => {
 
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [ordered, setOrdered] = useState(false);
+  const [orderId, setOrderId] = useState('');
 
   const [total, setTotal] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
@@ -19,6 +20,7 @@ export const OrderProvider = ({ children }: any) => {
 
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [inputAmount, setInputAmount] = useState('');
+  const [totalWithTip, setTotalWithTip] = useState(null);
 
   const calculateSubTotal = useCallback(() => {
     return orders.reduce((acc: number, currentItem: any) => {
@@ -49,6 +51,14 @@ export const OrderProvider = ({ children }: any) => {
     setInputAmount(inputAmount);
   }, [inputAmount, orders]);
 
+  useEffect(() => {
+    setTotalWithTip(totalWithTip);
+  }, [totalWithTip, orders]);
+
+  useEffect(() => {
+    setOrderId(orderId);
+  }, [orderId, orders]);
+
   const addOrder = useCallback(
     (order: IOrder) => {
       setOrders([...orders, order]);
@@ -75,8 +85,6 @@ export const OrderProvider = ({ children }: any) => {
 
   const providerValues = useMemo(
     () => ({
-      activeTable,
-      setActiveTable,
       ordered,
       setOrdered,
       total,
@@ -89,17 +97,18 @@ export const OrderProvider = ({ children }: any) => {
       setPaymentMethod,
       inputAmount,
       setInputAmount,
+      totalWithTip,
+      setTotalWithTip,
+      orderId,
+      setOrderId,
       orders,
       addOrder,
       removeOrder,
       updateOrder,
     }),
     [
-      activeTable,
-      setActiveTable,
       ordered,
       setOrdered,
-      orders,
       total,
       setTotal,
       subTotal,
@@ -110,6 +119,11 @@ export const OrderProvider = ({ children }: any) => {
       setPaymentMethod,
       inputAmount,
       setInputAmount,
+      totalWithTip,
+      setTotalWithTip,
+      orderId,
+      setOrderId,
+      orders,
       addOrder,
       removeOrder,
       updateOrder,

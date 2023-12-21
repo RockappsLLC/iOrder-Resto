@@ -16,6 +16,7 @@ import { HEADER } from '../config-layout';
 import NavHorizontal from './nav-horizontal';
 import AccountPopover from '../common/account-popover';
 import LanguagePopover from '../common/language-popover';
+import CustomersPopover from '../common/customers-popover';
 import NotificationsPopover from '../common/notifications-popover';
 import DiningOptionsPopover from '../common/dining-options-popover';
 
@@ -39,7 +40,7 @@ function Datetime() {
       {dateState.toLocaleString('en-US', {
         hour: 'numeric',
         minute: 'numeric',
-        second: 'numeric',
+        // second: 'numeric',
         hour12: false,
       })}
 
@@ -69,6 +70,7 @@ export default function Header({ onOpenNav }: Props) {
         justifyContent="flex-end"
         spacing={{ xs: 0.5, sm: 1 }}
       >
+        <CustomersPopover />
         <NotificationsPopover />
 
         <DiningOptionsPopover />

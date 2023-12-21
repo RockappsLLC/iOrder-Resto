@@ -15,14 +15,12 @@ const TipAmountModal = ({ showTipsModal, setShowTipsModal }: TipAmountProps) => 
   const [inputValue, setInputValue] = useState('');
   const { tipAmount, setTipAmount } = useOrderContext();
 
-  // console.log('tipAmount', tipAmount);
-
   const handleCloseTipModal = () => {
     setShowTipsModal(false);
   };
 
   const handleAmountInput = (event: any) => {
-    const numericValue = event.target.value.replace(/[^0-9]/g, '');
+    const numericValue = event.target.value.replace(/[^0-9.]/g, '');
     setInputValue(numericValue);
   };
 
@@ -72,7 +70,7 @@ const TipAmountModal = ({ showTipsModal, setShowTipsModal }: TipAmountProps) => 
         <Stack p={2.5}>
           <TextField
             placeholder="Input amount"
-            type="number"
+            type="text"
             value={inputValue}
             onChange={handleAmountInput}
             sx={{
