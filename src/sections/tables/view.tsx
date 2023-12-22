@@ -71,20 +71,20 @@ export default function TablesView({ onTableSelect }: any) {
   const settings = useSettingsContext();
   const controls = useDragControls();
 
-  const renderNodesDefault = () => {
+  const renderNodesDefault = (_tables: any) => {
     if (allowSave) setAllowSave(false);
-    setNodes(tables);
+    setNodes(_tables);
     const positionX =
       Math.max.apply(
         null,
-        tables.map(function (o) {
+        _tables.map(function (o) {
           return o.positionX || 0;
         })
       ) + 100;
     const positionY =
       Math.max.apply(
         null,
-        tables.map(function (o) {
+        _tables.map(function (o) {
           return o.positionY || 0;
         })
       ) + 100;
@@ -98,16 +98,44 @@ export default function TablesView({ onTableSelect }: any) {
 
   useEffect(() => {
     if (!tablesLoading && tables.length) {
-      renderNodesDefault();
+      renderNodesDefault(tables);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tablesLoading]);
+
+  useEffect(() => {
+    const filteredTables = tables.filter((table) => {
+      if (selectedFilter === 'all') {
+        return true;
+      }
+      if (selectedFilter === 'reservation') {
+        return table.status === 1;
+      }
+      if (selectedFilter === 'running-orders') {
+        return table.status === 2;
+      }
+      return true;
+    });
+    renderNodesDefault(filteredTables);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFilter]);
+
+  useEffect(() => {
+    const filteredTables = tables.filter((table) => {
+      if (table.name?.toLocaleLowerCase().includes((searchInput || '').toLocaleLowerCase())) {
+        return true;
+      }
+      return false;
+    });
+    renderNodesDefault(filteredTables);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchInput]);
 
   const handleClick = (table: TableResponseSchema) => {
     onTableSelect();
     setActiveTable(table);
   };
-
+  console.log(nodes);
   return (
     <Grid container columns={15} sx={{ height: '100%' }}>
       {/* <Container maxWidth={settings.themeStretch ? false : 'xl'} sx={{ p: 0 }}> */}
@@ -310,7 +338,17 @@ export default function TablesView({ onTableSelect }: any) {
                   // setActiveNodes(() => (node._id ? { [node._id]: true } : {}));
                 }}
               >
-                {getTableByType(node.type, false, node.name)}
+                {getTableByType(
+                  node.type,
+                  false,
+                  node.name,
+                  node.status !== 0
+                    ? {
+                        backgroundColor:
+                          FILTERS.find((a) => a.value === node.status)?.border || 'inherit',
+                      }
+                    : {}
+                )}
               </m.div>
             ))}
         </m.div>
