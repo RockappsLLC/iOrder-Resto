@@ -19,9 +19,9 @@ import RHFAutocomplete from 'src/components/hook-form/rhf-autocomplete';
 // export type FormValuesProps = CreateCustomerRequestSchema;
 
 interface FormValuesProps extends CreateCustomerRequestSchema {
-  year?: string;
-  month?: string;
-  day?: string;
+  year: string;
+  month: string;
+  day: string;
 }
 
 const Gender = ['male', 'female'];
@@ -80,37 +80,45 @@ const RenderForm = ({ handleCloseAddCustomer }: any) => {
   const Months = Array.from({ length: 12 }, (_, i) => (i + 1).toString());
   const Years = Array.from({ length: 100 }, (_, i) => (2023 - i).toString());
 
-  const AddCustomerSchema = Yup.object()
+  const AddCustomerSchema: Yup.ObjectSchema<FormValuesProps> = Yup.object()
     .shape({
       name: Yup.string().required('Name is a required field'),
       email: Yup.string().required('Email is a required field'),
       contactNumber: Yup.string().required('Contact nummber is a required field'),
-      // sex: Yup.string().required('Sex is a required field'),
-      sex: Yup.mixed().oneOf(['male', 'female']),
-      // restaurantId: Yup.string(),
-      street: Yup.string().required('Street is a required field'),
-      city: Yup.string().required('City is a required field'),
-      canton: Yup.string().required('Canton is a required field'),
-      // dateOfBirth: Yup.date(),
+      sex: Yup.mixed<FormValuesProps['sex']>()
+        .oneOf(['male', 'female'])
+        .required('Sex is a required field'),
+      restaurantId: Yup.string().required(),
+      street: Yup.string(),
+      city: Yup.string(),
+      canton: Yup.string(),
+      dateOfBirth: Yup.date(),
       year: Yup.string().required('Year is a required field'),
       month: Yup.string().required('Month is a required field'),
       day: Yup.string().required('Day is a required field'),
+      initials: Yup.string(),
+      pagerNumber: Yup.number(),
+      tag: Yup.string(),
+      visitNote: Yup.string(),
     })
     .defined();
 
-  const defaultValues = {
+  const defaultValues: FormValuesProps = {
     name: '',
     email: '',
     contactNumber: '',
     sex: 'male',
-    // restaurantId: '',
+    pagerNumber: 0,
+    restaurantId: '',
     street: '',
     city: '',
     canton: '',
     year: '',
     month: '',
     day: '',
-    // dateOfBirth: Date,
+    dateOfBirth: new Date(),
+    tag: '',
+    visitNote: '',
   };
 
   const methods = useForm<FormValuesProps>({
