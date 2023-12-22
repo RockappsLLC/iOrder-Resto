@@ -23,6 +23,15 @@ export interface ResetPaswordResponse {
   success?: boolean;
   data?: string;
 }
+export interface ChangePasswordRequest {
+  email: string;
+  newPassword: string;
+  oldPassword: string;
+}
+export interface ChangePaswordResponse {
+  success?: boolean;
+  data?: string;
+}
 export interface CreateUserRequestSchema {
   firstName: string;
   lastName: string;
@@ -561,6 +570,8 @@ export interface UpdateOrderRequestSchema {
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
   restaurantId?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 export interface OrderRequestSchema {
   customer: CustomerResponseSchema;
@@ -570,6 +581,7 @@ export interface OrderRequestSchema {
   staffId?: string;
   restaurantId?: string;
   tableId?: string;
+  price?: number;
 }
 export interface GetOrderByIdResponse {
   success?: boolean;
@@ -585,6 +597,8 @@ export interface OrderResponseSchema {
   status?: 0 | 1 | 2;
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 export interface OrdersResponseSchema {
   orders?: OrderResponseSchema[];
@@ -678,6 +692,7 @@ export interface StatisticsResponseSchema {
   tables?: number;
   tasks?: number;
   users?: number;
+  totalRevenue?: number;
 }
 export interface GetStatisticsResponse {
   success?: boolean;
