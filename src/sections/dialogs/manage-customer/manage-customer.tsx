@@ -27,6 +27,8 @@ import ViewCustomerOrders from 'src/layouts/common/customers-popover/view-custom
 
 import Iconify from 'src/components/iconify';
 
+import AddCustomerModal from '../add-costumers';
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.white,
@@ -86,6 +88,8 @@ const ManageCustomer = ({ open, hide }: any) => {
     });
   };
 
+  const [showAddModal, setShowAddModal] = useState(false);
+
   return (
     <>
       <ViewCustomerOrders
@@ -97,6 +101,8 @@ const ManageCustomer = ({ open, hide }: any) => {
         viewEditModal={editModal}
         setViewEditModal={(openModal, id) => setEditModal({ openModal, id })}
       />
+
+      <AddCustomerModal showModal={showAddModal} setShowModal={() => setShowAddModal(false)} />
 
       <Dialog maxWidth="xl" open={open} onClose={hide}>
         <div
@@ -249,6 +255,10 @@ const ManageCustomer = ({ open, hide }: any) => {
                 width: matches ? '150px' : '184px',
                 p: '12px',
                 ':hover': { bgcolor: '#f2734e' },
+              }}
+              onClick={() => {
+                hide();
+                setShowAddModal(true);
               }}
             >
               <Typography fontSize={16} fontWeight={600}>

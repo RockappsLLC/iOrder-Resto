@@ -1,324 +1,282 @@
-import * as yup from 'yup';
+import * as Yup from 'yup';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
+import { LoadingButton } from '@mui/lab';
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import { InputAdornment } from '@mui/material';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
+import { Alert, Modal, Stack, Divider, Typography } from '@mui/material';
 
-import { CheveronIcon } from 'src/assets/icons';
+import { CloseIcon } from 'src/assets/icons';
+import { CreateCustomerRequestSchema } from 'src/api/api-schemas';
+import { createCustomer, useGetCustomers } from 'src/api/customers';
 
-import Iconify from 'src/components/iconify';
+import Scrollbar from 'src/components/scrollbar';
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import RHFAutocomplete from 'src/components/hook-form/rhf-autocomplete';
 
-const defaultValues = {
-  fullName: '',
-  email: '',
-  phoneNumber: '',
-  tag: 'VIP',
-  visitNote: '',
-  initials: '',
-  pagerNumber: 0,
-};
+// export type FormValuesProps = CreateCustomerRequestSchema;
 
-const showErrors = (field: string, valueLen: number, min: number) => {
-  if (valueLen === 0) {
-    return `${field} is required`;
-  }
-  if (valueLen > 0 && valueLen < min) {
-    return `${field} must be at least ${min} characters`;
-  }
-  return '';
-};
+interface FormValuesProps extends CreateCustomerRequestSchema {
+  year?: any;
+  month?: any;
+  day?: any;
+}
 
-const schema = yup.object().shape({
-  fullName: yup
-    .string()
-    .min(3, (obj) => showErrors('Full Name', obj.value.length, obj.min))
-    .required(),
-  email: yup.string().email().required('Email is required'),
-  phoneNumber: yup
-    .string()
-    .min(6, (obj) => showErrors('Phone Number', obj.value.length, obj.min))
-    .required(),
-  tag: yup.string().required('Tag is required'),
-  visitNote: yup
-    .string()
-    .min(5, (obj) => showErrors('Visit Note', obj.value.length, obj.min))
-    .required(),
-  initials: yup
-    .string()
-    .min(2, (obj) => showErrors('Initials', obj.value.length, obj.min))
-    .required(),
-  pagerNumber: yup.number().required(),
-});
+const Gender = ['male', 'female'];
+const Cantons = [
+  'Canton 1',
+  'Canton 2',
+  'Canton 3',
+  'Canton 4',
+  'Canton 5',
+  'Canton 6',
+  'Canton 7',
+  'Canton 8',
+  'Canton 9',
+  'Canton 10',
+];
 
-// const tags = ['VIP', 'Birthday', 'Anniversary', 'Private Dining', 'First time'];
+interface AddCustomerModalProps {
+  showModal: boolean;
+  setShowModal: (value: boolean) => void;
+}
 
-const GuestDetail = ({ open, hide, stepBack }: any) => {
-  const [tagName, setTagName] = useState('VIP');
+const AddCustomerModal = ({ showModal, setShowModal }: AddCustomerModalProps) => {
+  const asd = useGetCustomers();
+  console.log('asd', asd);
 
-  const {
-    reset,
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    defaultValues,
-    mode: 'onChange',
-    resolver: yupResolver(schema),
-  });
-
-  const onSubmit = (data: any) => {
-    try {
-      console.log({ ...data, tag: tagName });
-      hide();
-      reset(defaultValues);
-    } catch (error) {
-      console.log(error);
-    }
+  const handleCloseAddCustomer = () => {
+    setShowModal(false);
   };
 
   return (
-    <Dialog open={open} onClose={hide}>
+    <Modal open={showModal} onClose={handleCloseAddCustomer}>
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          borderBottom: '1px solid #E4E4E4',
+          position: 'absolute' as const,
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 700,
+          borderRadius: 2,
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 2.5,
         }}
       >
-        <Grid sx={{ display: 'flex' }}>
-          <DialogTitle sx={{ pl: 5 }}>Add Costumers</DialogTitle>
-        </Grid>
-        <Button onClick={hide}>
-          <Iconify icon="tabler:x" />
-        </Button>
+        <RenderForm handleCloseAddCustomer={handleCloseAddCustomer} />
       </Box>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent>
-          <Grid container gap={0.2}>
-            <Grid item xs={12} sx={{ pt: 4 }}>
-              <TextField
-                fullWidth
-                label="Name"
-                placeholder="Enter name"
-                InputProps={{
-                  inputProps: {
-                    pattern: '^[A-Za-züöäÜÖÄ]+$',
-                    title: 'Only characters from A to Z are allowed',
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sx={{ pt: 4 }}>
-              <TextField
-                fullWidth
-                type="tel"
-                label="Phone number"
-                placeholder="Enter phone number"
-                InputProps={{
-                  inputProps: {
-                    pattern: '^[0-9+]*$',
-                    title: 'Only + and 0-9 numbers are allowed',
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sx={{ pt: 4 }}>
-              <TextField
-                fullWidth
-                label="Email"
-                placeholder="Email"
-                InputProps={{
-                  inputProps: {
-                    pattern: '^[A-Za-züöäÜÖÄ]+$',
-                    title: 'Only characters from A to Z are allowed',
-                  },
-                }}
-              />
-            </Grid>
-
-            <Box display="flex" width="100%" gap={2}>
-              <Grid item xs={12} sx={{ pt: 4 }}>
-                <TextField
-                  fullWidth
-                  label="Sex"
-                  placeholder="Male"
-                  InputProps={{
-                    inputProps: {
-                      pattern: '^[A-Za-züöäÜÖÄ., ]+$',
-                      title: 'Only characters from A to Z are allowed',
-                    },
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <CheveronIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} sx={{ pt: 4 }}>
-                <TextField
-                  fullWidth
-                  type="number"
-                  label="Street"
-                  placeholder="Enter street"
-                  InputProps={{
-                    inputProps: {
-                      pattern: '^[0-9]+$',
-                      title: 'Only numbers from 0 to 9 are allowed',
-                    },
-                  }}
-                />
-              </Grid>
-            </Box>
-            <Box display="flex" width="100%" gap={1.5}>
-              <Grid item xs={2.5} sx={{ pt: 3 }}>
-                <TextField
-                  fullWidth
-                  label="Date of birth"
-                  placeholder="Day"
-                  InputProps={{
-                    style: {
-                      borderRadius: 58,
-                    },
-                    inputProps: {
-                      pattern: '^[A-Za-züöäÜÖÄ., ]+$',
-                      title: 'Only characters from A to Z are allowed',
-                    },
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <CheveronIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={2.5} sx={{ pt: 3 }}>
-                <TextField
-                  fullWidth
-                  label=""
-                  placeholder="Month"
-                  InputProps={{
-                    style: {
-                      borderRadius: 58,
-                    },
-                    inputProps: {
-                      pattern: '^[A-Za-züöäÜÖÄ., ]+$',
-                      title: 'Only characters from A to Z are allowed',
-                    },
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <CheveronIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={2.5} sx={{ pt: 3 }}>
-                <TextField
-                  fullWidth
-                  label="Year"
-                  placeholder="Year"
-                  InputProps={{
-                    style: {
-                      borderRadius: 58,
-                    },
-                    inputProps: {
-                      pattern: '^[A-Za-züöäÜÖÄ., ]+$',
-                      title: 'Only characters from A to Z are allowed',
-                    },
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <CheveronIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={5} sx={{ pt: 3 }}>
-                <TextField
-                  fullWidth
-                  label="City"
-                  placeholder="Enter City"
-                  InputProps={{
-                    style: {
-                      borderRadius: 58,
-                    },
-                    inputProps: {
-                      pattern: '^[A-Za-züöäÜÖÄ., ]+$',
-                      title: 'Only characters from A to Z are allowed',
-                    },
-                  }}
-                />
-              </Grid>
-            </Box>
-            <Grid item xs={30} sx={{ pt: 3 }}>
-              <TextField
-                fullWidth
-                label="Canton"
-                placeholder="Select Canton"
-                InputProps={{
-                  style: {
-                    borderRadius: 58,
-                  },
-                  inputProps: {
-                    pattern: '^[A-Za-züöäÜÖÄ., ]+$',
-                    title: 'Only characters from A to Z are allowed',
-                  },
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <CheveronIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center' }}>
-          <Button
-            fullWidth
-            onClick={() => {
-              hide();
-              reset(defaultValues);
-            }}
-            color="primary"
-            variant="outlined"
-            sx={{ borderRadius: '58px', p: '10px', textAlign: 'center' }}
-          >
-            <Typography fontSize={16} fontWeight={600}>
-              Cancel
-            </Typography>
-          </Button>
-          <Button
-            type="submit"
-            fullWidth
-            color="primary"
-            variant="contained"
-            sx={{
-              borderRadius: '58px',
-              p: '10px',
-              ':hover': { bgcolor: '#f2734e' },
-              textAlign: 'center',
-            }}
-          >
-            <Typography fontSize={16} fontWeight={600}>
-              Save
-            </Typography>
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+    </Modal>
   );
 };
 
-export default GuestDetail;
+const RenderForm = ({ handleCloseAddCustomer }: any) => {
+  const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+
+  const Days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
+  const Months = Array.from({ length: 12 }, (_, i) => (i + 1).toString());
+  const Years = Array.from({ length: 100 }, (_, i) => (2023 - i).toString());
+
+  const AddCustomerSchema = Yup.object()
+    .shape({
+      name: Yup.string().required('Name is a required field'),
+      email: Yup.string().required('Email is a required field'),
+      contactNumber: Yup.string().required('Contact nummber is a required field'),
+      sex: Yup.string().required('Sex is a required field'),
+      restaurantId: Yup.string(),
+      street: Yup.string().required('Street is a required field'),
+      city: Yup.string().required('City is a required field'),
+      canton: Yup.string().required('Canton is a required field'),
+      dateOfBirth: Yup.date(),
+      year: Yup.number().required('Year is a required field'),
+      month: Yup.number().required('Month is a required field'),
+      day: Yup.number().required('Day is a required field'),
+    })
+    .defined();
+
+  const defaultValues = {
+    name: '',
+    email: '',
+    contactNumber: '',
+    // sex: 'Female',
+    restaurantId: '',
+    street: '',
+    city: '',
+    canton: '',
+    // dateOfBirth: Date,
+  };
+
+  const methods = useForm<FormValuesProps>({
+    resolver: yupResolver(AddCustomerSchema),
+    defaultValues,
+  });
+
+  const localStorageId = localStorage.getItem('restaurantId') || '';
+
+  const {
+    reset,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { isSubmitting },
+  } = methods;
+
+  function convertDate(originalDateString: any) {
+    const parts = originalDateString.split('-');
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const day = parseInt(parts[2], 10);
+
+    const dateObject = new Date(year, month, day);
+
+    return dateObject;
+  }
+
+  const onSubmit = handleSubmit(async (data) => {
+    const date = `${data.year}-${data.month}-${data.day}`;
+    const finalDate = convertDate(date);
+
+    try {
+      await createCustomer({
+        name: data.name,
+        email: data.email,
+        contactNumber: data.contactNumber,
+        sex: data.sex,
+        restaurantId: localStorageId,
+        street: data.street,
+        city: data.city,
+        canton: data.canton,
+        dateOfBirth: finalDate,
+      });
+
+      setSuccessMsg('Customer is added successfully');
+
+      setTimeout(() => {
+        handleCloseAddCustomer();
+      }, 3000);
+      console.log('data', data);
+    } catch (error) {
+      console.error('error asd asd asd ', error);
+      reset();
+      setErrorMsg(typeof error === 'string' ? error : error.message);
+    }
+  });
+
+  return (
+    <FormProvider methods={methods} onSubmit={onSubmit}>
+      <Scrollbar sx={{ maxHeight: 600 }}>
+        <Stack spacing={2} sx={{ width: '100%' }}>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography variant="h5">Add customers</Typography>
+            <CloseIcon onClick={handleCloseAddCustomer} />
+          </Stack>
+
+          {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+          {!!successMsg && <Alert severity="success">{successMsg}</Alert>}
+
+          <Divider
+            sx={{
+              width: '100%',
+              height: '1px',
+              backgroundColor: '#C2C2C2',
+            }}
+          />
+
+          <RHFTextField
+            name="name"
+            label="Name"
+            placeholder="Enter name"
+            InputProps={{
+              inputProps: {
+                pattern: '^[A-Za-züöäÜÖÄ]+$',
+                title: 'Only characters from A to Z are allowed',
+              },
+            }}
+          />
+
+          <RHFTextField
+            name="contactNumber"
+            label="Phone Number"
+            placeholder="Enter phone number"
+            InputProps={{
+              inputProps: {
+                pattern: '^[0-9+]*$',
+                title: 'Only + and 0-9 numbers are allowed',
+              },
+            }}
+          />
+
+          <RHFTextField name="email" label="Email" placeholder="Enter email" />
+
+          <Stack direction="row" gap={1}>
+            <RHFAutocomplete
+              fullWidth
+              name="sex"
+              label="Select Sex"
+              options={Gender}
+              getOptionLabel={(option: any) => option}
+              value={watch('sex') || null}
+              onChange={(event: any, newValue: any) => {
+                setValue('sex', newValue);
+              }}
+            />
+
+            <RHFTextField fullWidth name="street" label="Street" placeholder="Enter street" />
+          </Stack>
+
+          <Stack direction="row" gap={1}>
+            <Stack direction="row" gap={1} width="50%">
+              <RHFAutocomplete fullWidth name="day" label="Day" options={Days} />
+              <RHFAutocomplete fullWidth name="month" label="Month" options={Months} />
+              <RHFAutocomplete fullWidth name="year" label="Year" options={Years} />
+            </Stack>
+
+            <RHFTextField sx={{ width: '50%' }} name="city" label="City" placeholder="Enter city" />
+          </Stack>
+
+          <RHFAutocomplete
+            fullWidth
+            name="canton"
+            label="Select Canton"
+            options={Cantons}
+            getOptionLabel={(option: any) => option}
+            value={watch('canton') || null}
+            onChange={(event: any, newValue: any) => {
+              setValue('canton', newValue);
+            }}
+          />
+
+          <Stack direction="row" gap={1.5}>
+            <Button
+              variant="outlined"
+              color="error"
+              fullWidth
+              sx={{
+                borderRadius: 20,
+              }}
+              onClick={handleCloseAddCustomer}
+            >
+              Cancel
+            </Button>
+
+            <LoadingButton
+              fullWidth
+              color="primary"
+              type="submit"
+              variant="contained"
+              loading={isSubmitting}
+              sx={{ borderRadius: 20 }}
+            >
+              Save
+            </LoadingButton>
+          </Stack>
+        </Stack>
+      </Scrollbar>
+    </FormProvider>
+  );
+};
+
+export default AddCustomerModal;
