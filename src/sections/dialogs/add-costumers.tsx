@@ -19,9 +19,9 @@ import RHFAutocomplete from 'src/components/hook-form/rhf-autocomplete';
 // export type FormValuesProps = CreateCustomerRequestSchema;
 
 interface FormValuesProps extends CreateCustomerRequestSchema {
-  year?: any;
-  month?: any;
-  day?: any;
+  year?: string;
+  month?: string;
+  day?: string;
 }
 
 const Gender = ['male', 'female'];
@@ -85,15 +85,16 @@ const RenderForm = ({ handleCloseAddCustomer }: any) => {
       name: Yup.string().required('Name is a required field'),
       email: Yup.string().required('Email is a required field'),
       contactNumber: Yup.string().required('Contact nummber is a required field'),
-      sex: Yup.string().required('Sex is a required field'),
-      restaurantId: Yup.string(),
+      // sex: Yup.string().required('Sex is a required field'),
+      sex: Yup.mixed().oneOf(['male', 'female']),
+      // restaurantId: Yup.string(),
       street: Yup.string().required('Street is a required field'),
       city: Yup.string().required('City is a required field'),
       canton: Yup.string().required('Canton is a required field'),
-      dateOfBirth: Yup.date(),
-      year: Yup.number().required('Year is a required field'),
-      month: Yup.number().required('Month is a required field'),
-      day: Yup.number().required('Day is a required field'),
+      // dateOfBirth: Yup.date(),
+      year: Yup.string().required('Year is a required field'),
+      month: Yup.string().required('Month is a required field'),
+      day: Yup.string().required('Day is a required field'),
     })
     .defined();
 
@@ -101,11 +102,14 @@ const RenderForm = ({ handleCloseAddCustomer }: any) => {
     name: '',
     email: '',
     contactNumber: '',
-    // sex: 'Female',
-    restaurantId: '',
+    sex: 'male',
+    // restaurantId: '',
     street: '',
     city: '',
     canton: '',
+    year: '',
+    month: '',
+    day: '',
     // dateOfBirth: Date,
   };
 
