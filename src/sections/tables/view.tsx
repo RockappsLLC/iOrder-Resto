@@ -77,14 +77,14 @@ export default function TablesView({ onTableSelect }: any) {
     const positionX =
       Math.max.apply(
         null,
-        _tables.map(function (o) {
+        _tables.map(function (o: any) {
           return o.positionX || 0;
         })
       ) + 100;
     const positionY =
       Math.max.apply(
         null,
-        _tables.map(function (o) {
+        _tables.map(function (o: any) {
           return o.positionY || 0;
         })
       ) + 100;
