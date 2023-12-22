@@ -8,6 +8,8 @@ import {
   ResetPasswordRequest,
   ResetPaswordResponse,
   ForgotPaswordResponse,
+  ChangePasswordRequest,
+  ChangePaswordResponse,
 } from './api-schemas';
 
 // ----------------------------------------------------------------------
@@ -34,6 +36,15 @@ export async function postResetPassword(
   data: ResetPasswordRequest
 ): Promise<{ data: ResetPaswordResponse } | ErrorResponse> {
   const URL = endpoints.auth.resetPassword.post;
+  return axios.post(URL, data);
+}
+
+// ----------------------------------------------------------------------
+
+export async function postChangePassword(
+  data: ChangePasswordRequest
+): Promise<{ data: ChangePaswordResponse } | ErrorResponse> {
+  const URL = endpoints.auth.changePassword.post;
   return axios.post(URL, data);
 }
 

@@ -14,7 +14,6 @@ export const Table = (props: any) => (
             height: 130,
             borderRadius: 2,
           }),
-      background: '#fff',
       border: '1px solid #E4E4E4',
       position: 'absolute',
       top: '50%',
@@ -24,6 +23,7 @@ export const Table = (props: any) => (
       justifyContent: 'center',
       alignItems: 'center',
       ...props,
+      background: '#fff',
     }}
   >
     <Box
@@ -39,7 +39,7 @@ export const Table = (props: any) => (
               height: 86,
               fontSize: 14,
             }),
-        background: '#ECF6FF',
+        background: props?.backgroundColor || '#ECF6FF',
         borderRadius: '50%',
         textAlign: 'center',
         display: 'flex',
@@ -54,5 +54,5 @@ export const Table = (props: any) => (
 );
 
 export const TableCircle = (props: any) => (
-  <Table borderRadius="50%" name={props?.name} minimal={props?.minimal} />
+  <Table borderRadius="50%" name={props?.name} minimal={props?.minimal} {...props} />
 );

@@ -18,6 +18,7 @@ export const Circle = ({
   right = true,
   minimal,
   name,
+  ...props
 }: any) => (
   <Box
     sx={{
@@ -29,7 +30,7 @@ export const Circle = ({
     {Boolean(bottom) && <Chair bottom minimal={minimal} />}
     {Boolean(left) && <Chair left minimal={minimal} />}
     {Boolean(right) && <Chair right minimal={minimal} />}
-    <TableCircle name={name} minimal={minimal} />
+    <TableCircle {...props} name={name} minimal={minimal} />
   </Box>
 );
 export const Square = ({
@@ -39,6 +40,7 @@ export const Square = ({
   right = true,
   minimal,
   name,
+  ...props
 }: any) => (
   <Box
     sx={{
@@ -50,11 +52,11 @@ export const Square = ({
     {Boolean(bottom) && <Chair bottom minimal={minimal} />}
     {Boolean(left) && <Chair left minimal={minimal} />}
     {Boolean(right) && <Chair right minimal={minimal} />}
-    <Table name={name} minimal={minimal} />
+    <Table {...props} name={name} minimal={minimal} />
   </Box>
 );
 
-export const Rectangle = ({ chairs, vertical, minimal, name }: any) => {
+export const Rectangle = ({ chairs, vertical, minimal, name, ...props }: any) => {
   const chairsCount = (chairs - 2) / 2;
   // console.log(
   //   Number(chairsCount * 62) + Number(20 * 2) + Number(8 * 2),
@@ -198,43 +200,57 @@ export const Rectangle = ({ chairs, vertical, minimal, name }: any) => {
         {Boolean(bottom) && <Chair bottom minimal={minimal} />}
         {Boolean(left) && <Chair left minimal={minimal} />}
         {Boolean(right) && <Chair right minimal={minimal} />} */}
-      <Table name={name} minimal={minimal} width={tableWidth} height={tableHeight} />
+      <Table {...props} name={name} minimal={minimal} width={tableWidth} height={tableHeight} />
     </Box>
   );
 };
 
-export const getTableByType = (type: string | undefined, minimal: boolean, name: string = '') => {
+export const getTableByType = (
+  type: string | undefined,
+  minimal: boolean,
+  name: string = '',
+  props?: any
+) => {
   switch (type) {
     case 'square-table-of-two-vertical':
-      return <Square name={name} minimal={minimal} left={false} right={false} />;
+      return <Square name={name} minimal={minimal} left={false} right={false} {...props} />;
     case 'square-table-of-two-horizontal':
-      return <Square name={name} minimal={minimal} top={false} bottom={false} />;
+      return <Square name={name} minimal={minimal} top={false} bottom={false} {...props} />;
     case 'square-table-of-four':
-      return <Square name={name} minimal={minimal} />;
+      return <Square name={name} minimal={minimal} {...props} />;
     case 'circle-table-of-two-vertical':
-      return <Circle name={name} minimal={minimal} left={false} right={false} />;
+      return <Circle name={name} minimal={minimal} left={false} right={false} {...props} />;
     case 'circle-table-of-two-horizontal':
-      return <Circle name={name} minimal={minimal} top={false} bottom={false} />;
+      return <Circle name={name} minimal={minimal} top={false} bottom={false} {...props} />;
     case 'circle-table-of-four':
-      return <Circle name={name} minimal={minimal} />;
+      return <Circle name={name} minimal={minimal} {...props} />;
     case 'rectangle-table-of-six-vertical':
-      return <Rectangle name={name} minimal={minimal} chairs={6} vertical />;
+      return <Rectangle name={name} minimal={minimal} chairs={6} vertical {...props} />;
     case 'rectangle-table-of-six-horizontal':
-      return <Rectangle name={name} minimal={minimal} chairs={6} />;
+      return <Rectangle name={name} minimal={minimal} chairs={6} {...props} />;
     case 'rectangle-table-of-eight-vertical':
-      return <Rectangle name={name} minimal={minimal} chairs={8} vertical />;
+      return <Rectangle name={name} minimal={minimal} chairs={8} vertical {...props} />;
     case 'rectangle-table-of-eight-horizontal':
-      return <Rectangle name={name} minimal={minimal} chairs={8} />;
+      return <Rectangle name={name} minimal={minimal} chairs={8} {...props} />;
     case 'rectangle-table-of-ten-vertical':
-      return <Rectangle name={name} minimal={minimal} chairs={10} vertical />;
+      return <Rectangle name={name} minimal={minimal} chairs={10} vertical {...props} />;
     case 'rectangle-table-of-ten-horizontal':
-      return <Rectangle name={name} minimal={minimal} chairs={10} />;
+      return <Rectangle name={name} minimal={minimal} chairs={10} {...props} />;
     case 'rectangle-table-of-twelve-vertical':
-      return <Rectangle name={name} minimal={minimal} chairs={12} vertical />;
+      return <Rectangle name={name} minimal={minimal} chairs={12} vertical {...props} />;
     case 'rectangle-table-of-twelve-horizontal':
-      return <Rectangle name={name} minimal={minimal} chairs={12} />;
+      return <Rectangle name={name} minimal={minimal} chairs={12} {...props} />;
     default:
       // return <Rectangle name={name} minimal={minimal} chairs={12} vertical />;
-      return <Square name="Invalid Table" left={false} top={false} bottom={false} right={false} />;
+      return (
+        <Square
+          name="Invalid Table"
+          left={false}
+          top={false}
+          bottom={false}
+          right={false}
+          {...props}
+        />
+      );
   }
 };

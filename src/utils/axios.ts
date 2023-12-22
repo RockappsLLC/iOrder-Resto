@@ -34,6 +34,7 @@ export const endpoints = {
     login: { post: '/auth/login' },
     forgotPassword: { post: '/auth/forgot-password' },
     resetPassword: { post: '/auth/reset-password' },
+    changePassword: { post: '/auth/change-password' },
   },
   users: {
     post: '/users',
