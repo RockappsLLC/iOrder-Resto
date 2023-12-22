@@ -1,5 +1,5 @@
+import React from 'react';
 import { m } from 'framer-motion';
-import React, { useState } from 'react';
 
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -11,31 +11,19 @@ import Scrollbar from 'src/components/scrollbar';
 import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
+import { useDiningOptionsContext } from 'src/sections/dining-options';
+
 // ----------------------------------------------------------------------
 
 const data = [
-  { label: 'Dine in', icon: <DineIn />, isChecked: false },
-  { label: 'Take away', icon: <TakeAway />, isChecked: false },
-  { label: 'Reservation', icon: <Reservation />, isChecked: false },
+  { label: 'Dine in', name: 'dine-in', icon: <DineIn />, isChecked: false },
+  { label: 'Take away', name: 'takeaway', icon: <TakeAway />, isChecked: false },
+  { label: 'Reservation', name: 'reservation', icon: <Reservation />, isChecked: false },
 ];
 
 export default function DiningOptionsPopover() {
   const popover = usePopover();
-
-  const [itemsData, setItemsData] = useState(data);
-
-  const handleButtonClick = (index: any) => {
-    const updatedButtons = data.map((button, i) => ({
-      ...button,
-      isChecked: i === index ? !button.isChecked : false,
-    }));
-
-    setItemsData(updatedButtons);
-  };
-
-  const handleApply = () => {
-    console.log('apply clicked');
-  };
+  const { diningOption, setDiningOption } = useDiningOptionsContext();
 
   return (
     <>
@@ -65,58 +53,37 @@ export default function DiningOptionsPopover() {
 
       <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 320, p: 2 }}>
         <Scrollbar>
-          {itemsData.map((button, index) => (
-            <Button
-              key={index}
-              variant="outlined"
-              color="error"
-              fullWidth
-              startIcon={React.cloneElement(button.icon, {
-                color: button.isChecked ? '#FF5C00' : '#828487',
-              })}
-              sx={{
-                borderColor: button.isChecked ? '#FF5C00' : '#E4E4E4',
-                backgroundColor: button.isChecked ? '#FFF5EE' : '#FFF',
-                mb: index === data.length - 1 ? 1.5 : 1,
-              }}
-              onClick={() => handleButtonClick(index)}
-            >
-              <Stack
-                justifyContent="space-between"
-                direction="row"
-                width="100%"
-                alignItems="center"
+          {data.map((button, index) => {
+            const isChecked = button.name === diningOption;
+            return (
+              <Button
+                key={index}
+                variant="outlined"
+                color="error"
+                fullWidth
+                startIcon={React.cloneElement(button.icon, {
+                  color: isChecked ? '#FF5C00' : '#828487',
+                })}
+                sx={{
+                  borderColor: isChecked ? '#FF5C00' : '#E4E4E4',
+                  backgroundColor: isChecked ? '#FFF5EE' : '#FFF',
+                  mb: index === data.length - 1 ? 1.5 : 1,
+                }}
+                onClick={() => setDiningOption(button.name)}
               >
-                <Typography color={button.isChecked ? '#FF5C00' : '#828487'}>
-                  {button.label}
-                </Typography>
+                <Stack
+                  justifyContent="space-between"
+                  direction="row"
+                  width="100%"
+                  alignItems="center"
+                >
+                  <Typography color={isChecked ? '#FF5C00' : '#828487'}>{button.label}</Typography>
 
-                <Checkbox sx={{ borderRadius: '50%' }} checked={button.isChecked} />
-              </Stack>
-            </Button>
-          ))}
-
-          <Stack direction="row" gap={1.5}>
-            <Button
-              variant="outlined"
-              color="error"
-              fullWidth
-              sx={{ borderRadius: 10 }}
-              onClick={popover.onClose}
-            >
-              Cancel
-            </Button>
-
-            <Button
-              variant="contained"
-              color="error"
-              fullWidth
-              sx={{ borderRadius: 10 }}
-              onClick={handleApply}
-            >
-              Apply
-            </Button>
-          </Stack>
+                  <Checkbox sx={{ borderRadius: '50%' }} checked={isChecked} />
+                </Stack>
+              </Button>
+            );
+          })}
         </Scrollbar>
       </CustomPopover>
     </>
