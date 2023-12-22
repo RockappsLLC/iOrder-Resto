@@ -13,21 +13,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.response.use(
   (res) => res,
-  async (error) => {
-    // if (error.response.s)
-    console.log();
-    if (error.response.status === 401) {
-      // setSession(null);
-      // localStorage.removeItem('accessToken');
-      // const restaurantId = await localStorage.getItem('restaurantId');
-      // if (restaurantId) {
-      //   window.location.href = '/other/locked';
-      // } else {
-      //   window.location.href = '/auth/jwt/login';
-      // }
-    }
-    Promise.reject((error.response && error.response.data) || 'Something went wrong');
-  }
+  (error) => Promise.reject((error.response && error.response.data) || 'Something went wrong')
 );
 
 export default axiosInstance;
@@ -84,6 +70,13 @@ export const endpoints = {
     getById: '/menu-items/{id}',
     put: '/menu-items/{id}',
     delete: '/menu-items/{id}',
+  },
+  floors: {
+    post: '/floors',
+    get: '/floors',
+    getById: '/floors/{id}',
+    put: '/floors/{id}',
+    delete: '/floors/{id}',
   },
   tables: {
     post: '/tables',
@@ -161,4 +154,5 @@ export const endpoints = {
     transactions: { getById: '/payments/transactions/{transactionId}' },
   },
   files: { upload: { post: '/files/upload' } },
+  transactions: { get: '/transactions', getById: '/transactions/{transactionId}' },
 };
