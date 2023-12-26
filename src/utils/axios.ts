@@ -31,15 +31,25 @@ export const fetcher: any = async (args: string | [string, AxiosRequestConfig]) 
 // ----------------------------------------------------------------------
 export const endpoints = {
   auth: {
-    login: { post: '/auth/login' },
-    forgotPassword: { post: '/auth/forgot-password' },
-    resetPassword: { post: '/auth/reset-password' },
-    changePassword: { post: '/auth/change-password' },
+    login: {
+      post: '/auth/login',
+    },
+    forgotPassword: {
+      post: '/auth/forgot-password',
+    },
+    resetPassword: {
+      post: '/auth/reset-password',
+    },
+    changePassword: {
+      post: '/auth/change-password',
+    },
   },
   users: {
     post: '/users',
     get: '/users',
-    me: { get: '/users/me' },
+    me: {
+      get: '/users/me',
+    },
     getById: '/users/{id}',
     put: '/users/{id}',
     delete: '/users/{id}',
@@ -149,11 +159,22 @@ export const endpoints = {
     put: '/invoices/{id}',
     delete: '/invoices/{id}',
   },
-  statistics: { get: '/statistics' },
+  statistics: {
+    get: '/statistics',
+  },
   payments: {
     post: '/payments',
-    transactions: { getById: '/payments/transactions/{transactionId}' },
+    transactions: {
+      getById: '/payments/transactions/{transactionId}',
+    },
   },
-  files: { upload: { post: '/files/upload' } },
-  transactions: { get: '/transactions', getById: '/transactions/{transactionId}' },
+  files: {
+    upload: {
+      post: '/files/upload',
+    },
+  },
+  transactions: {
+    get: '/transactions',
+    getById: '/transactions/{transactionId}',
+  },
 };

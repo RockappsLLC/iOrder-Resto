@@ -6,9 +6,13 @@ import axios, { fetcher, endpoints } from 'src/utils/axios';
 import { ErrorResponse, GetStatisticsResponse } from './api-schemas';
 
 // ----------------------------------------------------------------------
+interface IGetStatisticsQueryParams {
+  year?: number;
+  month?: number;
+}
 
-export function useGetStatistics() {
-  const URL = endpoints.statistics.get;
+export function useGetStatistics(params?: IGetStatisticsQueryParams) {
+  const URL = [endpoints.statistics.get, { params }];
 
   const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
 
@@ -28,9 +32,11 @@ export function useGetStatistics() {
 
 // ----------------------------------------------------------------------
 
-export function getStatistics(): Promise<{ data: GetStatisticsResponse } | ErrorResponse> {
+export function getStatistics(
+  params?: IGetStatisticsQueryParams
+): Promise<{ data: GetStatisticsResponse } | ErrorResponse> {
   const URL = endpoints.statistics.get;
-  return axios.get(URL);
+  return axios.get(URL, { params });
 }
 
 // ----------------------------------------------------------------------

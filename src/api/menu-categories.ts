@@ -64,10 +64,10 @@ export function useGetMenuCategory(id: string) {
 
   const memoizedValue = useMemo(
     () => ({
-      menuCategorie: data as GetMenuCategoryByIdResponse['data'],
-      menuCategorieLoading: isLoading,
-      menuCategorieError: error,
-      menuCategorieValidating: isValidating,
+      menuCategory: data as GetMenuCategoryByIdResponse['data'],
+      menuCategoryLoading: isLoading,
+      menuCategoryError: error,
+      menuCategoryValidating: isValidating,
     }),
     [data, error, isLoading, isValidating]
   );

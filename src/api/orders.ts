@@ -26,6 +26,7 @@ interface IGetOrdersQueryParams {
   offset?: number;
   limit?: number;
   search?: number;
+  status?: number;
 }
 
 export function useGetOrders(params?: IGetOrdersQueryParams) {
