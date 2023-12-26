@@ -577,6 +577,7 @@ export interface UpdateOrderRequestSchema {
   restaurantId?: string;
   diningOption?: string;
   notes?: string;
+  tableId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -608,6 +609,7 @@ export interface OrderResponseSchema {
   staffId?: string;
   diningOption?: string;
   notes?: string;
+  tableId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
