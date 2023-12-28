@@ -25,6 +25,7 @@ interface IGetTablesQueryParams {
   offset?: number;
   limit?: number;
   search?: string;
+  floorId?: string;
 }
 
 export function useGetTables(params?: IGetTablesQueryParams) {

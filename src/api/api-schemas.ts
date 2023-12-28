@@ -121,6 +121,8 @@ export interface CreateRestaurantRequestSchema {
   merchantId?: string;
   merchantPassword?: string;
   icon?: string;
+  weeklyReport?: boolean;
+  monthlyReport?: boolean;
 }
 export interface UpdateRestaurantRequestSchema {
   name?: string;
@@ -135,6 +137,8 @@ export interface UpdateRestaurantRequestSchema {
   merchantId?: string;
   merchantPassword?: string;
   icon?: string;
+  weeklyReport?: boolean;
+  monthlyReport?: boolean;
 }
 export interface GetRestaurantsResponse {
   success?: boolean;
@@ -160,6 +164,8 @@ export interface RestaurantResponseSchema {
   merchantId?: string;
   merchantPassword?: string;
   icon?: string;
+  weeklyReport?: boolean;
+  monthlyReport?: boolean;
 }
 export interface CreateRestaurantResponseSchema {
   success?: boolean;
@@ -179,10 +185,12 @@ export interface CreateMenuCategoryRequestSchema {
   name: string;
   icon?: string;
   restaurantId?: string;
+  mobileImage?: string;
 }
 export interface UpdateMenuCategoryRequestSchema {
   name: string;
   icon?: string;
+  mobileImage?: string;
 }
 export interface MenuCategoryResponseSchema {
   _id?: string;
@@ -190,6 +198,7 @@ export interface MenuCategoryResponseSchema {
   icon?: string;
   restaurantId?: string;
   status?: boolean;
+  mobileImage?: string;
 }
 export interface GetMenuCategoryByIdResponse {
   success?: boolean;
@@ -252,6 +261,7 @@ export interface CreateTableRequestSchema {
   height?: number;
   width?: number;
   type?: string;
+  floorId?: string;
 }
 export interface TableResponseSchema {
   _id?: string;
@@ -264,6 +274,7 @@ export interface TableResponseSchema {
   height?: number;
   width?: number;
   type?: string;
+  floorId?: string;
 }
 export interface GetTableByIdResponse {
   success?: boolean;
@@ -612,6 +623,7 @@ export interface OrderResponseSchema {
   tableId?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  waiter?: UserResponseSchema;
 }
 export interface OrdersResponseSchema {
   orders?: OrderResponseSchema[];
@@ -698,18 +710,22 @@ export interface StatisticsResponseSchema {
   leads?: number;
   menuCategories?: number;
   menuItems?: number;
-  orders?: number;
   packages?: number;
   reservations?: number;
   restaurants?: number;
   tables?: number;
   tasks?: number;
   users?: number;
-  totalRevenue?: number;
+  totalRevenue?: GraphSchema;
+  orders?: GraphSchema;
 }
 export interface GetStatisticsResponse {
   success?: boolean;
   data?: StatisticsResponseSchema;
+}
+export interface GraphSchema {
+  year?: string;
+  data?: undefined[];
 }
 export interface PaymentRequestSchema {
   orderId: string;

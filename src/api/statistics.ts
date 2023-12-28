@@ -8,7 +8,6 @@ import { ErrorResponse, GetStatisticsResponse } from './api-schemas';
 // ----------------------------------------------------------------------
 interface IGetStatisticsQueryParams {
   year?: number;
-  month?: number;
 }
 
 export function useGetStatistics(params?: IGetStatisticsQueryParams) {
