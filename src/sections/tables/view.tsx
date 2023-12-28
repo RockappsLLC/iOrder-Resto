@@ -139,7 +139,7 @@ export default function TablesView({ onTableSelect }: any) {
   };
   console.log(nodes);
   return (
-    <Grid container columns={15} sx={{ height: '100%' }}>
+    <Grid container columns={15} sx={{ height: '100%', maxWidth: '100%', overflowX: 'auto' }}>
       {/* <Container maxWidth={settings.themeStretch ? false : 'xl'} sx={{ p: 0 }}> */}
       <Typography
         fontWeight={500}
@@ -181,6 +181,8 @@ export default function TablesView({ onTableSelect }: any) {
           width: '100%',
           height: 68,
           position: 'relative',
+          maxWidth: '100%',
+          overflowY: 'auto',
         }}
       >
         {FILTERS.map((filter) => (
