@@ -8,7 +8,7 @@ interface IOrder extends OrderResponseSchema {}
 const TAX = 0.1;
 
 export const OrderProvider = ({ children }: any) => {
-  const [activeTable, setActiveTable] = useState(null);
+  const [activeTable, setActiveTable] = useState();
 
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [ordered, setOrdered] = useState(false);
@@ -21,6 +21,8 @@ export const OrderProvider = ({ children }: any) => {
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [inputAmount, setInputAmount] = useState('');
   const [totalWithTip, setTotalWithTip] = useState(null);
+
+  const [note, setNote] = useState(null);
 
   const calculateSubTotal = useCallback(() => {
     return orders.reduce((acc: number, currentItem: any) => {
@@ -40,8 +42,17 @@ export const OrderProvider = ({ children }: any) => {
   }, [orders, calculateSubTotal, newSubTotal, totalPrice, subTotal]);
 
   useEffect(() => {
+    setActiveTable(activeTable);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     setTipAmount(tipAmount);
   }, [tipAmount, orders]);
+
+  useEffect(() => {
+    setNote(note);
+  }, [note, orders]);
 
   useEffect(() => {
     setPaymentMethod(paymentMethod);
@@ -58,6 +69,14 @@ export const OrderProvider = ({ children }: any) => {
   useEffect(() => {
     setOrderId(orderId);
   }, [orderId, orders]);
+
+  const resetOrders = useCallback(() => {
+    setOrders([]);
+    setTotal(0);
+    setSubTotal(0);
+    setTipAmount(0);
+    setInputAmount('');
+  }, []);
 
   const addOrder = useCallback(
     (order: IOrder) => {
@@ -85,6 +104,8 @@ export const OrderProvider = ({ children }: any) => {
 
   const providerValues = useMemo(
     () => ({
+      activeTable,
+      setActiveTable,
       ordered,
       setOrdered,
       total,
@@ -101,12 +122,17 @@ export const OrderProvider = ({ children }: any) => {
       setTotalWithTip,
       orderId,
       setOrderId,
+      note,
+      setNote,
       orders,
       addOrder,
       removeOrder,
       updateOrder,
+      resetOrders,
     }),
     [
+      activeTable,
+      setActiveTable,
       ordered,
       setOrdered,
       total,
@@ -124,9 +150,12 @@ export const OrderProvider = ({ children }: any) => {
       orderId,
       setOrderId,
       orders,
+      note,
+      setNote,
       addOrder,
       removeOrder,
       updateOrder,
+      resetOrders,
     ]
   );
   return <OrderContext.Provider value={providerValues}>{children}</OrderContext.Provider>;

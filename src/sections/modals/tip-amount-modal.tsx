@@ -74,9 +74,8 @@ const TipAmountModal = ({ showTipsModal, setShowTipsModal }: TipAmountProps) => 
             value={inputValue}
             onChange={handleAmountInput}
             sx={{
-              mt: 2,
               '& .MuiInputBase-root': {
-                padding: '20px 10px',
+                padding: '2px 2px',
               },
               '& .MuiInputBase-input': {
                 textAlign: 'center',

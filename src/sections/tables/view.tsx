@@ -12,6 +12,7 @@ import { TableResponseSchema } from 'src/api/api-schemas';
 
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
+import RunningOrders from 'src/components/drawers/running-orders';
 import { useOrderContext } from 'src/components/order-sidebar/context';
 
 import { Node, getTableByType } from './table-variants';
@@ -43,6 +44,7 @@ export default function TablesView({ onTableSelect }: any) {
     'all'
   );
   const [searchInput, setSearchInput] = useState();
+  const [openRuningOrders, setOpenRunningOrders] = useState(false);
 
   const constraintsRef = useRef(null);
   const methods = useForm({
@@ -169,7 +171,6 @@ export default function TablesView({ onTableSelect }: any) {
         paddingLeft={3}
         sx={{
           backgroundColor: '#fff',
-
           display: 'flex',
           py: 0,
           alignItems: 'center',
@@ -179,6 +180,7 @@ export default function TablesView({ onTableSelect }: any) {
           borderBottom: 1,
           width: '100%',
           height: 68,
+          position: 'relative',
         }}
       >
         {FILTERS.map((filter) => (
@@ -203,13 +205,13 @@ export default function TablesView({ onTableSelect }: any) {
             <Button
               fullWidth
               onClick={() => setSelectedFilter('all')}
-              color={selectedFilter === 'all' ? 'primary' : 'inherit'}
-              variant="outlined"
+              color="primary"
+              variant={selectedFilter === 'all' ? 'contained' : 'outlined'}
               sx={{
                 borderRadius: '58px',
                 p: '2px',
                 width: 150,
-                color: selectedFilter === 'all' ? 'primary' : 'rgba(145, 158, 171, 0.32)',
+                ':hover': { bgcolor: '#fdf3f0', color: '#e06842', borderColor: '#e06842' },
               }}
             >
               <Typography fontSize={14} fontWeight={600}>
@@ -219,17 +221,14 @@ export default function TablesView({ onTableSelect }: any) {
             <Button
               fullWidth
               onClick={() => setSelectedFilter('reservation')}
-              color={selectedFilter === 'reservation' ? 'primary' : 'inherit'}
-              variant="outlined"
+              color="primary"
+              variant={selectedFilter === 'reservation' ? 'contained' : 'outlined'}
               sx={{
                 borderRadius: '58px',
                 p: '2px',
                 width: 150,
-                color: selectedFilter === 'reservation' ? 'primary' : 'rgba(145, 158, 171, 0.32)',
+                ':hover': { bgcolor: '#fdf3f0', color: '#e06842', borderColor: '#e06842' },
               }}
-
-              //   borderColor: isChecked ? '#FF5C00' : '#E4E4E4',
-              // backgroundColor: isChecked ? '#FFF5EE' : '#FFF',
             >
               <Typography fontSize={14} fontWeight={600}>
                 Reservation
@@ -237,15 +236,15 @@ export default function TablesView({ onTableSelect }: any) {
             </Button>
             <Button
               fullWidth
-              onClick={() => setSelectedFilter('running-orders')}
-              color={selectedFilter === 'running-orders' ? 'primary' : 'inherit'}
-              variant="outlined"
+              // onClick={() => setSelectedFilter('running-orders')}
+              onClick={() => setOpenRunningOrders(true)}
+              color="primary"
+              variant={selectedFilter === 'running-orders' ? 'contained' : 'outlined'}
               sx={{
                 borderRadius: '58px',
                 p: '2px',
                 width: 150,
-                color:
-                  selectedFilter === 'running-orders' ? 'primary' : 'rgba(145, 158, 171, 0.32)',
+                ':hover': { bgcolor: '#fdf3f0', color: '#e06842', borderColor: '#e06842' },
               }}
             >
               <Typography fontSize={14} fontWeight={600}>
@@ -256,6 +255,7 @@ export default function TablesView({ onTableSelect }: any) {
           <InputBase
             fullWidth
             autoFocus
+            sx={{ borderLeft: '2px solid #E4E4E4', paddingLeft: 2 }}
             placeholder="Search tables..."
             value={searchInput}
             onChange={(e: any) => setSearchInput(e.target.value)}
@@ -292,6 +292,9 @@ export default function TablesView({ onTableSelect }: any) {
       </Box> */}
 
       {/* <Typography variant="h4"> Page Tables </Typography> */}
+      <Box sx={{ position: 'relative' }}>
+        <RunningOrders isBoxOpen={openRuningOrders} onHideBox={() => setOpenRunningOrders(false)} />
+      </Box>
       <Box
         sx={{
           //   mt: 5,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   Box,
@@ -14,6 +14,8 @@ import {
   TableContainer,
 } from '@mui/material';
 
+import { useRouter } from 'src/routes/hooks';
+
 import { getMe } from 'src/api/users';
 import { createOrder } from 'src/api/orders';
 import { createPayment } from 'src/api/payments';
@@ -21,6 +23,7 @@ import { MoneyIcon, Mastercard } from 'src/assets/icons';
 
 import Scrollbar from 'src/components/scrollbar';
 import { TableHeadCustom } from 'src/components/table';
+import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useOrderContext } from 'src/components/order-sidebar/context';
 
 import LightboxModal from './lightbox-modal';
@@ -40,23 +43,41 @@ interface OrderConfirmationProps {
 
 const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConfirmationProps) => {
   const [showLightbox, setShowLightbox] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+
+  function formatSwissFrancs(number: any) {
+    const formattedNumber = new Intl.NumberFormat('de-CH', {
+      style: 'currency',
+      currency: 'CHF',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(number);
+
+    return `${formattedNumber}.-`;
+  }
+
   const [transacId, setTransactionId] = useState('');
+
+  const router = useRouter();
 
   const {
     inputAmount,
     subTotal,
     orders,
-    setOrders,
     paymentMethod,
     totalWithTip,
     tipAmount,
     setOrderId,
+    resetOrders,
   } = useOrderContext();
 
   const handleCloseModal = () => {
     setShowOrderModal(false);
-    setOrders();
+    resetOrders();
+    setShowMessage(true);
   };
+
+  console.log('orders', orders);
 
   let change;
 
@@ -117,12 +138,36 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
     }
   };
 
+  useEffect(() => {
+    if (showMessage) {
+      const timer = setTimeout(() => {
+        setShowMessage(false);
+
+        router.push('/');
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showMessage, router]);
+
   return (
     <>
       <LightboxModal
         showModal={showLightbox}
         transactionId={transacId}
         setShowModal={() => setShowLightbox(false)}
+      />
+
+      <ConfirmDialog
+        open={showMessage}
+        onClose={() => setShowMessage(false)}
+        title="Confirmation"
+        content="Order is added successfully."
+        action={
+          <Button variant="contained" color="success" onClick={() => setShowMessage(false)}>
+            Done
+          </Button>
+        }
       />
 
       <Modal open={showOrderModal} onClose={handleCloseModal}>
@@ -157,9 +202,9 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
                     <TableRow key={order._id}>
                       <TableCell>{order.name}</TableCell>
                       <TableCell align="right">{order.count}</TableCell>
-                      <TableCell align="right">${order.price}</TableCell>
-                      <TableCell align="right">${order.carbs}</TableCell>
-                      <TableCell align="right">${order.price * order.count}</TableCell>
+                      <TableCell align="right">{order.price}</TableCell>
+                      <TableCell align="right">{order.carbs}</TableCell>
+                      <TableCell align="right">{order.price * order.count}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -182,40 +227,35 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
             <Stack width="50%" ml={5}>
               <Stack direction="row" justifyContent="space-between" mb={1.5}>
                 <Typography color="#9C9C9C">SUBTOTAL</Typography>
-                <Typography>${subTotal}</Typography>
-              </Stack>
-
-              <Stack direction="row" justifyContent="space-between" mb={1.5}>
-                <Typography color="#9C9C9C">SUBCHARGE</Typography>
-                <Typography>$0</Typography>
+                <Typography>{formatSwissFrancs(subTotal)}</Typography>
               </Stack>
 
               <Stack direction="row" justifyContent="space-between" mb={1.5}>
                 <Typography color="#9C9C9C">ORDER DISCOUNT</Typography>
-                <Typography>$0</Typography>
+                <Typography>{formatSwissFrancs(0)}</Typography>
               </Stack>
 
               <Stack direction="row" justifyContent="space-between" mb={1.5}>
                 <Typography color="#9C9C9C">TAX</Typography>
-                <Typography>${taxTotal}</Typography>
+                <Typography>{formatSwissFrancs(taxTotal)}</Typography>
               </Stack>
 
               <Stack direction="row" justifyContent="space-between" mb={1.5}>
                 <Typography color="#9C9C9C">TIP</Typography>
-                <Typography>${tipAmount}</Typography>
-              </Stack>
-
-              <Stack direction="row" justifyContent="space-between" mb={1.5}>
-                <Typography>BILL AMOUNT</Typography>
-                <Typography color="#F15F34" fontWeight={600}>
-                  ${totalWithTip}
-                </Typography>
+                <Typography>{formatSwissFrancs(tipAmount)}</Typography>
               </Stack>
 
               <Stack direction="row" justifyContent="space-between" mb={1.5}>
                 <Typography>CHANGE</Typography>
                 <Typography color="#F15F34" fontWeight={600}>
-                  ${change}
+                  {formatSwissFrancs(change)}
+                </Typography>
+              </Stack>
+
+              <Stack direction="row" justifyContent="space-between" mb={1.5}>
+                <Typography>BILL AMOUNT</Typography>
+                <Typography color="#F15F34" fontWeight={600}>
+                  {formatSwissFrancs(totalWithTip)}
                 </Typography>
               </Stack>
             </Stack>

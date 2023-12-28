@@ -7,17 +7,20 @@ import Fab from '@mui/material/Fab';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import { Button } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { Button, CardMedia, IconButton } from '@mui/material';
 
 import { useTranslate } from 'src/locales';
+import { createOrder } from 'src/api/orders';
+import { ChevronRight } from 'src/assets/icons';
 
 import AddNote from 'src/sections/dialogs/add-note';
 import { OrderPaymentDrawer } from 'src/sections/modals';
+import AddOrderDialog from 'src/sections/dialogs/add-order';
 import { useDiningOptionsContext } from 'src/sections/dining-options';
 
 import Iconify from '../iconify';
@@ -55,7 +58,7 @@ const schema = yup.object().shape({
 });
 
 const OrderSidebar = (props: OrderSidebarProps) => {
-  const { orders, ordered, updateOrder, removeOrder, total, subTotal, activeTable } =
+  const { orders, ordered, updateOrder, removeOrder, total, subTotal, activeTable, note } =
     useOrderContext();
 
   const { diningOption } = useDiningOptionsContext();
@@ -63,6 +66,9 @@ const OrderSidebar = (props: OrderSidebarProps) => {
   const [currentTab, setCurrentTab] = useState('buy');
   const [addNote, setAddNote] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
+
+  const [foodId, setFoodId] = useState('');
+  const [modal, setModal] = useState(false);
 
   const { t } = useTranslate();
 
@@ -85,11 +91,35 @@ const OrderSidebar = (props: OrderSidebarProps) => {
     setCurrentTab(newValue);
   }, []);
 
-  const onSubmit = (data: any) => {
-    // addData(data)
-  };
-
   const taxTotal = Math.round(Number(subTotal * TAX) * 10) / 10;
+
+  const restaurantId = localStorage.getItem('restaurantId') || '';
+  // const router = useRouter();
+
+  const onSubmit = async () => {
+    try {
+      const response = await createOrder({
+        customer: {
+          _id: 'asdasd123123',
+          name: 'asd',
+          email: 'asd@gmail.com',
+          contactNumber: '1111',
+          restaurantId,
+        },
+        restaurantId,
+        menuItems: [orders],
+        price: total,
+        status: 1,
+        diningOption,
+        notes: note,
+      });
+
+      // router.push('/');
+      setShowOrderModal(true);
+    } catch (error) {
+      console.log('create order error', error);
+    }
+  };
 
   return (
     <div style={{ height: '90%' }}>
@@ -180,23 +210,33 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                         disabled
                         error={Boolean(errors.code)}
                         {...(errors.code && { helperText: errors.code.message })}
+                        InputProps={{
+                          endAdornment: (
+                            <IconButton disabled>
+                              <ChevronRight />
+                            </IconButton>
+                          ),
+                        }}
                       />
                     )}
                   />
                 )}
               </div>
-              <Fab
-                onClick={() => setAddNote(true)}
-                disabled={!ordered}
-                size="small"
-                color={ordered ? 'error' : 'default'}
-                variant="soft"
-                sx={{ width: '100%', borderRadius: '58px', marginTop: '16px' }}
-              >
-                <Typography color="#9C9C9C" fontWeight={600} fontSize="16px">
-                  {t('add_note')}
-                </Typography>
-              </Fab>
+              {note ? (
+                <TextField fullWidth multiline rows={2} sx={{ mt: 2 }} label="Note" value={note} />
+              ) : (
+                <Fab
+                  onClick={() => setAddNote(true)}
+                  disabled={!ordered}
+                  size="small"
+                  variant="outlined"
+                  sx={{ width: '100%', borderRadius: '58px', marginTop: '16px' }}
+                >
+                  <Typography color="#e06842" fontWeight={600} fontSize="16px">
+                    {t('add_note')}
+                  </Typography>
+                </Fab>
+              )}
             </form>
             <Divider sx={{ mt: 2, mb: 1 }} />
             {ordered && orders.length > 0 && (
@@ -225,15 +265,27 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                           paddingBottom: '10px',
                         }}
                       >
-                        <img
-                          style={{ width: '74px', borderRadius: '12px' }}
+                        <CardMedia
+                          sx={{ width: '74px', borderRadius: '12px' }}
+                          component="img"
                           height="74px"
-                          src="/assets/images/food.png"
+                          image="/assets/images/food.png"
                           alt="food"
+                          onClick={() => {
+                            setModal(true);
+                            setFoodId(order._id);
+                          }}
                         />
+
                         <div style={{ width: '100%', paddingLeft: 10 }}>
                           <Typography fontSize={16} fontWeight={600} gutterBottom component="div">
                             {order.name}
+                          </Typography>
+                          <Typography fontSize={12}>
+                            Note:{' '}
+                            {order.notes.length > 10
+                              ? `${order.notes.slice(0, 15)}...`
+                              : order.notes}
                           </Typography>
                           <div
                             style={{
@@ -334,12 +386,29 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                       $ {total.toFixed(2)}
                     </Typography>
                   </div>
+
+                  <Button
+                    size="large"
+                    fullWidth
+                    variant="contained"
+                    sx={{
+                      borderRadius: '58px',
+                      my: 2,
+                      bgcolor: '#FEE3D0',
+                      color: '#F15F34',
+                      ':hover': { bgcolor: '#f26f49', color: '#FFF' },
+                    }}
+                  >
+                    Order more
+                  </Button>
+
                   <Button
                     size="large"
                     fullWidth
                     variant="contained"
                     color="primary"
                     onClick={() => setShowOrderModal(true)}
+                    // onClick={onSubmit}
                     sx={{ borderRadius: '58px', my: '15px', ':hover': { bgcolor: '#f26f49' } }}
                   >
                     {t('place_order')}
@@ -377,6 +446,8 @@ const OrderSidebar = (props: OrderSidebarProps) => {
         showModal={showOrderModal}
         setShowModal={() => setShowOrderModal(false)}
       />
+
+      <AddOrderDialog open={modal} foodId={foodId} hide={() => setModal(false)} />
     </div>
   );
 };

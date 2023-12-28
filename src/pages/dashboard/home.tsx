@@ -15,8 +15,13 @@ export default function Page() {
   const [activeTab, setActiveTab] = useState<'tables' | 'reservation' | 'home'>('tables');
 
   const { diningOption } = useDiningOptionsContext();
-  const { reservation, setReservation, reservationTab, setReservationTab } =
-    useReservationContext();
+  const {
+    reservation,
+    setReservation,
+    reservationTab,
+    setReservationTab,
+    setCreatedReservationId,
+  } = useReservationContext();
 
   useEffect(() => {
     if (diningOption === 'reservation') {
@@ -34,6 +39,8 @@ export default function Page() {
     if (diningOption === 'reservation') {
       setReservation({});
       setReservationTab('list');
+      setCreatedReservationId(null);
+
       // here
     } else if (diningOption === 'dine-in') {
       setActiveTab('home');
@@ -41,7 +48,7 @@ export default function Page() {
     } else if (diningOption === 'takeaway') {
       setReservation(null);
     }
-  }, [diningOption, setReservation, setReservationTab]);
+  }, [diningOption, setReservation, setReservationTab, setCreatedReservationId]);
 
   return (
     <>

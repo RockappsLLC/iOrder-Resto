@@ -9,9 +9,11 @@ import DialogContent from '@mui/material/DialogContent';
 import { useTranslate } from 'src/locales';
 
 import Iconify from 'src/components/iconify';
+import { useOrderContext } from 'src/components/order-sidebar/context';
 
 const AddNote = ({ open, hide }: any) => {
   const { t } = useTranslate();
+  const { note, setNote } = useOrderContext();
 
   const handleAddNote = () => {
     hide();
@@ -36,6 +38,8 @@ const AddNote = ({ open, hide }: any) => {
           rows={5}
           sx={{ mt: '5px' }}
           placeholder={`${t('write_your_order_note_here')}...`}
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
         />
       </DialogContent>
       <DialogActions>
