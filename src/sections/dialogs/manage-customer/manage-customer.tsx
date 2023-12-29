@@ -227,7 +227,7 @@ const ManageCustomer = ({ open, hide }: any) => {
                 display: 'flex',
                 justifyContent: 'flex-start',
                 my: 1,
-                width: matches ? '50%' : '300px',
+                width: matches ? '50%' : '400px',
               }}
             />
           )}

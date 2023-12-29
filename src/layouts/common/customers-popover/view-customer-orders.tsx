@@ -5,7 +5,6 @@ import {
   Modal,
   Stack,
   Table,
-  Button,
   Divider,
   TableRow,
   TableBody,
@@ -94,7 +93,7 @@ const ViewCustomerOrders = ({
           <>
             <Typography my={6}>No orders found.</Typography>
             <Box display="flex" flexDirection="row" justifyContent="flex-end" gap={2}>
-              <Button
+              {/* <Button
                 color="primary"
                 variant="contained"
                 sx={{
@@ -105,7 +104,7 @@ const ViewCustomerOrders = ({
                 <Typography fontSize={16} fontWeight={600}>
                   Add new order
                 </Typography>
-              </Button>
+              </Button> */}
             </Box>
           </>
         ) : (
