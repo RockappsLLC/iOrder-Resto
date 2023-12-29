@@ -10,6 +10,8 @@ const TAX = 0.1;
 export const OrderProvider = ({ children }: any) => {
   const [activeTable, setActiveTable] = useState();
 
+  const [showOrderSideBar, setShowOrderSidebar] = useState(false);
+
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [ordered, setOrdered] = useState(false);
   const [orderId, setOrderId] = useState('');
@@ -22,7 +24,7 @@ export const OrderProvider = ({ children }: any) => {
   const [inputAmount, setInputAmount] = useState('');
   const [totalWithTip, setTotalWithTip] = useState(null);
 
-  const [note, setNote] = useState(null);
+  const [note, setNote] = useState('');
 
   const calculateSubTotal = useCallback(() => {
     return orders.reduce((acc: number, currentItem: any) => {
@@ -129,6 +131,8 @@ export const OrderProvider = ({ children }: any) => {
       removeOrder,
       updateOrder,
       resetOrders,
+      showOrderSideBar,
+      setShowOrderSidebar,
     }),
     [
       activeTable,
@@ -156,6 +160,8 @@ export const OrderProvider = ({ children }: any) => {
       removeOrder,
       updateOrder,
       resetOrders,
+      showOrderSideBar,
+      setShowOrderSidebar,
     ]
   );
   return <OrderContext.Provider value={providerValues}>{children}</OrderContext.Provider>;

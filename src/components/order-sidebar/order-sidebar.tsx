@@ -14,6 +14,9 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Button, CardMedia, IconButton } from '@mui/material';
 
+import { useRouter } from 'src/routes/hooks';
+
+import { getMe } from 'src/api/users';
 import { useTranslate } from 'src/locales';
 import { createOrder } from 'src/api/orders';
 import { ChevronRight } from 'src/assets/icons';
@@ -94,9 +97,12 @@ const OrderSidebar = (props: OrderSidebarProps) => {
   const taxTotal = Math.round(Number(subTotal * TAX) * 10) / 10;
 
   const restaurantId = localStorage.getItem('restaurantId') || '';
-  // const router = useRouter();
+  const router = useRouter();
 
   const onSubmit = async () => {
+    const { data } = await getMe();
+    const staffId = data.data._id;
+
     try {
       const response = await createOrder({
         customer: {
@@ -106,15 +112,18 @@ const OrderSidebar = (props: OrderSidebarProps) => {
           contactNumber: '1111',
           restaurantId,
         },
+        staffId,
         restaurantId,
         menuItems: [orders],
         price: total,
         status: 1,
         diningOption,
         notes: note,
+        tableId: activeTable._id as string,
       });
 
-      // router.push('/');
+      console.log('response', response);
+      router.push('/');
       setShowOrderModal(true);
     } catch (error) {
       console.log('create order error', error);
@@ -387,7 +396,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                     </Typography>
                   </div>
 
-                  <Button
+                  {/* <Button
                     size="large"
                     fullWidth
                     variant="contained"
@@ -400,15 +409,15 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                     }}
                   >
                     Order more
-                  </Button>
+                  </Button> */}
 
                   <Button
                     size="large"
                     fullWidth
                     variant="contained"
                     color="primary"
-                    onClick={() => setShowOrderModal(true)}
-                    // onClick={onSubmit}
+                    // onClick={() => setShowOrderModal(true)}
+                    onClick={onSubmit}
                     sx={{ borderRadius: '58px', my: '15px', ':hover': { bgcolor: '#f26f49' } }}
                   >
                     {t('place_order')}

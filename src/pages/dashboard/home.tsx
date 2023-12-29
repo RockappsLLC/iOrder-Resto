@@ -1,6 +1,11 @@
 import { Helmet } from 'react-helmet-async';
 import { useState, useEffect, useCallback } from 'react';
 
+import { useGetOrders } from 'src/api/orders';
+import { OrderResponseSchema } from 'src/api/api-schemas';
+
+import { useOrderContext } from 'src/components/order-sidebar/context';
+
 import HomeView from 'src/sections/home/view';
 import TablesView from 'src/sections/tables/view';
 import GuestDetail from 'src/sections/dialogs/guest-detail';
@@ -23,6 +28,8 @@ export default function Page() {
     setCreatedReservationId,
   } = useReservationContext();
 
+  const { activeTable, setShowOrderSidebar, setOrders } = useOrderContext();
+
   useEffect(() => {
     if (diningOption === 'reservation') {
       setActiveTab('tables');
@@ -35,6 +42,20 @@ export default function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [diningOption]);
 
+  const { orders, ordersLoading } = useGetOrders();
+
+  const [ordersData, setOrdersData] = useState<OrderResponseSchema[]>([]);
+
+  useEffect(() => {
+    if (!ordersLoading && orders.length) {
+      setOrdersData(orders);
+    }
+  }, [ordersLoading, orders]);
+
+  const availableOrder = ordersData.filter(
+    (item: any) => item.status === 1 && item.tableId === activeTable?._id
+  );
+
   const onTableSelect = useCallback(() => {
     if (diningOption === 'reservation') {
       setReservation({});
@@ -43,12 +64,24 @@ export default function Page() {
 
       // here
     } else if (diningOption === 'dine-in') {
-      setActiveTab('home');
+      if (availableOrder.length !== 0) {
+        setShowOrderSidebar(true);
+        // setOrders(availableOrder);
+      } else {
+        setActiveTab('home');
+      }
       setReservation(null);
     } else if (diningOption === 'takeaway') {
       setReservation(null);
     }
-  }, [diningOption, setReservation, setReservationTab, setCreatedReservationId]);
+  }, [
+    diningOption,
+    setReservation,
+    setReservationTab,
+    setCreatedReservationId,
+    availableOrder.length,
+    setShowOrderSidebar,
+  ]);
 
   return (
     <>
