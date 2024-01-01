@@ -40,6 +40,7 @@ export function useGetMenuItems(params?: IGetMenuItemsQueryParams) {
       menuItemsError: error,
       menuItemsValidating: isValidating,
       menuItemsEmpty: !isLoading && !data?.menuItems.length,
+      totalLength: data?.totalLength,
       menuItemsMutate: mutate,
     }),
     [data, error, isLoading, isValidating, mutate]
