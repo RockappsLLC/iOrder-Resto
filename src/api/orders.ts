@@ -32,7 +32,7 @@ interface IGetOrdersQueryParams {
 export function useGetOrders(params?: IGetOrdersQueryParams) {
   const URL = [endpoints.orders.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -41,8 +41,9 @@ export function useGetOrders(params?: IGetOrdersQueryParams) {
       ordersError: error,
       ordersValidating: isValidating,
       ordersEmpty: !isLoading && !data?.orders.length,
+      ordersMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

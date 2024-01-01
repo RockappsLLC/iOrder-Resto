@@ -29,7 +29,7 @@ interface IGetLeadsQueryParams {
 export function useGetLeads(params?: IGetLeadsQueryParams) {
   const URL = [endpoints.leads.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -38,8 +38,9 @@ export function useGetLeads(params?: IGetLeadsQueryParams) {
       leadsError: error,
       leadsValidating: isValidating,
       leadsEmpty: !isLoading && !data?.leads.length,
+      leadsMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

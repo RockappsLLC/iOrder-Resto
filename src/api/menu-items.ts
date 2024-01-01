@@ -31,7 +31,7 @@ interface IGetMenuItemsQueryParams {
 export function useGetMenuItems(params?: IGetMenuItemsQueryParams) {
   const URL = [endpoints.menuItems.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -41,8 +41,9 @@ export function useGetMenuItems(params?: IGetMenuItemsQueryParams) {
       menuItemsValidating: isValidating,
       menuItemsEmpty: !isLoading && !data?.menuItems.length,
       totalLength: data?.totalLength,
+      menuItemsMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

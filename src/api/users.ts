@@ -31,7 +31,7 @@ interface IGetUsersQueryParams {
 export function useGetUsers(params?: IGetUsersQueryParams) {
   const URL = [endpoints.users.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -40,8 +40,9 @@ export function useGetUsers(params?: IGetUsersQueryParams) {
       usersError: error,
       usersValidating: isValidating,
       usersEmpty: !isLoading && !data?.users.length,
+      usersMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

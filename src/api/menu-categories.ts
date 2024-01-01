@@ -31,7 +31,7 @@ interface IGetMenuCategoriesQueryParams {
 export function useGetMenuCategories(params?: IGetMenuCategoriesQueryParams) {
   const URL = [endpoints.menuCategories.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -40,8 +40,9 @@ export function useGetMenuCategories(params?: IGetMenuCategoriesQueryParams) {
       menuCategoriesError: error,
       menuCategoriesValidating: isValidating,
       menuCategoriesEmpty: !isLoading && !data?.menuCategories.length,
+      menuCategoriesMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;
