@@ -40,6 +40,7 @@ export function useGetCustomers(params?: IGetCustomersQueryParams) {
       customersError: error,
       customersValidating: isValidating,
       customersEmpty: !isLoading && !data?.customers.length,
+      totalLength: data?.totalLength,
       customersMutate: mutate,
     }),
     [data, error, isLoading, isValidating, mutate]

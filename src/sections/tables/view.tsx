@@ -88,7 +88,7 @@ export default function TablesView({ onTableSelect }: any) {
   const { diningOption } = useDiningOptionsContext();
   const { activeTable, setActiveTable } = useOrderContext();
 
-  const { tables, tablesLoading } = useGetTables({ floorId: activeFloor.id });
+  const { tables, tablesLoading } = useGetTables({ floorId: activeFloor.id as any });
 
   const [nodes, setNodes] = useState<Node[]>([]);
 
@@ -98,7 +98,9 @@ export default function TablesView({ onTableSelect }: any) {
   const renderNodesDefault = (_tables: any) => {
     if (allowSave) setAllowSave(false);
 
-    const filteredTables = activeFloor.id ? _tables : _tables.filter((table) => !table.floorId);
+    const filteredTables = activeFloor.id
+      ? _tables
+      : _tables.filter((table: any) => !table.floorId);
 
     setNodes(filteredTables);
     const positionX =
