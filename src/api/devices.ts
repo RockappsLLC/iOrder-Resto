@@ -30,7 +30,7 @@ interface IGetDevicesQueryParams {
 export function useGetDevices(params?: IGetDevicesQueryParams) {
   const URL = [endpoints.devices.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -39,8 +39,9 @@ export function useGetDevices(params?: IGetDevicesQueryParams) {
       devicesError: error,
       devicesValidating: isValidating,
       devicesEmpty: !isLoading && !data?.devices.length,
+      devicesMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

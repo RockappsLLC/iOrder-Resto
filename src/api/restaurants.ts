@@ -31,7 +31,7 @@ interface IGetRestaurantsQueryParams {
 export function useGetRestaurants(params?: IGetRestaurantsQueryParams) {
   const URL = [endpoints.restaurants.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -40,8 +40,9 @@ export function useGetRestaurants(params?: IGetRestaurantsQueryParams) {
       restaurantsError: error,
       restaurantsValidating: isValidating,
       restaurantsEmpty: !isLoading && !data?.restaurants.length,
+      restaurantsMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

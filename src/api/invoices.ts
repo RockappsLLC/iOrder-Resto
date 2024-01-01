@@ -29,7 +29,7 @@ interface IGetInvoicesQueryParams {
 export function useGetInvoices(params?: IGetInvoicesQueryParams) {
   const URL = [endpoints.invoices.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -38,8 +38,9 @@ export function useGetInvoices(params?: IGetInvoicesQueryParams) {
       invoicesError: error,
       invoicesValidating: isValidating,
       invoicesEmpty: !isLoading && !data?.invoices.length,
+      invoicesMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

@@ -31,7 +31,7 @@ interface IGetCustomersQueryParams {
 export function useGetCustomers(params?: IGetCustomersQueryParams) {
   const URL = [endpoints.customers.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -40,9 +40,9 @@ export function useGetCustomers(params?: IGetCustomersQueryParams) {
       customersError: error,
       customersValidating: isValidating,
       customersEmpty: !isLoading && !data?.customers.length,
-      totalLength: data?.totalLength,
+      customersMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

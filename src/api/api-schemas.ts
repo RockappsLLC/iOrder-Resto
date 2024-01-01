@@ -121,6 +121,8 @@ export interface CreateRestaurantRequestSchema {
   merchantId?: string;
   merchantPassword?: string;
   icon?: string;
+  weeklyReport?: boolean;
+  monthlyReport?: boolean;
 }
 export interface UpdateRestaurantRequestSchema {
   name?: string;
@@ -135,6 +137,8 @@ export interface UpdateRestaurantRequestSchema {
   merchantId?: string;
   merchantPassword?: string;
   icon?: string;
+  weeklyReport?: boolean;
+  monthlyReport?: boolean;
 }
 export interface GetRestaurantsResponse {
   success?: boolean;
@@ -160,6 +164,8 @@ export interface RestaurantResponseSchema {
   merchantId?: string;
   merchantPassword?: string;
   icon?: string;
+  weeklyReport?: boolean;
+  monthlyReport?: boolean;
 }
 export interface CreateRestaurantResponseSchema {
   success?: boolean;
@@ -179,10 +185,12 @@ export interface CreateMenuCategoryRequestSchema {
   name: string;
   icon?: string;
   restaurantId?: string;
+  mobileImage?: string;
 }
 export interface UpdateMenuCategoryRequestSchema {
   name: string;
   icon?: string;
+  mobileImage?: string;
 }
 export interface MenuCategoryResponseSchema {
   _id?: string;
@@ -190,6 +198,7 @@ export interface MenuCategoryResponseSchema {
   icon?: string;
   restaurantId?: string;
   status?: boolean;
+  mobileImage?: string;
 }
 export interface GetMenuCategoryByIdResponse {
   success?: boolean;
@@ -208,6 +217,7 @@ export interface CreateMenuItemRequestSchema {
   status?: boolean;
   preparationTime?: number;
   isAdditional?: boolean;
+  notes?: string;
 }
 export interface MenuItemResponseSchema {
   _id?: string;
@@ -219,6 +229,7 @@ export interface MenuItemResponseSchema {
   status?: boolean;
   preparationTime?: number;
   isAdditional?: boolean;
+  notes?: string;
 }
 export interface MenuItemsResponseSchema {
   menuItems?: MenuItemResponseSchema[];
@@ -250,6 +261,7 @@ export interface CreateTableRequestSchema {
   height?: number;
   width?: number;
   type?: string;
+  floorId?: string;
 }
 export interface TableResponseSchema {
   _id?: string;
@@ -262,6 +274,7 @@ export interface TableResponseSchema {
   height?: number;
   width?: number;
   type?: string;
+  floorId?: string;
 }
 export interface GetTableByIdResponse {
   success?: boolean;
@@ -284,11 +297,12 @@ export interface CreateCustomerRequestSchema {
   sex: 'male' | 'female';
   restaurantId: string;
   street?: string;
+  place?: string;
+  zip?: string;
   city?: string;
   canton?: string;
   dateOfBirth?: Date;
   initials?: string;
-  pagerNumber?: number;
   tag?: string;
   visitNote?: string;
 }
@@ -299,11 +313,12 @@ export interface UpdateCustomerRequestSchema {
   sex?: 'male' | 'female';
   restaurantId?: string;
   street?: string;
+  place?: string;
+  zip?: string;
   city?: string;
   canton?: string;
   dateOfBirth?: Date;
   initials?: string;
-  pagerNumber?: number;
   tag?: string;
   visitNote?: string;
 }
@@ -315,11 +330,12 @@ export interface CustomerResponseSchema {
   sex?: 'male' | 'female';
   restaurantId?: string;
   street?: string;
+  place?: string;
+  zip?: string;
   city?: string;
   canton?: string;
   dateOfBirth?: Date;
   initials?: string;
-  pagerNumber?: number;
   tag?: string;
   visitNote?: string;
 }
@@ -566,21 +582,26 @@ export interface GetPricingPlansResponse {
 export interface UpdateOrderRequestSchema {
   customer?: CustomerResponseSchema;
   paymentType?: 0 | 1;
-  status?: 0 | 1 | 2;
+  status?: 0 | 1 | 2 | 3;
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
   restaurantId?: string;
+  diningOption?: string;
+  notes?: string;
+  tableId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
 export interface OrderRequestSchema {
   customer: CustomerResponseSchema;
   paymentType?: 0 | 1;
-  status?: 0 | 1 | 2;
+  status?: 0 | 1 | 2 | 3;
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
   restaurantId?: string;
   tableId?: string;
+  diningOption?: string;
+  notes?: string;
   price?: number;
 }
 export interface GetOrderByIdResponse {
@@ -594,11 +615,15 @@ export interface OrderResponseSchema {
   currency?: string;
   customer?: CustomerResponseSchema;
   paymentType?: 0 | 1;
-  status?: 0 | 1 | 2;
+  status?: 0 | 1 | 2 | 3;
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
+  diningOption?: string;
+  notes?: string;
+  tableId?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  waiter?: UserResponseSchema;
 }
 export interface OrdersResponseSchema {
   orders?: OrderResponseSchema[];
@@ -685,18 +710,22 @@ export interface StatisticsResponseSchema {
   leads?: number;
   menuCategories?: number;
   menuItems?: number;
-  orders?: number;
   packages?: number;
   reservations?: number;
   restaurants?: number;
   tables?: number;
   tasks?: number;
   users?: number;
-  totalRevenue?: number;
+  totalRevenue?: GraphSchema;
+  orders?: GraphSchema;
 }
 export interface GetStatisticsResponse {
   success?: boolean;
   data?: StatisticsResponseSchema;
+}
+export interface GraphSchema {
+  year?: string;
+  data?: undefined[];
 }
 export interface PaymentRequestSchema {
   orderId: string;
@@ -729,7 +758,7 @@ export interface FilesResponseSchema {
   files?: string[];
 }
 export interface UploadFilesRequest {
-  files: any; // binary;
+  files: string;
   restaurantId?: string;
 }
 export interface UploadFilesResponse {
