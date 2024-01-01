@@ -21,7 +21,7 @@ export function useGetStatistics(params?: IGetStatisticsQueryParams) {
       statisticsLoading: isLoading,
       statisticsError: error,
       statisticsValidating: isValidating,
-      statisticsEmpty: !isLoading && !data?.statistics.length,
+      statisticsEmpty: !isLoading && !data?.length,
       statisticsMutate: mutate,
     }),
     [data, error, isLoading, isValidating, mutate]

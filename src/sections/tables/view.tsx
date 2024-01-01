@@ -3,11 +3,13 @@ import { m, useDragControls } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
+import { Tab, Tabs } from '@mui/material-next';
 import { alpha, useTheme } from '@mui/material/styles';
 import { Grid, Button, InputBase, Typography, InputAdornment } from '@mui/material';
 
 import { useTranslate } from 'src/locales';
 import { useGetTables } from 'src/api/tables';
+import { useGetFloors } from 'src/api/floors';
 import { TableResponseSchema } from 'src/api/api-schemas';
 
 import Iconify from 'src/components/iconify';
@@ -35,9 +37,31 @@ const FILTERS = [
   },
 ];
 
+function a11yProps(index: number, id: string = '') {
+  return {
+    id,
+    'aria-controls': `simple-tabpanel-${index}`,
+    style: { paddingLeft: 10, paddingRight: 10, minHeight: 35 },
+  };
+}
+
 export default function TablesView({ onTableSelect }: any) {
   const { t } = useTranslate();
   const theme = useTheme();
+
+  const restaurantId = localStorage.getItem('restaurantId') || '';
+
+  const [activeFloor, setActiveFloor] = useState({ index: 0, id: null });
+  const { floors, floorsLoading } = useGetFloors({ restaurantId });
+
+  const [sortedFloors, setSortedFloors] = useState<any[]>([]);
+  useEffect(() => {
+    if (!floorsLoading && floors.length) {
+      // @ts-ignore
+      setSortedFloors(floors.sort((a, b) => a?.name?.localeCompare?.(b?.name)));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [floorsLoading]);
 
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'reservation' | 'running-orders'>(
     'all'
@@ -64,7 +88,7 @@ export default function TablesView({ onTableSelect }: any) {
   const { diningOption } = useDiningOptionsContext();
   const { activeTable, setActiveTable } = useOrderContext();
 
-  const { tables, tablesLoading } = useGetTables();
+  const { tables, tablesLoading } = useGetTables({ floorId: activeFloor.id });
 
   const [nodes, setNodes] = useState<Node[]>([]);
 
@@ -73,7 +97,10 @@ export default function TablesView({ onTableSelect }: any) {
 
   const renderNodesDefault = (_tables: any) => {
     if (allowSave) setAllowSave(false);
-    setNodes(_tables);
+
+    const filteredTables = activeFloor.id ? _tables : _tables.filter((table) => !table.floorId);
+
+    setNodes(filteredTables);
     const positionX =
       Math.max.apply(
         null,
@@ -101,7 +128,7 @@ export default function TablesView({ onTableSelect }: any) {
       renderNodesDefault(tables);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tablesLoading]);
+  }, [tablesLoading, activeFloor.id]);
 
   useEffect(() => {
     const filteredTables = tables.filter((table) => {
@@ -305,8 +332,35 @@ export default function TablesView({ onTableSelect }: any) {
           borderRadius: 2,
           bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04),
           border: (theme) => `dashed 1px ${theme.palette.divider}`,
+          position: 'relative',
         }}
       >
+        <Box
+          sx={{
+            borderBottom: 1,
+            borderColor: 'divider',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 2,
+            height: 35,
+          }}
+        >
+          <Tabs
+            value={activeFloor.index}
+            onChange={(i, j) => {
+              console.log(i.target);
+              // @ts-ignore
+              setActiveFloor({ index: j, id: i.target.id });
+            }}
+            aria-label="tabs"
+          >
+            <Tab label="Default" {...a11yProps(0, '')} />
+            {sortedFloors.map((floor, i) => (
+              <Tab label={floor.name} {...a11yProps(i + 1, floor._id)} />
+            ))}
+          </Tabs>
+        </Box>
         <m.div
           ref={constraintsRef}
           style={{ width: watch('width'), height: watch('height'), position: 'relative' }}
