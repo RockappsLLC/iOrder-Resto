@@ -31,7 +31,7 @@ interface IGetReservationsQueryParams {
 export function useGetReservations(params?: IGetReservationsQueryParams) {
   const URL = [endpoints.reservations.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -40,8 +40,9 @@ export function useGetReservations(params?: IGetReservationsQueryParams) {
       reservationsError: error,
       reservationsValidating: isValidating,
       reservationsEmpty: !isLoading && !data?.reservations.length,
+      reservationsMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

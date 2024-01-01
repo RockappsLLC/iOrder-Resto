@@ -31,7 +31,7 @@ interface IGetTablesQueryParams {
 export function useGetTables(params?: IGetTablesQueryParams) {
   const URL = [endpoints.tables.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -40,8 +40,9 @@ export function useGetTables(params?: IGetTablesQueryParams) {
       tablesError: error,
       tablesValidating: isValidating,
       tablesEmpty: !isLoading && !data?.tables.length,
+      tablesMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

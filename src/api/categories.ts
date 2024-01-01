@@ -29,7 +29,7 @@ interface IGetCategoriesQueryParams {
 export function useGetCategories(params?: IGetCategoriesQueryParams) {
   const URL = [endpoints.categories.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -38,8 +38,9 @@ export function useGetCategories(params?: IGetCategoriesQueryParams) {
       categoriesError: error,
       categoriesValidating: isValidating,
       categoriesEmpty: !isLoading && !data?.categories.length,
+      categoriesMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

@@ -15,7 +15,7 @@ interface IGetTransactionsQueryParams {
 export function useGetTransactions(params: IGetTransactionsQueryParams) {
   const URL = [endpoints.transactions.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -24,8 +24,9 @@ export function useGetTransactions(params: IGetTransactionsQueryParams) {
       transactionsError: error,
       transactionsValidating: isValidating,
       transactionsEmpty: !isLoading && !data?.transactions.length,
+      transactionsMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

@@ -30,7 +30,7 @@ interface IGetFloorsQueryParams {
 export function useGetFloors(params: IGetFloorsQueryParams) {
   const URL = [endpoints.floors.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -39,8 +39,9 @@ export function useGetFloors(params: IGetFloorsQueryParams) {
       floorsError: error,
       floorsValidating: isValidating,
       floorsEmpty: !isLoading && !data?.floors.length,
+      floorsMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

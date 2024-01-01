@@ -28,7 +28,7 @@ interface IGetPricingPlansQueryParams {
 export function useGetPricingPlans(params?: IGetPricingPlansQueryParams) {
   const URL = [endpoints.pricingPlans.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -37,8 +37,9 @@ export function useGetPricingPlans(params?: IGetPricingPlansQueryParams) {
       pricingPlansError: error,
       pricingPlansValidating: isValidating,
       pricingPlansEmpty: !isLoading && !data?.pricingPlans.length,
+      pricingPlansMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

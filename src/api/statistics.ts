@@ -13,7 +13,7 @@ interface IGetStatisticsQueryParams {
 export function useGetStatistics(params?: IGetStatisticsQueryParams) {
   const URL = [endpoints.statistics.get, { params }];
 
-  const { data: { data } = {}, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data: { data } = {}, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -22,8 +22,9 @@ export function useGetStatistics(params?: IGetStatisticsQueryParams) {
       statisticsError: error,
       statisticsValidating: isValidating,
       statisticsEmpty: !isLoading && !data?.statistics.length,
+      statisticsMutate: mutate,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;
