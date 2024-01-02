@@ -28,7 +28,9 @@ export default function Page() {
     setCreatedReservationId,
   } = useReservationContext();
 
-  const { activeTable, setShowOrderSidebar, setOrders } = useOrderContext();
+  const { activeTable, setShowOrderSidebar, setOrders, showOrderSideBar } = useOrderContext();
+
+  console.log('showOrderSideBar', showOrderSideBar);
 
   useEffect(() => {
     if (diningOption === 'reservation') {
@@ -64,7 +66,7 @@ export default function Page() {
 
       // here
     } else if (diningOption === 'dine-in') {
-      if (availableOrder.length !== 0) {
+      if (true) {
         setShowOrderSidebar(true);
         // setOrders(availableOrder);
       } else {
@@ -79,7 +81,6 @@ export default function Page() {
     setReservation,
     setReservationTab,
     setCreatedReservationId,
-    availableOrder.length,
     setShowOrderSidebar,
   ]);
 

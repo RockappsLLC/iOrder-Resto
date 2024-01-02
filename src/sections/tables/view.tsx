@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { Tab, Tabs } from '@mui/material-next';
 import { alpha, useTheme } from '@mui/material/styles';
-import { Grid, Button, InputBase, Typography, InputAdornment } from '@mui/material';
+import { Grid, Stack, Button, InputBase, Typography, InputAdornment } from '@mui/material';
 
 import { useTranslate } from 'src/locales';
 import { useGetTables } from 'src/api/tables';
@@ -14,6 +14,8 @@ import { TableResponseSchema } from 'src/api/api-schemas';
 
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
+import RunningOrders from 'src/components/drawers/running-orders';
+import OrderSidebar from 'src/components/order-sidebar/order-sidebar';
 import { useOrderContext } from 'src/components/order-sidebar/context';
 
 import { Node, getTableByType } from './table-variants';
@@ -48,6 +50,8 @@ export default function TablesView({ onTableSelect }: any) {
 
   const restaurantId = localStorage.getItem('restaurantId') || '';
 
+  const [openRuningOrders, setOpenRunningOrders] = useState(false);
+
   const [activeFloor, setActiveFloor] = useState({ index: 0, id: null });
   const { floors, floorsLoading } = useGetFloors({ restaurantId });
 
@@ -81,7 +85,9 @@ export default function TablesView({ onTableSelect }: any) {
   } = methods;
   const [activeNodes, setActiveNodes] = useState<{ [key: string]: boolean }>({});
   const { diningOption } = useDiningOptionsContext();
-  const { activeTable, setActiveTable } = useOrderContext();
+  const { activeTable, setActiveTable, showOrderSideBar } = useOrderContext();
+
+  console.log('showOrderSideBar', showOrderSideBar);
 
   const { tables, tablesLoading } = useGetTables({ floorId: activeFloor.id as any });
 
@@ -140,6 +146,7 @@ export default function TablesView({ onTableSelect }: any) {
     renderNodesDefault(filteredTables);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFilter]);
+
   useEffect(() => {
     const filteredTables = tables.filter((table) => {
       if (table.name?.toLocaleLowerCase().includes((searchInput || '').toLocaleLowerCase())) {
@@ -150,19 +157,20 @@ export default function TablesView({ onTableSelect }: any) {
     renderNodesDefault(filteredTables);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchInput]);
+
   const handleClick = (table: TableResponseSchema) => {
     onTableSelect();
     setActiveTable(table);
   };
+
   console.log(nodes);
   return (
-    <Grid container columns={15} sx={{ height: '100%' }}>
+    <Grid container columns={15} sx={{ height: '100%', maxWidth: '100%', overflowX: 'auto' }}>
       {/* <Container maxWidth={settings.themeStretch ? false : 'xl'} sx={{ p: 0 }}> */}
       <Typography
         fontWeight={500}
         color="#F15F34"
         padding="10px"
-        // paddingTop="0"
         paddingLeft={3}
         sx={{
           backgroundColor: '#fff',
@@ -183,7 +191,6 @@ export default function TablesView({ onTableSelect }: any) {
         fontWeight={500}
         color="#F15F34"
         padding="10px"
-        // paddingTop="0"
         paddingLeft={3}
         sx={{
           backgroundColor: '#fff',
@@ -196,6 +203,9 @@ export default function TablesView({ onTableSelect }: any) {
           borderBottom: 1,
           width: '100%',
           height: 68,
+          position: 'relative',
+          maxWidth: '100%',
+          overflowY: 'auto',
         }}
       >
         {FILTERS.map((filter) => (
@@ -213,18 +223,18 @@ export default function TablesView({ onTableSelect }: any) {
             <Typography color={theme.palette.primary.dark}>{filter.label}</Typography>
           </Box>
         ))}
-        <Box display="flex" ml="auto">
+        <Box display="flex">
           <Box display="flex" gap={2} mr={3}>
             <Button
               fullWidth
               onClick={() => setSelectedFilter('all')}
-              color={selectedFilter === 'all' ? 'primary' : 'inherit'}
-              variant="outlined"
+              color="primary"
+              variant={selectedFilter === 'all' ? 'contained' : 'outlined'}
               sx={{
                 borderRadius: '58px',
                 p: '2px',
                 width: 150,
-                color: selectedFilter === 'all' ? 'primary' : 'rgba(145, 158, 171, 0.32)',
+                ':hover': { bgcolor: '#fdf3f0', color: '#e06842', borderColor: '#e06842' },
               }}
             >
               <Typography fontSize={14} fontWeight={600}>
@@ -234,16 +244,14 @@ export default function TablesView({ onTableSelect }: any) {
             <Button
               fullWidth
               onClick={() => setSelectedFilter('reservation')}
-              color={selectedFilter === 'reservation' ? 'primary' : 'inherit'}
-              variant="outlined"
+              color="primary"
+              variant={selectedFilter === 'reservation' ? 'contained' : 'outlined'}
               sx={{
                 borderRadius: '58px',
                 p: '2px',
                 width: 150,
-                color: selectedFilter === 'reservation' ? 'primary' : 'rgba(145, 158, 171, 0.32)',
+                ':hover': { bgcolor: '#fdf3f0', color: '#e06842', borderColor: '#e06842' },
               }}
-              //   borderColor: isChecked ? '#FF5C00' : '#E4E4E4',
-              // backgroundColor: isChecked ? '#FFF5EE' : '#FFF',
             >
               <Typography fontSize={14} fontWeight={600}>
                 Reservation
@@ -251,15 +259,14 @@ export default function TablesView({ onTableSelect }: any) {
             </Button>
             <Button
               fullWidth
-              onClick={() => setSelectedFilter('running-orders')}
-              color={selectedFilter === 'running-orders' ? 'primary' : 'inherit'}
-              variant="outlined"
+              onClick={() => setOpenRunningOrders(true)}
+              color="primary"
+              variant={selectedFilter === 'running-orders' ? 'contained' : 'outlined'}
               sx={{
                 borderRadius: '58px',
                 p: '2px',
                 width: 150,
-                color:
-                  selectedFilter === 'running-orders' ? 'primary' : 'rgba(145, 158, 171, 0.32)',
+                ':hover': { bgcolor: '#fdf3f0', color: '#e06842', borderColor: '#e06842' },
               }}
             >
               <Typography fontSize={14} fontWeight={600}>
@@ -270,6 +277,7 @@ export default function TablesView({ onTableSelect }: any) {
           <InputBase
             fullWidth
             autoFocus
+            sx={{ borderLeft: '2px solid #E4E4E4', paddingLeft: 2 }}
             placeholder="Search tables..."
             value={searchInput}
             onChange={(e: any) => setSearchInput(e.target.value)}
@@ -284,32 +292,12 @@ export default function TablesView({ onTableSelect }: any) {
           />
         </Box>
       </Box>
-      {/* <FormProvider methods={methods}>
-        <Box display="flex" flexDirection="row">
-          <RHFTextField name="height" label="Height" type="number" />
-          <RHFTextField name="width" label="Width" type="number" />
-        </Box>
-          </FormProvider> */}
-      {/* <Box display="flex" sx={{ justifyContent: 'flex-end', mt: 5 }}>
-        <Button
-          disabled={!allowSave}
-          variant={allowSave ? 'contained' : 'text'}
-          color={allowSave ? 'primary' : 'inherit'}
-          sx={{ mr: 1, fontWeight: 400 }}
-        >
-          {allowSave ? 'Save' : 'Up to date!'}
-        </Button>
-        <Button color="primary" sx={{ fontWeight: 400 }} onClick={renderNodesDefault}>
-          Reset
-        </Button>
-      </Box> */}
-      {/* <Typography variant="h4"> Page Tables </Typography> */}
+      <Box sx={{ position: 'relative' }}>
+        <RunningOrders isBoxOpen={openRuningOrders} onHideBox={() => setOpenRunningOrders(false)} />
+      </Box>
       <Box
         sx={{
-          //   mt: 5,
           mt: 0,
-          // width: 1,
-          // height: 320,
           width: watch('width'),
           maxWidth: '100%',
           overflow: 'scroll',
@@ -392,6 +380,12 @@ export default function TablesView({ onTableSelect }: any) {
             ))}
         </m.div>
       </Box>
+
+      {showOrderSideBar && (
+        <Stack direction="column">
+          <OrderSidebar />
+        </Stack>
+      )}
     </Grid>
   );
 }
