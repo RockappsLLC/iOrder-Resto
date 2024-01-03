@@ -89,6 +89,10 @@ export default function Profile() {
           <Stack direction="column" width="50%">
             <EditPasswordForm usersMe={usersMe} />
           </Stack>
+
+          <Stack direction="column" width="50%">
+            <EditPinForm usersMe={usersMe} />
+          </Stack>
         </Stack>
       </Card>
     </Box>
@@ -277,6 +281,136 @@ const EditPasswordForm = ({ usersMe }: any) => {
           name="confirmNewPassword"
           type={password.value ? 'text' : 'password'}
           label="Re-Enter Password"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={password.onToggle} edge="end">
+                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <LoadingButton
+          fullWidth
+          color="primary"
+          type="submit"
+          variant="contained"
+          loading={isSubmitting}
+          sx={{ fontWeight: 400 }}
+        >
+          Confirm
+        </LoadingButton>
+      </Stack>
+    </FormProvider>
+  );
+};
+
+const EditPinForm = ({ usersMe }: any) => {
+  const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+
+  const password = useBoolean();
+
+  const EditPinSchema = Yup.object().shape({
+    oldPin: Yup.string().required('Old Pin is required'),
+    newPin: Yup.string()
+      .required('New Pin is required')
+      .min(6, 'Pin must be at least 6 characters')
+      .test(
+        'no-match',
+        'New pin must be different than old pin',
+        (value, { parent }) => value !== parent.oldPassword
+      ),
+    confirmNewPin: Yup.string().oneOf([Yup.ref('newPin')], 'Pin must match'),
+  });
+
+  const defaultValues = {
+    oldPin: '',
+    newPin: '',
+    confirmNewPin: '',
+  };
+
+  const methods = useForm({
+    resolver: yupResolver(EditPinSchema),
+    defaultValues,
+  });
+
+  const {
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      // await postEditPin({
+      //   // oldPassword: data.oldPassword,
+      //   // newPin: data.newPin,
+      //   // confirmNewPin: data.confirmNewPin,
+      // });
+      reset();
+      setSuccessMsg('Pin is changed!');
+    } catch (error) {
+      console.error('error', error);
+      reset();
+      setErrorMsg(typeof error === 'string' ? error : error.message);
+    }
+  });
+
+  return (
+    <FormProvider methods={methods} onSubmit={onSubmit}>
+      <Stack direction="column" spacing={3} width="80%">
+        <Typography my={2} fontWeight={500}>
+          Edit Pin
+        </Typography>
+
+        {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+        {!!successMsg && <Alert severity="success">{successMsg}</Alert>}
+
+        <RHFTextField
+          name="oldPin"
+          type={password.value ? 'text' : 'password'}
+          label="Old Pin"
+          sx={{ mb: 1 }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={password.onToggle} edge="end">
+                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <RHFTextField
+          name="newPin"
+          label="New Pin"
+          type={password.value ? 'text' : 'password'}
+          sx={{ mb: 1 }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={password.onToggle} edge="end">
+                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          helperText={
+            <Stack component="span" direction="row" alignItems="center" sx={{ mb: 1 }}>
+              <Iconify icon="eva:info-fill" width={16} sx={{ mr: 0.5 }} /> Pin must be minimum 6+
+            </Stack>
+          }
+        />
+
+        <RHFTextField
+          name="confirmNewPin"
+          type={password.value ? 'text' : 'password'}
+          label="Re-Enter Pin"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
