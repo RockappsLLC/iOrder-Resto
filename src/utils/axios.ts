@@ -43,6 +43,9 @@ export const endpoints = {
     changePassword: {
       post: '/auth/change-password',
     },
+    changePin: {
+      post: '/auth/change-pin',
+    },
   },
   users: {
     post: '/users',

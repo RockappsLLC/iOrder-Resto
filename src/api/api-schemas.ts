@@ -32,6 +32,15 @@ export interface ChangePaswordResponse {
   success?: boolean;
   data?: string;
 }
+export interface ChangePinRequest {
+  email: string;
+  newPin: string;
+  oldPin: string;
+}
+export interface ChangePinResponse {
+  success?: boolean;
+  data?: string;
+}
 export interface CreateUserRequestSchema {
   firstName: string;
   lastName: string;
@@ -42,6 +51,7 @@ export interface CreateUserRequestSchema {
   pin?: string;
   role: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   status?: boolean;
+  profileImage?: string;
 }
 export interface UpdateUserRequestSchema {
   firstName?: string;
@@ -51,6 +61,7 @@ export interface UpdateUserRequestSchema {
   restaurantId?: string;
   role?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   status?: boolean;
+  profileImage?: string;
 }
 export interface UserResponseSchema {
   _id?: string;
@@ -62,6 +73,7 @@ export interface UserResponseSchema {
   password?: string;
   role?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   status?: boolean;
+  profileImage?: string;
 }
 export interface UsersResponseSchema {
   users?: UserResponseSchema[];
