@@ -258,7 +258,7 @@ const RenderForm = ({ handleCloseAddCustomer }: any) => {
             <RHFTextField fullWidth name="street" label="Street" placeholder="Enter street" />
           </Stack>
 
-          <Stack direction="row" gap={1}>
+          {/* <Stack direction="row" gap={1}>
             <Stack direction="row" gap={1} width="50%">
               <RHFAutocomplete fullWidth name="day" label="Day" options={Days} />
               <RHFAutocomplete fullWidth name="month" label="Month" options={Months} />
@@ -266,6 +266,20 @@ const RenderForm = ({ handleCloseAddCustomer }: any) => {
             </Stack>
 
             <RHFTextField sx={{ width: '50%' }} name="city" label="City" placeholder="Enter city" />
+          </Stack> */}
+          <Stack direction="row" gap={2}>
+            <Stack direction="row" gap={1} width="50%">
+              <RHFAutocomplete fullWidth name="day" label="Day" options={Days} />
+              <RHFAutocomplete fullWidth name="month" label="Month" options={Months} />
+              <RHFAutocomplete fullWidth name="year" label="Year" options={Years} />
+            </Stack>
+
+            <RHFTextField
+              sx={{ width: '50%', ml: 2 }}
+              name="city"
+              label="City"
+              placeholder="Enter city"
+            />
           </Stack>
 
           <RHFAutocomplete

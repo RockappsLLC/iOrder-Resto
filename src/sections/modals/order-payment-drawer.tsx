@@ -153,7 +153,7 @@ const OrderPaymentDrawer = ({ showModal, setShowModal }: OrderPaymentProps) => {
               <CloseIcon onClick={() => setShowModal(false)} />
             </Stack>
 
-            <Typography variant="subtitle2" fontWeight={400}>
+            <Typography variant="subtitle2" fontWeight={400} color="#828487">
               Order #nr
             </Typography>
 
@@ -172,7 +172,7 @@ const OrderPaymentDrawer = ({ showModal, setShowModal }: OrderPaymentProps) => {
               gap={1}
             >
               <Stack direction={{ xs: 'row', sm: 'row' }} justifyContent="space-between">
-                <Typography variant="subtitle1" fontWeight={400}>
+                <Typography variant="subtitle1" fontWeight={400} color="#828487">
                   Tip Amount
                 </Typography>
 
@@ -180,7 +180,7 @@ const OrderPaymentDrawer = ({ showModal, setShowModal }: OrderPaymentProps) => {
               </Stack>
 
               <Stack direction={{ xs: 'row', sm: 'row' }} justifyContent="space-between">
-                <Typography variant="subtitle1" fontWeight={400}>
+                <Typography variant="subtitle1" fontWeight={400} color="#828487">
                   Total Amount
                 </Typography>
 
