@@ -21,15 +21,22 @@ import { useOrderContext } from 'src/components/order-sidebar/context';
 import { Node, getTableByType } from './table-variants';
 import { useDiningOptionsContext } from '../dining-options';
 // ----------------------------------------------------------------------
+// available - available
+// reserved - reserved
+// billed - occupied
+// available soon - paid
+
+// (Available = 0), (Reserved = 1), (Billed = 2), (AvailableSoon = 3);
+
 const MIN_HEIGHT = 1000;
 const MIN_WIDTH = 2000;
 const FILTERS = [
   { label: 'Available', name: 'available', value: 0, color: '#3395F0', border: '#e0eefc' },
   { label: 'Reserved', name: 'reserved', value: 1, color: '#F15F34', border: '#ffe9de' },
-  { label: 'Billed', name: 'billed', value: 2, color: '#13C91B', border: '#e1f7de' },
+  { label: 'Occupied', name: 'occupied', value: 2, color: '#13C91B', border: '#e1f7de' },
   {
-    label: 'Available Soon',
-    name: 'available-soon',
+    label: 'Paid',
+    name: 'paid',
     value: 3,
     color: '#F0B433',
     border: '#fdf3e1',
@@ -86,8 +93,6 @@ export default function TablesView({ onTableSelect }: any) {
   const [activeNodes, setActiveNodes] = useState<{ [key: string]: boolean }>({});
   const { diningOption } = useDiningOptionsContext();
   const { activeTable, setActiveTable, showOrderSideBar } = useOrderContext();
-
-  console.log('showOrderSideBar', showOrderSideBar);
 
   const { tables, tablesLoading } = useGetTables({ floorId: activeFloor.id as any });
 
@@ -159,233 +164,244 @@ export default function TablesView({ onTableSelect }: any) {
   }, [searchInput]);
 
   const handleClick = (table: TableResponseSchema) => {
-    onTableSelect();
+    onTableSelect(table._id);
     setActiveTable(table);
   };
 
-  console.log(nodes);
   return (
-    <Grid container columns={15} sx={{ height: '100%', maxWidth: '100%', overflowX: 'auto' }}>
+    <Grid maxWidth="100%">
       {/* <Container maxWidth={settings.themeStretch ? false : 'xl'} sx={{ p: 0 }}> */}
-      <Typography
-        fontWeight={500}
-        color="#F15F34"
-        padding="10px"
-        paddingLeft={3}
-        sx={{
-          backgroundColor: '#fff',
-          display: 'flex',
-          py: 0,
-          alignItems: 'center',
-          borderTop: 1,
-          borderColor: '#E4E4E4',
-          borderBottomColor: '#E4E4E4!important',
-          borderBottom: 1,
-          width: '100%',
-          height: 44,
-        }}
-      >
-        {t('dashboard')}
-      </Typography>
-      <Box
-        fontWeight={500}
-        color="#F15F34"
-        padding="10px"
-        paddingLeft={3}
-        sx={{
-          backgroundColor: '#fff',
-          display: 'flex',
-          py: 0,
-          alignItems: 'center',
-          borderTop: 1,
-          borderColor: '#E4E4E4',
-          borderBottomColor: '#E4E4E4!important',
-          borderBottom: 1,
-          width: '100%',
-          height: 68,
-          position: 'relative',
-          maxWidth: '100%',
-          overflowY: 'auto',
-        }}
-      >
-        {FILTERS.map((filter) => (
-          <Box display="flex" alignItems="center" sx={{ mr: 4 }}>
-            <Box
-              sx={{
-                backgroundColor: filter.color,
-                height: 20,
-                width: 20,
-                borderRadius: '50%',
-                mr: 1,
-                border: `5px solid ${filter.border}`,
-              }}
-            />
-            <Typography color={theme.palette.primary.dark}>{filter.label}</Typography>
-          </Box>
-        ))}
-        <Box display="flex">
-          <Box display="flex" gap={2} mr={3}>
-            <Button
-              fullWidth
-              onClick={() => setSelectedFilter('all')}
-              color="primary"
-              variant={selectedFilter === 'all' ? 'contained' : 'outlined'}
-              sx={{
-                borderRadius: '58px',
-                p: '2px',
-                width: 150,
-                ':hover': { bgcolor: '#fdf3f0', color: '#e06842', borderColor: '#e06842' },
-              }}
-            >
-              <Typography fontSize={14} fontWeight={600}>
-                All Tables
-              </Typography>
-            </Button>
-            <Button
-              fullWidth
-              onClick={() => setSelectedFilter('reservation')}
-              color="primary"
-              variant={selectedFilter === 'reservation' ? 'contained' : 'outlined'}
-              sx={{
-                borderRadius: '58px',
-                p: '2px',
-                width: 150,
-                ':hover': { bgcolor: '#fdf3f0', color: '#e06842', borderColor: '#e06842' },
-              }}
-            >
-              <Typography fontSize={14} fontWeight={600}>
-                Reservation
-              </Typography>
-            </Button>
-            <Button
-              fullWidth
-              onClick={() => setOpenRunningOrders(true)}
-              color="primary"
-              variant={selectedFilter === 'running-orders' ? 'contained' : 'outlined'}
-              sx={{
-                borderRadius: '58px',
-                p: '2px',
-                width: 150,
-                ':hover': { bgcolor: '#fdf3f0', color: '#e06842', borderColor: '#e06842' },
-              }}
-            >
-              <Typography fontSize={14} fontWeight={600}>
-                Running Orders
-              </Typography>
-            </Button>
-          </Box>
-          <InputBase
-            fullWidth
-            autoFocus
-            sx={{ borderLeft: '2px solid #E4E4E4', paddingLeft: 2 }}
-            placeholder="Search tables..."
-            value={searchInput}
-            onChange={(e: any) => setSearchInput(e.target.value)}
-            startAdornment={
-              <InputAdornment position="start">
-                <Iconify icon="eva:search-fill" width={26} sx={{ color: 'text.disabled' }} />
-              </InputAdornment>
-            }
-            inputProps={{
-              sx: { fontSize: '16px', width: 500 },
-            }}
-          />
-        </Box>
-      </Box>
-      <Box sx={{ position: 'relative' }}>
-        <RunningOrders isBoxOpen={openRuningOrders} onHideBox={() => setOpenRunningOrders(false)} />
-      </Box>
-      <Box
-        sx={{
-          mt: 0,
-          width: watch('width'),
-          maxWidth: '100%',
-          overflow: 'scroll',
-          p: 3,
-          borderRadius: 2,
-          bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04),
-          border: (theme) => `dashed 1px ${theme.palette.divider}`,
-          position: 'relative',
-        }}
-      >
-        <Box
+      <Stack direction="row">
+        <Stack
           sx={{
-            borderBottom: 1,
-            borderColor: 'divider',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            zIndex: 2,
-            height: 35,
+            height: '100%',
+            overflowX: 'auto',
           }}
         >
-          <Tabs
-            value={activeFloor.index}
-            onChange={(i, j) => {
-              console.log(i.target);
-              // @ts-ignore
-              setActiveFloor({ index: j, id: i.target.id });
+          <Typography
+            fontWeight={500}
+            color="#F15F34"
+            padding="10px"
+            paddingLeft={3}
+            sx={{
+              backgroundColor: '#fff',
+              display: 'flex',
+              py: 0,
+              alignItems: 'center',
+              borderTop: 1,
+              borderColor: '#E4E4E4',
+              borderBottomColor: '#E4E4E4!important',
+              borderBottom: 1,
+              width: '100%',
+              height: 44,
             }}
-            aria-label="tabs"
           >
-            <Tab label="Default" {...a11yProps(0, '')} />
-            {sortedFloors.map((floor, i) => (
-              <Tab label={floor.name} {...a11yProps(i + 1, floor._id)} />
+            {t('dashboard')}
+          </Typography>
+          <Box
+            fontWeight={500}
+            color="#F15F34"
+            padding="10px"
+            paddingLeft={3}
+            sx={{
+              backgroundColor: '#fff',
+              display: 'flex',
+              py: 0,
+              alignItems: 'center',
+              borderTop: 1,
+              borderColor: '#E4E4E4',
+              borderBottomColor: '#E4E4E4!important',
+              borderBottom: 1,
+              width: '100%',
+              height: 68,
+              position: 'relative',
+              maxWidth: '100%',
+              overflowY: 'auto',
+            }}
+          >
+            {FILTERS.map((filter, index) => (
+              <Box key={index} display="flex" alignItems="center" sx={{ mr: 4 }}>
+                <Box
+                  sx={{
+                    backgroundColor: filter.color,
+                    height: 20,
+                    width: 20,
+                    borderRadius: '50%',
+                    mr: 1,
+                    border: `5px solid ${filter.border}`,
+                  }}
+                />
+                <Typography color={theme.palette.primary.dark}>{filter.label}</Typography>
+              </Box>
             ))}
-          </Tabs>
-        </Box>
-        <m.div
-          ref={constraintsRef}
-          style={{ width: watch('width'), height: watch('height'), position: 'relative' }}
-          dragControls={controls}
-          onClick={() => setActiveNodes({})}
-        >
-          {!tablesLoading &&
-            nodes.map((node, i) => (
-              <m.div
-                key={Math.random()}
-                style={{
-                  position: 'absolute',
-                  top: node.positionY || 0,
-                  left: node.positionX || 0,
-                  cursor: 'pointer',
-                  // height: getTableSizeByType(type),
-                  //   width: getTableSizeByType(node.height),
-                  borderRadius: 20,
-                  ...(node.removed ? { display: 'none' } : {}),
-                  zIndex: activeNodes[node?._id || ''] ? '123' : '',
-                  backgroundColor: activeNodes[node?._id || '']
-                    ? 'rgba(0,0,0,0.05)'
-                    : 'transparent',
+            <Box display="flex">
+              <Box display="flex" gap={2} mr={3}>
+                <Button
+                  fullWidth
+                  onClick={() => setSelectedFilter('all')}
+                  color="primary"
+                  variant={selectedFilter === 'all' ? 'contained' : 'outlined'}
+                  sx={{
+                    borderRadius: '58px',
+                    p: '2px',
+                    width: 150,
+                    ':hover': { bgcolor: '#fdf3f0', color: '#e06842', borderColor: '#e06842' },
+                  }}
+                >
+                  <Typography fontSize={14} fontWeight={600}>
+                    All Tables
+                  </Typography>
+                </Button>
+                <Button
+                  fullWidth
+                  onClick={() => setSelectedFilter('reservation')}
+                  color="primary"
+                  variant={selectedFilter === 'reservation' ? 'contained' : 'outlined'}
+                  sx={{
+                    borderRadius: '58px',
+                    p: '2px',
+                    width: 150,
+                    ':hover': { bgcolor: '#fdf3f0', color: '#e06842', borderColor: '#e06842' },
+                  }}
+                >
+                  <Typography fontSize={14} fontWeight={600}>
+                    Reservation
+                  </Typography>
+                </Button>
+                <Button
+                  fullWidth
+                  onClick={() => setOpenRunningOrders(true)}
+                  color="primary"
+                  variant={selectedFilter === 'running-orders' ? 'contained' : 'outlined'}
+                  sx={{
+                    borderRadius: '58px',
+                    p: '2px',
+                    width: 150,
+                    ':hover': { bgcolor: '#fdf3f0', color: '#e06842', borderColor: '#e06842' },
+                  }}
+                >
+                  <Typography fontSize={14} fontWeight={600}>
+                    Running Orders
+                  </Typography>
+                </Button>
+              </Box>
+              <InputBase
+                fullWidth
+                autoFocus
+                sx={{ borderLeft: '2px solid #E4E4E4', paddingLeft: 2 }}
+                placeholder="Search tables..."
+                value={searchInput}
+                onChange={(e: any) => setSearchInput(e.target.value)}
+                startAdornment={
+                  <InputAdornment position="start">
+                    <Iconify icon="eva:search-fill" width={26} sx={{ color: 'text.disabled' }} />
+                  </InputAdornment>
+                }
+                inputProps={{
+                  sx: { fontSize: '16px', width: 500 },
                 }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleClick(node);
-                  // setActiveNodes(() => (node._id ? { [node._id]: true } : {}));
+              />
+            </Box>
+          </Box>
+          <Box sx={{ position: 'relative' }}>
+            <RunningOrders
+              isBoxOpen={openRuningOrders}
+              onHideBox={() => setOpenRunningOrders(false)}
+            />
+          </Box>
+          <Box
+            sx={{
+              mt: 0,
+              width: watch('width'),
+              maxWidth: '100%',
+              overflow: 'scroll',
+              p: 3,
+              borderRadius: 2,
+              bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04),
+              border: (theme) => `dashed 1px ${theme.palette.divider}`,
+              position: 'relative',
+            }}
+          >
+            <Box
+              sx={{
+                borderBottom: 1,
+                borderColor: 'divider',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                zIndex: 2,
+                height: 35,
+              }}
+            >
+              <Tabs
+                value={activeFloor.index}
+                onChange={(i, j) => {
+                  // console.log(i.target);
+                  // @ts-ignore
+                  setActiveFloor({ index: j, id: i.target.id });
                 }}
+                aria-label="tabs"
               >
-                {getTableByType(
-                  node.type,
-                  false,
-                  node.name,
-                  node.status !== 0
-                    ? {
-                        backgroundColor:
-                          FILTERS.find((a) => a.value === node.status)?.border || 'inherit',
-                      }
-                    : {}
-                )}
-              </m.div>
-            ))}
-        </m.div>
-      </Box>
-
-      {showOrderSideBar && (
-        <Stack direction="column">
-          <OrderSidebar />
+                <Tab label="Default" {...a11yProps(0, '')} />
+                {sortedFloors.map((floor, i) => (
+                  <Tab label={floor.name} {...a11yProps(i + 1, floor._id)} />
+                ))}
+              </Tabs>
+            </Box>
+            <m.div
+              ref={constraintsRef}
+              style={{ width: watch('width'), height: watch('height'), position: 'relative' }}
+              dragControls={controls}
+              onClick={() => setActiveNodes({})}
+            >
+              {!tablesLoading &&
+                nodes.map((node, i) => (
+                  <m.div
+                    key={Math.random()}
+                    style={{
+                      position: 'absolute',
+                      top: node.positionY || 0,
+                      left: node.positionX || 0,
+                      cursor: 'pointer',
+                      // height: getTableSizeByType(type),
+                      //   width: getTableSizeByType(node.height),
+                      borderRadius: 20,
+                      ...(node.removed ? { display: 'none' } : {}),
+                      zIndex: activeNodes[node?._id || ''] ? '123' : '',
+                      backgroundColor: activeNodes[node?._id || '']
+                        ? 'rgba(0,0,0,0.05)'
+                        : 'transparent',
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleClick(node);
+                      // setActiveNodes(() => (node._id ? { [node._id]: true } : {}));
+                    }}
+                  >
+                    {getTableByType(
+                      node.type,
+                      false,
+                      node.name,
+                      node.status !== 0
+                        ? {
+                            backgroundColor:
+                              FILTERS.find((a) => a.value === node.status)?.border || 'inherit',
+                          }
+                        : {}
+                    )}
+                  </m.div>
+                ))}
+            </m.div>
+          </Box>
         </Stack>
-      )}
+
+        {showOrderSideBar && (
+          <Stack direction="column" width="60%" height="50%">
+            <OrderSidebar showOrderMore showPayNow showPlaceOrder={false} />
+          </Stack>
+        )}
+      </Stack>
     </Grid>
   );
 }

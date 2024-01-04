@@ -18,8 +18,9 @@ import { useRouter } from 'src/routes/hooks';
 
 import { getMe } from 'src/api/users';
 import { useTranslate } from 'src/locales';
-import { createOrder } from 'src/api/orders';
 import { ChevronRight } from 'src/assets/icons';
+import { createOrder, updateOrderById } from 'src/api/orders';
+import { useHomeContext } from 'src/pages/dashboard/home/home-context';
 
 import AddNote from 'src/sections/dialogs/add-note';
 import { OrderPaymentDrawer } from 'src/sections/modals';
@@ -30,7 +31,11 @@ import Iconify from '../iconify';
 import { useOrderContext } from './context';
 import OrderReservations from './reservations';
 
-interface OrderSidebarProps {}
+interface OrderSidebarProps {
+  showOrderMore?: boolean;
+  showPayNow?: boolean;
+  showPlaceOrder?: boolean;
+}
 
 const defaultValues = {
   name: '',
@@ -60,9 +65,25 @@ const schema = yup.object().shape({
     .required(),
 });
 
-const OrderSidebar = (props: OrderSidebarProps) => {
-  const { orders, ordered, updateOrder, removeOrder, total, subTotal, activeTable, note } =
-    useOrderContext();
+const OrderSidebar = ({
+  showOrderMore = false,
+  showPayNow = false,
+  showPlaceOrder = false,
+}: OrderSidebarProps) => {
+  const {
+    menuItems,
+    updateMenuItem,
+    removeMenuItem,
+    ordered,
+    orders,
+    addOrder,
+    total,
+    subTotal,
+    activeTable,
+    note,
+  } = useOrderContext();
+
+  const { setActiveTab } = useHomeContext();
 
   const { diningOption } = useDiningOptionsContext();
 
@@ -104,30 +125,41 @@ const OrderSidebar = (props: OrderSidebarProps) => {
     const staffId = data.data._id;
 
     try {
-      const response = await createOrder({
-        customer: {
-          _id: 'asdasd123123',
-          name: 'asd',
-          email: 'asd@gmail.com',
-          contactNumber: '1111',
-          restaurantId,
-        },
-        staffId,
-        restaurantId,
-        menuItems: [orders],
-        price: total,
-        status: 1,
-        diningOption,
-        notes: note,
-        tableId: activeTable._id as string,
-      });
+      if (orders[0]?._id !== undefined) {
+        await updateOrderById(orders[0]._id, {
+          menuItems,
+        });
 
-      console.log('response', response);
-      router.push('/');
-      setShowOrderModal(true);
+        setActiveTab('tables');
+      } else {
+        const response = await createOrder({
+          customer: {
+            _id: '6581d253922a13b580a038ea',
+            name: 'asd',
+            email: 'asd@gmail.com',
+            contactNumber: '1111',
+            restaurantId,
+          },
+          staffId,
+          restaurantId,
+          menuItems,
+          price: total,
+          status: 1,
+          diningOption,
+          notes: note,
+          tableId: activeTable._id as string,
+        });
+
+        addOrder(response);
+        setActiveTab('tables');
+      }
     } catch (error) {
       console.log('create order error', error);
     }
+  };
+
+  const handleClickItem = () => {
+    setActiveTab('home');
   };
 
   return (
@@ -236,7 +268,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
               ) : (
                 <Fab
                   onClick={() => setAddNote(true)}
-                  disabled={!ordered}
+                  // disabled={!ordered}
                   size="small"
                   variant="outlined"
                   sx={{ width: '100%', borderRadius: '58px', marginTop: '16px' }}
@@ -248,7 +280,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
               )}
             </form>
             <Divider sx={{ mt: 2, mb: 1 }} />
-            {ordered && orders.length > 0 && (
+            {menuItems.length > 0 && (
               <>
                 <Typography
                   fontSize={20}
@@ -261,11 +293,11 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                   style={{
                     marginLeft: '20px',
                     marginRight: '20px',
-                    overflowY: orders.length < 5 ? 'hidden' : 'scroll',
+                    overflowY: 'scroll',
                     height: xl ? '380px' : '200px',
                   }}
                 >
-                  {orders.map((order: any, index: number) => (
+                  {menuItems.map((order: any, index: number) => (
                     <div key={order._id}>
                       <div
                         style={{
@@ -292,9 +324,9 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                           </Typography>
                           <Typography fontSize={12}>
                             Note:{' '}
-                            {order.notes.length > 10
-                              ? `${order.notes.slice(0, 15)}...`
-                              : order.notes}
+                            {order?.notes?.length > 10
+                              ? `${order?.notes?.slice(0, 15)}...`
+                              : order?.notes}
                           </Typography>
                           <div
                             style={{
@@ -319,14 +351,14 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                                 variant="body2"
                                 color="#F15F34"
                               >
-                                $ {order.price}
+                                $ {order?.price?.toFixed(2)}
                               </Typography>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                               <Fab
                                 onClick={() => {
-                                  updateOrder(order._id, { count: order.count - 1 });
-                                  if (order.count === 1) removeOrder(order._id);
+                                  updateMenuItem(order._id, { count: order.count - 1 });
+                                  if (order.count === 1) removeMenuItem(order._id);
                                 }}
                                 // disabled={order.count === 1}
                                 sx={{ width: '36px', height: '36px' }}
@@ -339,7 +371,9 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                                 {order.count}
                               </Typography>
                               <Fab
-                                onClick={() => updateOrder(order._id, { count: order.count + 1 })}
+                                onClick={() =>
+                                  updateMenuItem(order._id, { count: order.count + 1 })
+                                }
                                 sx={{ width: '36px', height: '36px' }}
                                 color="inherit"
                                 aria-label="add"
@@ -350,7 +384,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                           </div>
                         </div>
                       </div>
-                      {index + 1 !== orders.length && <Divider />}
+                      {index + 1 !== menuItems.length && <Divider />}
                     </div>
                   ))}
                 </div>
@@ -358,7 +392,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
             )}
           </div>
           <div>
-            {ordered && orders.length > 0 && (
+            {menuItems.length > 0 && (
               <>
                 <Divider sx={{ mb: '12px' }} />
                 <div style={{ paddingLeft: '24px', paddingRight: '24px' }}>
@@ -378,7 +412,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                     </div>
                     <div>
                       <Typography fontSize={16} fontWeight={600} mb="12px">
-                        $ {subTotal}
+                        $ {subTotal?.toFixed(2)}
                       </Typography>
                       <Typography fontSize={16} fontWeight={600}>
                         $ {taxTotal}
@@ -396,32 +430,51 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                     </Typography>
                   </div>
 
-                  {/* <Button
-                    size="large"
-                    fullWidth
-                    variant="contained"
-                    sx={{
-                      borderRadius: '58px',
-                      my: 2,
-                      bgcolor: '#FEE3D0',
-                      color: '#F15F34',
-                      ':hover': { bgcolor: '#f26f49', color: '#FFF' },
-                    }}
-                  >
-                    Order more
-                  </Button> */}
+                  {showOrderMore && (
+                    <Button
+                      size="large"
+                      fullWidth
+                      variant="contained"
+                      onClick={() => handleClickItem()}
+                      sx={{
+                        borderRadius: '58px',
+                        my: 1,
+                        mt: 3,
+                        bgcolor: '#FEE3D0',
+                        color: '#F15F34',
+                        ':hover': { bgcolor: '#f26f49', color: '#FFF' },
+                      }}
+                    >
+                      Order more
+                    </Button>
+                  )}
 
-                  <Button
-                    size="large"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    // onClick={() => setShowOrderModal(true)}
-                    onClick={onSubmit}
-                    sx={{ borderRadius: '58px', my: '15px', ':hover': { bgcolor: '#f26f49' } }}
-                  >
-                    {t('place_order')}
-                  </Button>
+                  {showPayNow && (
+                    <Button
+                      size="large"
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      onClick={() => setShowOrderModal(true)}
+                      sx={{ borderRadius: '58px', my: '5px', ':hover': { bgcolor: '#f26f49' } }}
+                    >
+                      Pay Now
+                    </Button>
+                  )}
+
+                  {showPlaceOrder && (
+                    <Button
+                      size="large"
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      // onClick={() => setShowOrderModal(true)}
+                      onClick={onSubmit}
+                      sx={{ borderRadius: '58px', my: '15px', ':hover': { bgcolor: '#f26f49' } }}
+                    >
+                      {t('place_order')}
+                    </Button>
+                  )}
                 </div>
               </>
             )}

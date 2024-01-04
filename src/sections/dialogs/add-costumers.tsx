@@ -9,8 +9,8 @@ import Button from '@mui/material/Button';
 import { Alert, Modal, Stack, Divider, Typography } from '@mui/material';
 
 import { CloseIcon } from 'src/assets/icons';
+import { createCustomer } from 'src/api/customers';
 import { CreateCustomerRequestSchema } from 'src/api/api-schemas';
-import { createCustomer, useGetCustomers } from 'src/api/customers';
 
 import Scrollbar from 'src/components/scrollbar';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
@@ -60,9 +60,6 @@ interface AddCustomerModalProps {
 }
 
 const AddCustomerModal = ({ showModal, setShowModal }: AddCustomerModalProps) => {
-  const asd = useGetCustomers();
-  console.log('asd', asd);
-
   const handleCloseAddCustomer = () => {
     setShowModal(false);
   };

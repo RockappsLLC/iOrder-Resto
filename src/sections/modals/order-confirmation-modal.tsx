@@ -16,9 +16,9 @@ import {
 
 import { useRouter } from 'src/routes/hooks';
 
-import { getMe } from 'src/api/users';
-import { createOrder } from 'src/api/orders';
 import { createPayment } from 'src/api/payments';
+import { updateOrderById } from 'src/api/orders';
+import { updateTableById } from 'src/api/tables';
 import { MoneyIcon, Mastercard } from 'src/assets/icons';
 
 import Scrollbar from 'src/components/scrollbar';
@@ -67,14 +67,16 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
     paymentMethod,
     totalWithTip,
     tipAmount,
+    orderId,
+    menuItems,
+    activeTable,
     setOrderId,
     resetOrders,
+    resetMenuItems,
   } = useOrderContext();
 
   const handleCloseModal = () => {
     setShowOrderModal(false);
-    resetOrders();
-    setShowMessage(true);
   };
 
   console.log('orders', orders);
@@ -91,40 +93,34 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
   const taxTotal = Math.round(Number(subTotal * TAX) * 10) / 10;
 
   const onSubmit = async () => {
-    const { data } = await getMe();
-    const personalInfo = data.data;
-
     try {
-      const response = await createOrder({
-        customer: {
-          _id: personalInfo?._id,
-          name: personalInfo?._name,
-          email: personalInfo?._email,
-          contactNumber: personalInfo?.contactNumber,
-          restaurantId: personalInfo?.restaurantId,
-        },
-        restaurantId: '653590bec665979a76591c9a',
-        menuItems: [{ price: 20 }],
-        price: totalWithTip,
+      await updateOrderById(orderId, {
+        status: 2,
       });
 
-      const iddddd = response.data.data._id;
-      setOrderId(iddddd);
+      await updateTableById(activeTable?._id, {
+        name: activeTable?.name,
+        status: 0,
+        restaurantId: activeTable?.restaurantId,
+      });
 
-      return iddddd;
+      setShowOrderModal(false);
+      resetOrders();
+      resetMenuItems();
+
+      if (paymentMethod === 'cash') {
+        setShowMessage(true);
+      }
     } catch (error) {
       console.log('create order error', error);
-      return null;
     }
   };
 
   const handleClickLightbox = async () => {
     try {
-      const id = await onSubmit();
-
-      if (id) {
+      if (orderId) {
         const response = await createPayment({
-          orderId: id,
+          orderId,
         });
 
         const { transactionId } = response.data.data;
@@ -198,7 +194,7 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
                 <TableHeadCustom headLabel={TABLE_HEAD} sx={{ textTransform: 'uppercase' }} />
 
                 <TableBody>
-                  {orders.map((order: any, index: number) => (
+                  {menuItems?.map((order: any, index: number) => (
                     <TableRow key={order._id}>
                       <TableCell>{order.name}</TableCell>
                       <TableCell align="right">{order.count}</TableCell>
@@ -217,11 +213,7 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
               <Typography variant="subtitle2" mb={1}>
                 NOTES
               </Typography>
-              <Typography variant="caption">
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when
-                an unknown printer took a galley of type and scrambled it to make a type specimen
-                book.
-              </Typography>
+              <Typography variant="caption">{orders[0]?.notes}</Typography>
             </Stack>
 
             <Stack width="50%" ml={5}>
@@ -294,15 +286,17 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
               >
                 Cancel
               </Button>
+
               <Button
                 variant="contained"
                 color="error"
                 sx={{ height: '50px', borderRadius: 10, px: 5 }}
                 onClick={() => {
                   if (paymentMethod === 'online') {
+                    onSubmit();
                     handleClickLightbox();
                   } else {
-                    handleCloseModal();
+                    onSubmit();
                   }
                 }}
               >

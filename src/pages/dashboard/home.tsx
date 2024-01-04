@@ -1,8 +1,7 @@
+import { useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useState, useEffect, useCallback } from 'react';
 
 import { useGetOrders } from 'src/api/orders';
-import { OrderResponseSchema } from 'src/api/api-schemas';
 
 import { useOrderContext } from 'src/components/order-sidebar/context';
 
@@ -14,11 +13,12 @@ import NewReservation from 'src/sections/dialogs/new-reservation';
 import ReservationList from 'src/sections/drawers/reservation-list';
 import { useDiningOptionsContext } from 'src/sections/dining-options';
 
+import { useHomeContext } from './home/home-context';
+
 // ----------------------------------------------------------------------
 
 export default function Page() {
-  const [activeTab, setActiveTab] = useState<'tables' | 'reservation' | 'home'>('tables');
-
+  const { activeTab, setActiveTab } = useHomeContext();
   const { diningOption } = useDiningOptionsContext();
   const {
     reservation,
@@ -28,61 +28,39 @@ export default function Page() {
     setCreatedReservationId,
   } = useReservationContext();
 
-  const { activeTable, setShowOrderSidebar, setOrders, showOrderSideBar } = useOrderContext();
-
-  console.log('showOrderSideBar', showOrderSideBar);
-
-  useEffect(() => {
-    if (diningOption === 'reservation') {
-      setActiveTab('tables');
-    } else if (diningOption === 'dine-in') {
-      setActiveTab('tables');
-    } else if (diningOption === 'takeaway') {
-      setActiveTab('home');
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [diningOption]);
+  const { setShowOrderSidebar, addOrder, addMenuItem, resetMenuItems, removeOrder } =
+    useOrderContext();
 
   const { orders, ordersLoading } = useGetOrders();
 
-  const [ordersData, setOrdersData] = useState<OrderResponseSchema[]>([]);
+  const onTableSelect = useCallback(
+    (id: string) => {
+      if (diningOption === 'reservation') {
+        setReservation({});
+        setReservationTab('list');
+        setCreatedReservationId(null);
 
-  useEffect(() => {
-    if (!ordersLoading && orders.length) {
-      setOrdersData(orders);
-    }
-  }, [ordersLoading, orders]);
+        // here
+      } else if (diningOption === 'dine-in') {
+        const availableOrder = orders.find((item: any) => item.status === 1 && item.tableId === id);
+        if (availableOrder) {
+          setShowOrderSidebar(true);
 
-  const availableOrder = ordersData.filter(
-    (item: any) => item.status === 1 && item.tableId === activeTable?._id
-  );
-
-  const onTableSelect = useCallback(() => {
-    if (diningOption === 'reservation') {
-      setReservation({});
-      setReservationTab('list');
-      setCreatedReservationId(null);
-
-      // here
-    } else if (diningOption === 'dine-in') {
-      if (true) {
-        setShowOrderSidebar(true);
-        // setOrders(availableOrder);
-      } else {
-        setActiveTab('home');
+          addMenuItem(availableOrder?.menuItems);
+          addOrder(availableOrder);
+        } else {
+          setActiveTab('home');
+          removeOrder(availableOrder);
+          resetMenuItems();
+        }
+        setReservation(null);
+      } else if (diningOption === 'takeaway') {
+        setReservation(null);
       }
-      setReservation(null);
-    } else if (diningOption === 'takeaway') {
-      setReservation(null);
-    }
-  }, [
-    diningOption,
-    setReservation,
-    setReservationTab,
-    setCreatedReservationId,
-    setShowOrderSidebar,
-  ]);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [orders, diningOption]
+  );
 
   return (
     <>

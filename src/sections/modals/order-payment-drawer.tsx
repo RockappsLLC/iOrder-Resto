@@ -49,6 +49,7 @@ const OrderPaymentDrawer = ({ showModal, setShowModal }: OrderPaymentProps) => {
     setInputAmount,
     setTotalWithTip,
     totalWithTip,
+    orderId,
   } = useOrderContext();
 
   const [showOrderConfirmModal, setShowOrderConfirmModal] = useState(false);
@@ -153,8 +154,8 @@ const OrderPaymentDrawer = ({ showModal, setShowModal }: OrderPaymentProps) => {
               <CloseIcon onClick={() => setShowModal(false)} />
             </Stack>
 
-            <Typography variant="subtitle2" fontWeight={400} color="#828487">
-              Order #nr
+            <Typography variant="subtitle2" fontWeight={400}>
+              Order #{orderId}
             </Typography>
 
             <Divider

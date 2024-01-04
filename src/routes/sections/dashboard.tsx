@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 
 import { AuthGuard } from 'src/auth/guard';
 import DashboardLayout from 'src/layouts/dashboard';
+import { HomeProvider } from 'src/pages/dashboard/home/home-provider';
 
 import { LoadingScreen } from 'src/components/loading-screen';
 import { OrderProvider } from 'src/components/order-sidebar/context';
@@ -28,15 +29,17 @@ export const dashboardRoutes = [
     element: (
       <AuthGuard>
         <DiningOptionsProvider>
-          <ReservationProvider>
-            <OrderProvider>
-              <DashboardLayout>
-                <Suspense fallback={<LoadingScreen />}>
-                  <Outlet />
-                </Suspense>
-              </DashboardLayout>
-            </OrderProvider>
-          </ReservationProvider>
+          <HomeProvider>
+            <ReservationProvider>
+              <OrderProvider>
+                <DashboardLayout>
+                  <Suspense fallback={<LoadingScreen />}>
+                    <Outlet />
+                  </Suspense>
+                </DashboardLayout>
+              </OrderProvider>
+            </ReservationProvider>
+          </HomeProvider>
         </DiningOptionsProvider>
       </AuthGuard>
     ),

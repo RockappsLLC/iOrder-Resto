@@ -1,10 +1,11 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 
-import { OrderResponseSchema } from 'src/api/api-schemas';
+import { OrderResponseSchema, MenuItemResponseSchema } from 'src/api/api-schemas';
 
 import { OrderContext } from './order-context';
 
 interface IOrder extends OrderResponseSchema {}
+
 const TAX = 0.1;
 
 export const OrderProvider = ({ children }: any) => {
@@ -13,6 +14,7 @@ export const OrderProvider = ({ children }: any) => {
   const [showOrderSideBar, setShowOrderSidebar] = useState(false);
 
   const [orders, setOrders] = useState<IOrder[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuItemResponseSchema[]>([]);
   const [ordered, setOrdered] = useState(false);
   const [orderId, setOrderId] = useState('');
 
@@ -27,12 +29,13 @@ export const OrderProvider = ({ children }: any) => {
   const [note, setNote] = useState('');
 
   const calculateSubTotal = useCallback(() => {
-    return orders.reduce((acc: number, currentItem: any) => {
+    // console.log('666', menuItems);
+    return menuItems?.reduce((acc: number, currentItem: any) => {
       const price = Number(currentItem.price || 0);
       const total1 = price * Number(currentItem.count || 0);
       return acc + total1;
     }, 0);
-  }, [orders]);
+  }, [menuItems]);
 
   const newSubTotal = calculateSubTotal();
   const taxTotal = Math.round(Number(newSubTotal * TAX) * 10) / 10;
@@ -72,8 +75,28 @@ export const OrderProvider = ({ children }: any) => {
     setOrderId(orderId);
   }, [orderId, orders]);
 
-  const resetOrders = useCallback(() => {
-    setOrders([]);
+  const addMenuItem = useCallback((menuItem: MenuItemResponseSchema) => {
+    setMenuItems(menuItem as any);
+  }, []);
+
+  const removeMenuItem = useCallback(
+    (id: MenuItemResponseSchema['_id']) => {
+      setMenuItems(menuItems.filter((order) => order._id !== id));
+    },
+    [menuItems]
+  );
+
+  const updateMenuItem = useCallback(
+    (id: MenuItemResponseSchema['_id'], updates: MenuItemResponseSchema) => {
+      const index = menuItems.findIndex((item) => item._id === id);
+      const newMenuItem = { ...menuItems[index], ...updates };
+      setMenuItems([...menuItems.slice(0, index), newMenuItem, ...menuItems.slice(index + 1)]);
+    },
+    [menuItems]
+  );
+
+  const resetMenuItems = useCallback(() => {
+    setMenuItems([]);
     setTotal(0);
     setSubTotal(0);
     setTipAmount(0);
@@ -83,6 +106,7 @@ export const OrderProvider = ({ children }: any) => {
   const addOrder = useCallback(
     (order: IOrder) => {
       setOrders([...orders, order]);
+      setOrderId(order._id as any);
     },
     [orders]
   );
@@ -103,6 +127,14 @@ export const OrderProvider = ({ children }: any) => {
     },
     [orders]
   );
+
+  const resetOrders = useCallback(() => {
+    setOrders([]);
+    setTotal(0);
+    setSubTotal(0);
+    setTipAmount(0);
+    setInputAmount('');
+  }, []);
 
   const providerValues = useMemo(
     () => ({
@@ -128,6 +160,11 @@ export const OrderProvider = ({ children }: any) => {
       setNote,
       orders,
       addOrder,
+      menuItems,
+      addMenuItem,
+      updateMenuItem,
+      removeMenuItem,
+      resetMenuItems,
       removeOrder,
       updateOrder,
       resetOrders,
@@ -157,6 +194,11 @@ export const OrderProvider = ({ children }: any) => {
       note,
       setNote,
       addOrder,
+      menuItems,
+      addMenuItem,
+      updateMenuItem,
+      removeMenuItem,
+      resetMenuItems,
       removeOrder,
       updateOrder,
       resetOrders,

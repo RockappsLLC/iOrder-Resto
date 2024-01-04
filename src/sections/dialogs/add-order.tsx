@@ -35,7 +35,7 @@ const defaultOrder = {
 };
 
 export default function AddOrderDialog({ open, hide, foodId }: any) {
-  const { orders, addOrder, setOrdered, updateOrder } = useOrderContext();
+  const { menuItems, addOrder, setOrdered, updateOrder, addMenuItem } = useOrderContext();
 
   const [notes, setNotes] = useState('');
 
@@ -43,7 +43,7 @@ export default function AddOrderDialog({ open, hide, foodId }: any) {
 
   const { menuItem, menuItemLoading } = useGetMenuItem(foodId);
   const [order, setOrder] = useState<MenuItemResponseSchema & { count: number }>(defaultOrder);
-  const orderObject = orders.find((o: any) => o._id === order._id);
+  const orderObject = menuItems.find((o: any) => o._id === order._id);
 
   useEffect(() => {
     if (!menuItemLoading) {
@@ -57,12 +57,12 @@ export default function AddOrderDialog({ open, hide, foodId }: any) {
       updateOrder(order._id, { notes });
       hide();
     } else {
-      if (orders.find((_order: any) => _order._id === order?._id)) {
+      if (menuItems.find((_order: any) => _order._id === order?._id)) {
         hide();
         return;
       }
       const newOrder = { ...order, notes };
-      addOrder(newOrder);
+      addMenuItem([...menuItems, newOrder || []]);
       setOrdered(true);
       hide();
     }

@@ -81,7 +81,7 @@ export default function HomeView() {
         </Container>
       </Grid>
       <Grid item xs={15} sm={5} md={4} lg={3} sx={{ borderTop: 1, borderColor: '#E4E4E4' }}>
-        <OrderSidebar />
+        <OrderSidebar showOrderMore={false} showPayNow={false} showPlaceOrder />
       </Grid>
     </Grid>
     /*  <>
