@@ -354,33 +354,35 @@ const OrderSidebar = ({
                                 $ {order?.price?.toFixed(2)}
                               </Typography>
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                              <Fab
-                                onClick={() => {
-                                  updateMenuItem(order._id, { count: order.count - 1 });
-                                  if (order.count === 1) removeMenuItem(order._id);
-                                }}
-                                // disabled={order.count === 1}
-                                sx={{ width: '36px', height: '36px' }}
-                                color="default"
-                                aria-label="add"
-                              >
-                                <Iconify icon="tabler:minus" width={20} />
-                              </Fab>
-                              <Typography fontSize={16} fontWeight={600}>
-                                {order.count}
-                              </Typography>
-                              <Fab
-                                onClick={() =>
-                                  updateMenuItem(order._id, { count: order.count + 1 })
-                                }
-                                sx={{ width: '36px', height: '36px' }}
-                                color="inherit"
-                                aria-label="add"
-                              >
-                                <Iconify icon="tabler:plus" width={20} />
-                              </Fab>
-                            </div>
+                            {showPayNow && showPlaceOrder && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <Fab
+                                  onClick={() => {
+                                    updateMenuItem(order._id, { count: order.count - 1 });
+                                    if (order.count === 1) removeMenuItem(order._id);
+                                  }}
+                                  // disabled={order.count === 1}
+                                  sx={{ width: '36px', height: '36px' }}
+                                  color="default"
+                                  aria-label="add"
+                                >
+                                  <Iconify icon="tabler:minus" width={20} />
+                                </Fab>
+                                <Typography fontSize={16} fontWeight={600}>
+                                  {order.count}
+                                </Typography>
+                                <Fab
+                                  onClick={() =>
+                                    updateMenuItem(order._id, { count: order.count + 1 })
+                                  }
+                                  sx={{ width: '36px', height: '36px' }}
+                                  color="inherit"
+                                  aria-label="add"
+                                >
+                                  <Iconify icon="tabler:plus" width={20} />
+                                </Fab>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

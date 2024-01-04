@@ -396,7 +396,7 @@ export default function TablesView({ onTableSelect }: any) {
           </Box>
         </Stack>
 
-        {showOrderSideBar && (
+        {showOrderSideBar && !openRuningOrders && (
           <Stack direction="column" width="60%" height="50%">
             <OrderSidebar showOrderMore showPayNow showPlaceOrder={false} />
           </Stack>

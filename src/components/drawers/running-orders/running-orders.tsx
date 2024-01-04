@@ -4,9 +4,9 @@ import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Table from '@mui/material/Table';
 import Paper from '@mui/material/Paper';
-import { Divider } from '@mui/material';
 import Button from '@mui/material/Button';
 import TableRow from '@mui/material/TableRow';
+import { Stack, Divider } from '@mui/material';
 import TableBody from '@mui/material/TableBody';
 import TableHead from '@mui/material/TableHead';
 import Container from '@mui/material/Container';
@@ -16,6 +16,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import TableContainer from '@mui/material/TableContainer';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 
+import { getTable } from 'src/api/tables';
 import { useGetOrders } from 'src/api/orders';
 // import { useGetTables } from 'src/api/tables';
 import {
@@ -45,6 +46,7 @@ const RunningOrders = ({ isBoxOpen, onHideBox }: any) => {
   const { orders, ordersLoading } = useGetOrders();
 
   const [ordersData, setOrdersData] = useState<OrderResponseSchema[]>([]);
+  const [tableData, setTableData] = useState<any | null>(null);
 
   useEffect(() => {
     if (!ordersLoading && orders.length) {
@@ -119,6 +121,39 @@ const RunningOrders = ({ isBoxOpen, onHideBox }: any) => {
     return `${formattedNumber}.-`;
   }
 
+  const calculateTimeDifference = (createdAt: any, updatedAt: any): any => {
+    const createdDate = new Date(createdAt);
+    const updatedDate = new Date(updatedAt);
+
+    const timeDiffMillis: number = Number(updatedDate) - Number(createdDate);
+    const hours: number = Math.floor(timeDiffMillis / (1000 * 60 * 60));
+    const minutes: number = Math.floor((timeDiffMillis % (1000 * 60 * 60)) / (1000 * 60));
+
+    if (hours === 0) {
+      if (minutes === 0) {
+        return '0 minutes';
+      }
+      return `${minutes} minutes`;
+    }
+    return `${hours} hours and ${minutes} minutes`;
+  };
+
+  useEffect(() => {
+    const fetchTableData = async (tableId: string) => {
+      try {
+        const { data } = await getTable(tableId);
+        setTableData(data?.data || null);
+      } catch (error) {
+        console.error('Error fetching table data:', error);
+        setTableData(null);
+      }
+    };
+
+    if (ordersData.length > 0) {
+      fetchTableData(ordersData[0]?.tableId || '');
+    }
+  }, [ordersData]);
+
   return (
     <>
       {isBoxOpen && (
@@ -130,13 +165,12 @@ const RunningOrders = ({ isBoxOpen, onHideBox }: any) => {
             bottom: 0,
             zIndex: 111,
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            marginTop: '68px',
           }}
         >
           <Container
             sx={{
               height: '80vh',
-              width: matches ? '100vw' : '1100px',
+              width: matches ? '100vw' : '1000px',
               bgcolor: 'white',
               backgroundColor: 'white',
               paddingLeft: '0px !important',
@@ -190,26 +224,33 @@ const RunningOrders = ({ isBoxOpen, onHideBox }: any) => {
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
                             <TableCell component="th" scope="order">
-                              <Chip
-                                label="T-09"
-                                color="primary"
-                                variant="soft"
-                                sx={{
-                                  color: '#F15F34',
-                                  borderRadius: '100%',
-                                  width: '60px',
-                                  height: '60px',
-                                  fontSize: 14,
-                                  fontWeight: 600,
-                                }}
-                              />
+                              {tableData ? (
+                                <Chip
+                                  label={tableData.name || 'Loading...'}
+                                  color="primary"
+                                  variant="soft"
+                                  sx={{
+                                    color: '#F15F34',
+                                    borderRadius: '100%',
+                                    width: '60px',
+                                    height: '60px',
+                                    fontSize: 14,
+                                    fontWeight: 600,
+                                  }}
+                                />
+                              ) : (
+                                'Loading...'
+                              )}
                             </TableCell>
                             <TableCell>
                               <Typography fontSize={14} fontWeight={600}>
                                 # {order.orderId}
                               </Typography>
+
                               <Typography fontSize={12} color="#828487">
-                                steak api bakar x 1.0...
+                                {order?.menuItems?.map((item) => (
+                                  <Box key={item?._id}>{`${item?.name} x ${item?.count}`}</Box>
+                                ))}
                               </Typography>
                             </TableCell>
                             <TableCell align="center">
@@ -231,15 +272,11 @@ const RunningOrders = ({ isBoxOpen, onHideBox }: any) => {
                                 }}
                               />
                             </TableCell>
-                            <TableCell align="center">35 minutes</TableCell>
                             <TableCell align="center">
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  gap: '8px',
-                                }}
-                              >
+                              {calculateTimeDifference(order?.createdAt, order?.updatedAt)}
+                            </TableCell>
+                            <TableCell align="center">
+                              <Stack direction={{ xs: 'column', sm: 'row' }} gap={1}>
                                 <Button
                                   variant="outlined"
                                   color="primary"
@@ -262,7 +299,7 @@ const RunningOrders = ({ isBoxOpen, onHideBox }: any) => {
                                 >
                                   Pay now
                                 </Button>
-                              </Box>
+                              </Stack>
                             </TableCell>
                           </StyledTableRow>
                         ))}

@@ -242,6 +242,7 @@ export interface MenuItemResponseSchema {
   preparationTime?: number;
   isAdditional?: boolean;
   notes?: string;
+  count?: number;
 }
 export interface MenuItemsResponseSchema {
   menuItems?: MenuItemResponseSchema[];
