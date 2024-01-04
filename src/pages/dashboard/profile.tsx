@@ -17,9 +17,9 @@ import {
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { postChangePassword } from 'src/api/auth';
 import { useGetMe, updateUserById } from 'src/api/users';
 import { UserResponseSchema } from 'src/api/api-schemas';
+import { postChangePin, postChangePassword } from 'src/api/auth';
 
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
@@ -78,22 +78,13 @@ export default function Profile() {
             width: '100%',
             height: '1px',
             backgroundColor: '#C2C2C2',
+            mb: 3,
           }}
         />
 
-        <Stack direction="row" width="100%">
-          <Stack direction="column" width="50%">
-            <EditPersonalForm usersMe={usersMe} />
-          </Stack>
-
-          <Stack direction="column" width="50%">
-            <EditPasswordForm usersMe={usersMe} />
-          </Stack>
-
-          <Stack direction="column" width="50%">
-            <EditPinForm usersMe={usersMe} />
-          </Stack>
-        </Stack>
+        <EditPersonalForm usersMe={usersMe} />
+        <EditPasswordForm usersMe={usersMe} />
+        <EditPinForm usersMe={usersMe} />
       </Card>
     </Box>
   );
@@ -149,28 +140,31 @@ const EditPersonalForm = ({ usersMe }: any) => {
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
-      <Stack direction="column" spacing={3} width="80%">
-        <Typography my={2} fontWeight={500}>
-          Edit personal info
-        </Typography>
+      <Typography my={2} fontWeight={500} textAlign="start">
+        Edit personal info
+      </Typography>
 
-        {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-        {!!successMsg && <Alert severity="success">{successMsg}</Alert>}
+      {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+      {!!successMsg && <Alert severity="success">{successMsg}</Alert>}
 
-        <RHFTextField name="firstName" label="First Name" />
-        <RHFTextField name="lastName" label="Last Name" />
-        <RHFTextField name="contactNumber" label="Contact Number" />
-
-        <LoadingButton
-          fullWidth
-          color="primary"
-          type="submit"
-          variant="contained"
-          loading={isSubmitting}
-          sx={{ fontWeight: 400 }}
-        >
-          Confirm
-        </LoadingButton>
+      <Stack direction="column">
+        <Stack direction="row" gap={1}>
+          <RHFTextField name="firstName" label="First Name" />
+          <RHFTextField name="lastName" label="Last Name" />
+          <RHFTextField name="contactNumber" label="Contact Number" />
+        </Stack>
+        <Stack direction="row" justifyContent="flex-end">
+          <LoadingButton
+            fullWidth
+            color="primary"
+            type="submit"
+            variant="contained"
+            loading={isSubmitting}
+            sx={{ fontWeight: 400, width: 300, mt: 2 }}
+          >
+            Confirm
+          </LoadingButton>
+        </Stack>
       </Stack>
     </FormProvider>
   );
@@ -231,77 +225,81 @@ const EditPasswordForm = ({ usersMe }: any) => {
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
-      <Stack direction="column" spacing={3} width="80%">
-        <Typography my={2} fontWeight={500}>
-          Edit password
-        </Typography>
+      <Typography my={2} fontWeight={500} textAlign="start">
+        Edit password
+      </Typography>
 
-        {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-        {!!successMsg && <Alert severity="success">{successMsg}</Alert>}
+      {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+      {!!successMsg && <Alert severity="success">{successMsg}</Alert>}
 
-        <RHFTextField
-          name="oldPassword"
-          type={password.value ? 'text' : 'password'}
-          label="Old Password"
-          sx={{ mb: 1 }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
-                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+      <Stack direction="column">
+        <Stack direction="row" gap={1}>
+          <RHFTextField
+            name="oldPassword"
+            type={password.value ? 'text' : 'password'}
+            label="Old Password"
+            sx={{ mb: 1 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={password.onToggle} edge="end">
+                    <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
 
-        <RHFTextField
-          name="newPassword"
-          label="New Password"
-          type={password.value ? 'text' : 'password'}
-          sx={{ mb: 1 }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
-                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          helperText={
-            <Stack component="span" direction="row" alignItems="center" sx={{ mb: 1 }}>
-              <Iconify icon="eva:info-fill" width={16} sx={{ mr: 0.5 }} /> Password must be minimum
-              6+
-            </Stack>
-          }
-        />
+          <RHFTextField
+            name="newPassword"
+            label="New Password"
+            type={password.value ? 'text' : 'password'}
+            sx={{ mb: 1 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={password.onToggle} edge="end">
+                    <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            helperText={
+              <Stack component="span" direction="row" alignItems="center" sx={{ mb: 1 }}>
+                <Iconify icon="eva:info-fill" width={16} sx={{ mr: 0.5 }} /> Password must be
+                minimum 6+
+              </Stack>
+            }
+          />
 
-        <RHFTextField
-          name="confirmNewPassword"
-          type={password.value ? 'text' : 'password'}
-          label="Re-Enter Password"
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
-                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+          <RHFTextField
+            name="confirmNewPassword"
+            type={password.value ? 'text' : 'password'}
+            label="Re-Enter Password"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={password.onToggle} edge="end">
+                    <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Stack>
 
-        <LoadingButton
-          fullWidth
-          color="primary"
-          type="submit"
-          variant="contained"
-          loading={isSubmitting}
-          sx={{ fontWeight: 400 }}
-        >
-          Confirm
-        </LoadingButton>
+        <Stack direction="row" justifyContent="flex-end">
+          <LoadingButton
+            fullWidth
+            color="primary"
+            type="submit"
+            variant="contained"
+            loading={isSubmitting}
+            sx={{ fontWeight: 400, width: 300, mt: 1 }}
+          >
+            Update password
+          </LoadingButton>
+        </Stack>
       </Stack>
     </FormProvider>
   );
@@ -311,13 +309,13 @@ const EditPinForm = ({ usersMe }: any) => {
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  const password = useBoolean();
+  const pin = useBoolean();
 
   const EditPinSchema = Yup.object().shape({
     oldPin: Yup.string().required('Old Pin is required'),
     newPin: Yup.string()
       .required('New Pin is required')
-      .min(6, 'Pin must be at least 6 characters')
+      .min(4, 'Pin must be at least 4 characters')
       .test(
         'no-match',
         'New pin must be different than old pin',
@@ -346,11 +344,11 @@ const EditPinForm = ({ usersMe }: any) => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      // await postEditPin({
-      //   // oldPassword: data.oldPassword,
-      //   // newPin: data.newPin,
-      //   // confirmNewPin: data.confirmNewPin,
-      // });
+      await postChangePin({
+        email: usersMe?.email || '',
+        oldPin: data.oldPin,
+        newPin: data.newPin,
+      });
       reset();
       setSuccessMsg('Pin is changed!');
     } catch (error) {
@@ -362,76 +360,79 @@ const EditPinForm = ({ usersMe }: any) => {
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
-      <Stack direction="column" spacing={3} width="80%">
-        <Typography my={2} fontWeight={500}>
-          Edit Pin
-        </Typography>
+      <Typography my={2} fontWeight={500} textAlign="start">
+        Edit Pin
+      </Typography>
 
-        {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-        {!!successMsg && <Alert severity="success">{successMsg}</Alert>}
+      {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+      {!!successMsg && <Alert severity="success">{successMsg}</Alert>}
 
-        <RHFTextField
-          name="oldPin"
-          type={password.value ? 'text' : 'password'}
-          label="Old Pin"
-          sx={{ mb: 1 }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
-                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+      <Stack direction="column">
+        <Stack direction="row" gap={1}>
+          <RHFTextField
+            name="oldPin"
+            type={pin.value ? 'text' : 'password'}
+            label="Old Pin"
+            sx={{ mb: 1 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={pin.onToggle} edge="end">
+                    <Iconify icon={pin.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
 
-        <RHFTextField
-          name="newPin"
-          label="New Pin"
-          type={password.value ? 'text' : 'password'}
-          sx={{ mb: 1 }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
-                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          helperText={
-            <Stack component="span" direction="row" alignItems="center" sx={{ mb: 1 }}>
-              <Iconify icon="eva:info-fill" width={16} sx={{ mr: 0.5 }} /> Pin must be minimum 6+
-            </Stack>
-          }
-        />
+          <RHFTextField
+            name="newPin"
+            label="New Pin"
+            type={pin.value ? 'text' : 'password'}
+            sx={{ mb: 1 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={pin.onToggle} edge="end">
+                    <Iconify icon={pin.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            helperText={
+              <Stack component="span" direction="row" alignItems="center" sx={{ mb: 1 }}>
+                <Iconify icon="eva:info-fill" width={16} sx={{ mr: 0.5 }} /> Pin must be minimum 4+
+              </Stack>
+            }
+          />
 
-        <RHFTextField
-          name="confirmNewPin"
-          type={password.value ? 'text' : 'password'}
-          label="Re-Enter Pin"
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
-                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-
-        <LoadingButton
-          fullWidth
-          color="primary"
-          type="submit"
-          variant="contained"
-          loading={isSubmitting}
-          sx={{ fontWeight: 400 }}
-        >
-          Confirm
-        </LoadingButton>
+          <RHFTextField
+            name="confirmNewPin"
+            type={pin.value ? 'text' : 'password'}
+            label="Re-Enter Pin"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={pin.onToggle} edge="end">
+                    <Iconify icon={pin.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Stack>
+        <Stack direction="row" justifyContent="flex-end">
+          <LoadingButton
+            fullWidth
+            color="primary"
+            type="submit"
+            variant="contained"
+            loading={isSubmitting}
+            sx={{ fontWeight: 400, width: 300, mt: 1 }}
+          >
+            Update pin
+          </LoadingButton>
+        </Stack>
       </Stack>
     </FormProvider>
   );
