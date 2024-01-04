@@ -595,7 +595,7 @@ export interface GetPricingPlansResponse {
 export interface UpdateOrderRequestSchema {
   customer?: CustomerResponseSchema;
   paymentType?: 0 | 1;
-  status?: 0 | 1 | 2 | 3;
+  status?: 0 | 1 | 2 | 3 | 4;
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
   restaurantId?: string;
@@ -608,7 +608,7 @@ export interface UpdateOrderRequestSchema {
 export interface OrderRequestSchema {
   customer: CustomerResponseSchema;
   paymentType?: 0 | 1;
-  status?: 0 | 1 | 2 | 3;
+  status?: 0 | 1 | 2 | 3 | 4;
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
   restaurantId?: string;
@@ -628,7 +628,7 @@ export interface OrderResponseSchema {
   currency?: string;
   customer?: CustomerResponseSchema;
   paymentType?: 0 | 1;
-  status?: 0 | 1 | 2 | 3;
+  status?: 0 | 1 | 2 | 3 | 4;
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
   diningOption?: string;
@@ -829,4 +829,11 @@ export interface GetTransactionByIdResponse {
 export interface GetTransactionsResponse {
   success?: boolean;
   data?: TransactionsResponseSchema;
+}
+export interface TransactionRequestSchema {
+  restaurantId: string;
+  type?: string;
+  status?: string;
+  currency?: string;
+  refno: string;
 }

@@ -177,6 +177,7 @@ export const endpoints = {
     },
   },
   transactions: {
+    post: '/transactions',
     get: '/transactions',
     getById: '/transactions/{transactionId}',
   },

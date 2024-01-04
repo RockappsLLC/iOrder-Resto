@@ -3,7 +3,21 @@ import { useMemo } from 'react';
 
 import axios, { fetcher, endpoints } from 'src/utils/axios';
 
-import { ErrorResponse, GetTransactionsResponse, GetTransactionByIdResponse } from './api-schemas';
+import {
+  ErrorResponse,
+  GetTransactionsResponse,
+  TransactionRequestSchema,
+  GetTransactionByIdResponse,
+} from './api-schemas';
+
+// ----------------------------------------------------------------------
+
+export async function createTransaction(
+  data: TransactionRequestSchema
+): Promise<{ data: GetTransactionByIdResponse } | ErrorResponse> {
+  const URL = endpoints.transactions.post;
+  return axios.post(URL, data);
+}
 
 // ----------------------------------------------------------------------
 interface IGetTransactionsQueryParams {
