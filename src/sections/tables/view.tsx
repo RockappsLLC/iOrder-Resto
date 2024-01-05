@@ -26,21 +26,19 @@ import { useDiningOptionsContext } from '../dining-options';
 // billed - occupied
 // available soon - paid
 
-// (Available = 0), (Reserved = 1), (Billed = 2), (AvailableSoon = 3);
-
 const MIN_HEIGHT = 1000;
 const MIN_WIDTH = 2000;
 const FILTERS = [
   { label: 'Available', name: 'available', value: 0, color: '#3395F0', border: '#e0eefc' },
   { label: 'Reserved', name: 'reserved', value: 1, color: '#F15F34', border: '#ffe9de' },
   { label: 'Occupied', name: 'occupied', value: 2, color: '#13C91B', border: '#e1f7de' },
-  {
-    label: 'Paid',
-    name: 'paid',
-    value: 3,
-    color: '#F0B433',
-    border: '#fdf3e1',
-  },
+  // {
+  //   label: 'Paid',
+  //   name: 'paid',
+  //   value: 3,
+  //   color: '#F0B433',
+  //   border: '#fdf3e1',
+  // },
 ];
 
 function a11yProps(index: number, id: string = '') {
@@ -94,7 +92,9 @@ export default function TablesView({ onTableSelect }: any) {
   const { diningOption } = useDiningOptionsContext();
   const { activeTable, setActiveTable, showOrderSideBar } = useOrderContext();
 
-  const { tables, tablesLoading } = useGetTables({ floorId: activeFloor.id as any });
+  const { tables, tablesLoading, tablesValidating } = useGetTables({
+    floorId: activeFloor.id as any,
+  });
 
   const [nodes, setNodes] = useState<Node[]>([]);
 
@@ -129,11 +129,11 @@ export default function TablesView({ onTableSelect }: any) {
     setValue('width', newWidth);
   };
   useEffect(() => {
-    if (!tablesLoading && tables.length) {
+    if (!tablesLoading && !tablesValidating && tables.length) {
       renderNodesDefault(tables);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tablesLoading, activeFloor.id]);
+  }, [tablesLoading, tablesValidating, activeFloor.id]);
 
   useEffect(() => {
     const filteredTables = tables.filter((table) => {

@@ -20,6 +20,7 @@ import { getMe } from 'src/api/users';
 import { useTranslate } from 'src/locales';
 import { ChevronRight } from 'src/assets/icons';
 import { createOrder, updateOrderById } from 'src/api/orders';
+import { useGetTables, updateTableById } from 'src/api/tables';
 import { useHomeContext } from 'src/pages/dashboard/home/home-context';
 
 import AddNote from 'src/sections/dialogs/add-note';
@@ -87,6 +88,8 @@ const OrderSidebar = ({
 
   const { diningOption } = useDiningOptionsContext();
 
+  const { tablesMutate } = useGetTables();
+
   const [currentTab, setCurrentTab] = useState('buy');
   const [addNote, setAddNote] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
@@ -153,6 +156,13 @@ const OrderSidebar = ({
         addOrder(response);
         setActiveTab('tables');
       }
+
+      await updateTableById(activeTable._id as string, {
+        name: activeTable?.name,
+        status: 2,
+        restaurantId: activeTable?.restaurantId,
+      });
+      tablesMutate();
     } catch (error) {
       console.log('create order error', error);
     }
