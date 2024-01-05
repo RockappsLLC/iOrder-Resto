@@ -26,6 +26,8 @@ import {
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
+import { ConfirmDialog } from 'src/components/custom-dialog';
+import { useOrderContext } from 'src/components/order-sidebar/context';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -45,8 +47,11 @@ const RunningOrders = ({ isBoxOpen, onHideBox }: any) => {
 
   const { orders, ordersLoading } = useGetOrders();
 
+  const { addOrder, addMenuItem, setShowOrderSidebar, setActiveTable } = useOrderContext();
+
   const [ordersData, setOrdersData] = useState<OrderResponseSchema[]>([]);
   const [tableData, setTableData] = useState<any | null>(null);
+  const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
     if (!ordersLoading && orders.length) {
@@ -154,8 +159,33 @@ const RunningOrders = ({ isBoxOpen, onHideBox }: any) => {
     }
   }, [ordersData]);
 
+  const handlePayNow = (order: any) => {
+    onHideBox(false);
+
+    if (order.status === 1) {
+      addOrder(order);
+      addMenuItem(order?.menuItems);
+      setShowOrderSidebar(true);
+      setActiveTable(tableData);
+    } else if (order.status !== 1) {
+      setShowMessage(true);
+    }
+  };
+
   return (
     <>
+      <ConfirmDialog
+        open={showMessage}
+        onClose={() => setShowMessage(false)}
+        title="Confirmation"
+        content="Order is already paid."
+        action={
+          <Button variant="contained" color="success" onClick={() => setShowMessage(false)}>
+            Done
+          </Button>
+        }
+      />
+
       {isBoxOpen && (
         <Box
           sx={{
@@ -296,6 +326,7 @@ const RunningOrders = ({ isBoxOpen, onHideBox }: any) => {
                                     borderRadius: '58px',
                                     ':hover': { bgcolor: '#F15F34' },
                                   }}
+                                  onClick={() => handlePayNow(order)}
                                 >
                                   Pay now
                                 </Button>
