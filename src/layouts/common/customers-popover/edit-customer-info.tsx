@@ -11,6 +11,36 @@ import { CustomerResponseSchema } from 'src/api/api-schemas';
 import { useGetCustomers, updateCustomerById } from 'src/api/customers';
 
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import RHFAutocomplete from 'src/components/hook-form/rhf-autocomplete';
+
+const Cantons = [
+  'Aargau',
+  'Appenzell Ausserrhoden',
+  'Appenzell Innerrhoden',
+  'Basel-Land',
+  'Basel-Stadt',
+  'Bern',
+  'Fribourg',
+  'Geneva',
+  'Glarus',
+  'Graubünden',
+  'Jura',
+  'Lucerne',
+  'Neuchâtel',
+  'Nidwalden',
+  'Obwalden',
+  'Schaffhausen',
+  'Schwyz',
+  'Solothurn',
+  'St. Gallen',
+  'Thurgau',
+  'Ticino',
+  'Uri',
+  'Valais',
+  'Vaud',
+  'Zug',
+  'Zürich',
+];
 
 interface EditCustomerInfoProps {
   viewEditModal: { openModal: boolean; id: string };
@@ -95,6 +125,8 @@ const RenderForm = ({ handleCloseModal, viewEditModal, customersData, setCustome
 
   const {
     reset,
+    watch,
+    setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
@@ -154,7 +186,17 @@ const RenderForm = ({ handleCloseModal, viewEditModal, customersData, setCustome
 
         <Stack direction="row" gap={1}>
           <RHFTextField name="city" label="City" />
-          <RHFTextField name="canton" label="Canton" />
+          <RHFAutocomplete
+            fullWidth
+            name="canton"
+            label="Canton"
+            options={Cantons}
+            getOptionLabel={(option: any) => option}
+            value={watch('canton') || null}
+            onChange={(event: any, newValue: any) => {
+              setValue('canton', newValue);
+            }}
+          />
         </Stack>
 
         <Stack direction="row" gap={1.5}>

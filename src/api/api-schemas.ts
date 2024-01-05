@@ -32,6 +32,15 @@ export interface ChangePaswordResponse {
   success?: boolean;
   data?: string;
 }
+export interface ChangePinRequest {
+  email: string;
+  newPin: string;
+  oldPin: string;
+}
+export interface ChangePinResponse {
+  success?: boolean;
+  data?: string;
+}
 export interface CreateUserRequestSchema {
   firstName: string;
   lastName: string;
@@ -42,6 +51,7 @@ export interface CreateUserRequestSchema {
   pin?: string;
   role: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   status?: boolean;
+  profileImage?: string;
 }
 export interface UpdateUserRequestSchema {
   firstName?: string;
@@ -51,6 +61,7 @@ export interface UpdateUserRequestSchema {
   restaurantId?: string;
   role?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   status?: boolean;
+  profileImage?: string;
 }
 export interface UserResponseSchema {
   _id?: string;
@@ -62,6 +73,7 @@ export interface UserResponseSchema {
   password?: string;
   role?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   status?: boolean;
+  profileImage?: string;
 }
 export interface UsersResponseSchema {
   users?: UserResponseSchema[];
@@ -230,6 +242,7 @@ export interface MenuItemResponseSchema {
   preparationTime?: number;
   isAdditional?: boolean;
   notes?: string;
+  count?: number;
 }
 export interface MenuItemsResponseSchema {
   menuItems?: MenuItemResponseSchema[];
@@ -582,7 +595,7 @@ export interface GetPricingPlansResponse {
 export interface UpdateOrderRequestSchema {
   customer?: CustomerResponseSchema;
   paymentType?: 0 | 1;
-  status?: 0 | 1 | 2 | 3;
+  status?: 0 | 1 | 2 | 3 | 4;
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
   restaurantId?: string;
@@ -595,7 +608,7 @@ export interface UpdateOrderRequestSchema {
 export interface OrderRequestSchema {
   customer: CustomerResponseSchema;
   paymentType?: 0 | 1;
-  status?: 0 | 1 | 2 | 3;
+  status?: 0 | 1 | 2 | 3 | 4;
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
   restaurantId?: string;
@@ -615,7 +628,7 @@ export interface OrderResponseSchema {
   currency?: string;
   customer?: CustomerResponseSchema;
   paymentType?: 0 | 1;
-  status?: 0 | 1 | 2 | 3;
+  status?: 0 | 1 | 2 | 3 | 4;
   menuItems?: MenuItemResponseSchema[];
   staffId?: string;
   diningOption?: string;
@@ -816,4 +829,11 @@ export interface GetTransactionByIdResponse {
 export interface GetTransactionsResponse {
   success?: boolean;
   data?: TransactionsResponseSchema;
+}
+export interface TransactionRequestSchema {
+  restaurantId: string;
+  type?: string;
+  status?: string;
+  currency?: string;
+  refno: string;
 }

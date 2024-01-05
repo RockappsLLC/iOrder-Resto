@@ -4,6 +4,8 @@ import {
   LoginRequest,
   LoginReponse,
   ErrorResponse,
+  ChangePinRequest,
+  ChangePinResponse,
   ForgotPaswordRequest,
   ResetPasswordRequest,
   ResetPaswordResponse,
@@ -45,6 +47,15 @@ export async function postChangePassword(
   data: ChangePasswordRequest
 ): Promise<{ data: ChangePaswordResponse } | ErrorResponse> {
   const URL = endpoints.auth.changePassword.post;
+  return axios.post(URL, data);
+}
+
+// ----------------------------------------------------------------------
+
+export async function postChangePin(
+  data: ChangePinRequest
+): Promise<{ data: ChangePinResponse } | ErrorResponse> {
+  const URL = endpoints.auth.changePin.post;
   return axios.post(URL, data);
 }
 

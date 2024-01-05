@@ -26,7 +26,16 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { getMe } from 'src/api/users';
 import { postUpload } from 'src/api/files';
 import { createRestaurant } from 'src/api/restaurants';
-import { Plus, Home, Staff, RiceBowl, ArrowLeft, LockClose, ArrowRight } from 'src/assets/icons';
+import {
+  Plus,
+  Home,
+  Staff,
+  Money,
+  RiceBowl,
+  ArrowLeft,
+  LockClose,
+  ArrowRight,
+} from 'src/assets/icons';
 
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
@@ -37,6 +46,7 @@ import FormProvider, { RHFTextField } from 'src/components/hook-form';
 const FloorPlanContent = lazy(() => import('src/pages/auth/other/owner-login/floor-plan'));
 const StaffContent = lazy(() => import('src/pages/auth/other/owner-login/Staff'));
 // const PaymentContent = lazy(() => import('src/pages/auth/other/owner-login/Payment'));
+const TaxContent = lazy(() => import('src/pages/auth/other/owner-login/Tax'));
 const MenuContent = lazy(() => import('src/pages/auth/other/owner-login/Menu'));
 
 const contentData = [
@@ -63,6 +73,12 @@ const contentData = [
     active: false,
     icon: <RiceBowl />,
     contentComponent: MenuContent,
+  },
+  {
+    name: 'Tax',
+    active: false,
+    icon: <Money />,
+    contentComponent: TaxContent,
   },
   // {
   //   name: 'Payment',

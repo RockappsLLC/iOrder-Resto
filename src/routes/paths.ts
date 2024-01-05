@@ -30,5 +30,6 @@ export const paths = {
     bills: `${ROOTS.DASHBOARD}/bills`,
     customers: `${ROOTS.DASHBOARD}/customers`,
     ownerForm: `${ROOTS.DASHBOARD}/other/owner-form`,
+    // profile: `${ROOTS.DASHBOARD}/other/profile`,
   },
 };

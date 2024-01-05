@@ -25,7 +25,7 @@ const OPTIONS = [
   },
   {
     label: 'Profile',
-    linkTo: '/#1',
+    linkTo: '/other/profile',
   },
   // {
   //   label: 'Settings',
