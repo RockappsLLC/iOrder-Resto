@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 
 import { AuthGuard } from 'src/auth/guard';
 import DashboardLayout from 'src/layouts/dashboard';
+import { HomeProvider } from 'src/pages/dashboard/home/home-provider';
 
 import { LoadingScreen } from 'src/components/loading-screen';
 import { OrderProvider } from 'src/components/order-sidebar/context';
@@ -18,6 +19,7 @@ const BillsPage = lazy(() => import('src/pages/dashboard/bills'));
 // const CustomersPage = lazy(() => import('src/pages/dashboard/customers'));
 const LockedScreen = lazy(() => import('src/pages/dashboard/locked-screen'));
 const OwnerForm = lazy(() => import('src/pages/dashboard/owner-form'));
+const ProfilePage = lazy(() => import('src/pages/dashboard/profile'));
 
 // ----------------------------------------------------------------------
 
@@ -27,15 +29,17 @@ export const dashboardRoutes = [
     element: (
       <AuthGuard>
         <DiningOptionsProvider>
-          <ReservationProvider>
-            <OrderProvider>
-              <DashboardLayout>
-                <Suspense fallback={<LoadingScreen />}>
-                  <Outlet />
-                </Suspense>
-              </DashboardLayout>
-            </OrderProvider>
-          </ReservationProvider>
+          <HomeProvider>
+            <ReservationProvider>
+              <OrderProvider>
+                <DashboardLayout>
+                  <Suspense fallback={<LoadingScreen />}>
+                    <Outlet />
+                  </Suspense>
+                </DashboardLayout>
+              </OrderProvider>
+            </ReservationProvider>
+          </HomeProvider>
         </DiningOptionsProvider>
       </AuthGuard>
     ),
@@ -51,6 +55,7 @@ export const dashboardRoutes = [
     children: [
       { path: 'locked', element: <LockedScreen /> },
       { path: 'owner-form', element: <OwnerForm /> },
+      { path: 'profile', element: <ProfilePage /> },
     ],
   },
 ];

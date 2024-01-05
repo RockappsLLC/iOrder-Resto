@@ -49,6 +49,7 @@ const OrderPaymentDrawer = ({ showModal, setShowModal }: OrderPaymentProps) => {
     setInputAmount,
     setTotalWithTip,
     totalWithTip,
+    orderId,
   } = useOrderContext();
 
   const [showOrderConfirmModal, setShowOrderConfirmModal] = useState(false);
@@ -154,7 +155,7 @@ const OrderPaymentDrawer = ({ showModal, setShowModal }: OrderPaymentProps) => {
             </Stack>
 
             <Typography variant="subtitle2" fontWeight={400}>
-              Order #nr
+              Order #{orderId}
             </Typography>
 
             <Divider
@@ -172,7 +173,7 @@ const OrderPaymentDrawer = ({ showModal, setShowModal }: OrderPaymentProps) => {
               gap={1}
             >
               <Stack direction={{ xs: 'row', sm: 'row' }} justifyContent="space-between">
-                <Typography variant="subtitle1" fontWeight={400}>
+                <Typography variant="subtitle1" fontWeight={400} color="#828487">
                   Tip Amount
                 </Typography>
 
@@ -180,7 +181,7 @@ const OrderPaymentDrawer = ({ showModal, setShowModal }: OrderPaymentProps) => {
               </Stack>
 
               <Stack direction={{ xs: 'row', sm: 'row' }} justifyContent="space-between">
-                <Typography variant="subtitle1" fontWeight={400}>
+                <Typography variant="subtitle1" fontWeight={400} color="#828487">
                   Total Amount
                 </Typography>
 
@@ -358,9 +359,15 @@ const OrderPaymentDrawer = ({ showModal, setShowModal }: OrderPaymentProps) => {
                     onClick={() => handleBoxClick(index)}
                     sx={{
                       background:
-                        index === bottomIconsArray.length - 1
-                          ? `linear-gradient(219deg, #FFAB18 -6.67%, #FF2197 137.69%)`
+                        // eslint-disable-next-line no-nested-ternary
+                        index === selectedBox
+                          ? 'linear-gradient(219deg, #FFAB18 -6.67%, #FF2197 137.69%)'
+                          : index === bottomIconsArray.length - 1
+                          ? 'linear-gradient(219deg, #FFAB18 -6.67%, #FF2197 137.69%)'
                           : 'black',
+                      ':hover': {
+                        opacity: 0.8,
+                      },
                     }}
                   >
                     <Stack direction="column" alignItems="center">

@@ -35,13 +35,15 @@ const defaultOrder = {
 };
 
 export default function AddOrderDialog({ open, hide, foodId }: any) {
-  const { orders, addOrder, setOrdered } = useOrderContext();
+  const { menuItems, addOrder, setOrdered, updateOrder, addMenuItem } = useOrderContext();
+
+  const [notes, setNotes] = useState('');
 
   const { t } = useTranslate();
 
   const { menuItem, menuItemLoading } = useGetMenuItem(foodId);
   const [order, setOrder] = useState<MenuItemResponseSchema & { count: number }>(defaultOrder);
-  const orderObject = orders.find((o: any) => o._id === order._id);
+  const orderObject = menuItems.find((o: any) => o._id === order._id);
 
   useEffect(() => {
     if (!menuItemLoading) {
@@ -51,13 +53,19 @@ export default function AddOrderDialog({ open, hide, foodId }: any) {
   }, [menuItemLoading, menuItem]);
 
   const handleAddOrder = () => {
-    if (orders.find((_order: any) => _order._id === order?._id)) {
+    if (orderObject !== undefined && orderObject.count > 0) {
+      updateOrder(order._id, { notes });
       hide();
-      return;
+    } else {
+      if (menuItems.find((_order: any) => _order._id === order?._id)) {
+        hide();
+        return;
+      }
+      const newOrder = { ...order, notes };
+      addMenuItem([...menuItems, newOrder || []]);
+      setOrdered(true);
+      hide();
     }
-    addOrder(order);
-    setOrdered(true);
-    hide();
   };
 
   if (!menuItem) return null;
@@ -149,7 +157,9 @@ export default function AddOrderDialog({ open, hide, foodId }: any) {
           multiline
           rows={4}
           sx={{ mt: '5px' }}
-          placeholder={`${t('type_your_note_here')}'...'`}
+          placeholder={`${t('type_your_note_here')}'...`}
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
         />
       </DialogContent>
 
@@ -159,11 +169,11 @@ export default function AddOrderDialog({ open, hide, foodId }: any) {
             {t('total')}
           </Typography>
           <Typography color="#19191C" fontSize={16} fontWeight={600}>
-            $ {total}
+            $ {total.toFixed(2)}
           </Typography>
         </div>
         <Button
-          disabled={orderObject !== undefined && orderObject.count > 0}
+          // disabled={orderObject !== undefined && orderObject.count > 0}
           onClick={handleAddOrder}
           sx={{ borderRadius: '58px', px: 6, py: 1.5, ':hover': { bgcolor: '#f2734e' } }}
           color="primary"

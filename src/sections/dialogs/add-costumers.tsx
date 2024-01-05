@@ -9,8 +9,8 @@ import Button from '@mui/material/Button';
 import { Alert, Modal, Stack, Divider, Typography } from '@mui/material';
 
 import { CloseIcon } from 'src/assets/icons';
+import { createCustomer } from 'src/api/customers';
 import { CreateCustomerRequestSchema } from 'src/api/api-schemas';
-import { createCustomer, useGetCustomers } from 'src/api/customers';
 
 import Scrollbar from 'src/components/scrollbar';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
@@ -26,16 +26,32 @@ interface FormValuesProps extends CreateCustomerRequestSchema {
 
 const Gender = ['male', 'female'];
 const Cantons = [
-  'Canton 1',
-  'Canton 2',
-  'Canton 3',
-  'Canton 4',
-  'Canton 5',
-  'Canton 6',
-  'Canton 7',
-  'Canton 8',
-  'Canton 9',
-  'Canton 10',
+  'Aargau',
+  'Appenzell Ausserrhoden',
+  'Appenzell Innerrhoden',
+  'Basel-Land',
+  'Basel-Stadt',
+  'Bern',
+  'Fribourg',
+  'Geneva',
+  'Glarus',
+  'Graubünden',
+  'Jura',
+  'Lucerne',
+  'Neuchâtel',
+  'Nidwalden',
+  'Obwalden',
+  'Schaffhausen',
+  'Schwyz',
+  'Solothurn',
+  'St. Gallen',
+  'Thurgau',
+  'Ticino',
+  'Uri',
+  'Valais',
+  'Vaud',
+  'Zug',
+  'Zürich',
 ];
 
 interface AddCustomerModalProps {
@@ -44,9 +60,6 @@ interface AddCustomerModalProps {
 }
 
 const AddCustomerModal = ({ showModal, setShowModal }: AddCustomerModalProps) => {
-  const asd = useGetCustomers();
-  console.log('asd', asd);
-
   const handleCloseAddCustomer = () => {
     setShowModal(false);
   };
@@ -242,7 +255,7 @@ const RenderForm = ({ handleCloseAddCustomer }: any) => {
             <RHFTextField fullWidth name="street" label="Street" placeholder="Enter street" />
           </Stack>
 
-          <Stack direction="row" gap={1}>
+          {/* <Stack direction="row" gap={1}>
             <Stack direction="row" gap={1} width="50%">
               <RHFAutocomplete fullWidth name="day" label="Day" options={Days} />
               <RHFAutocomplete fullWidth name="month" label="Month" options={Months} />
@@ -250,6 +263,20 @@ const RenderForm = ({ handleCloseAddCustomer }: any) => {
             </Stack>
 
             <RHFTextField sx={{ width: '50%' }} name="city" label="City" placeholder="Enter city" />
+          </Stack> */}
+          <Stack direction="row" gap={2}>
+            <Stack direction="row" gap={1} width="50%">
+              <RHFAutocomplete fullWidth name="day" label="Day" options={Days} />
+              <RHFAutocomplete fullWidth name="month" label="Month" options={Months} />
+              <RHFAutocomplete fullWidth name="year" label="Year" options={Years} />
+            </Stack>
+
+            <RHFTextField
+              sx={{ width: '50%', ml: 2 }}
+              name="city"
+              label="City"
+              placeholder="Enter city"
+            />
           </Stack>
 
           <RHFAutocomplete

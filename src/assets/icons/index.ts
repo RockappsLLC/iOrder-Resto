@@ -24,6 +24,7 @@ export { default as MoneyIcon } from './money-icon';
 export { default as Mastercard } from './mastercard';
 export { default as ArrowRight } from './arrow-right';
 export { default as Reservation } from './reservation';
+export { default as ChevronRight } from './chevron-right';
 export { default as PasswordIcon } from './password-icon';
 export { default as CheveronIcon } from './cheveron-down';
 export { default as PlanFreeIcon } from './plan-free-icon';

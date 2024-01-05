@@ -7,24 +7,36 @@ import Fab from '@mui/material/Fab';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import { Button } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { Button, CardMedia, IconButton } from '@mui/material';
 
+import { useRouter } from 'src/routes/hooks';
+
+import { getMe } from 'src/api/users';
 import { useTranslate } from 'src/locales';
+import { ChevronRight } from 'src/assets/icons';
+import { createOrder, updateOrderById } from 'src/api/orders';
+import { useGetTables, updateTableById } from 'src/api/tables';
+import { useHomeContext } from 'src/pages/dashboard/home/home-context';
 
 import AddNote from 'src/sections/dialogs/add-note';
 import { OrderPaymentDrawer } from 'src/sections/modals';
+import AddOrderDialog from 'src/sections/dialogs/add-order';
 import { useDiningOptionsContext } from 'src/sections/dining-options';
 
 import Iconify from '../iconify';
 import { useOrderContext } from './context';
 import OrderReservations from './reservations';
 
-interface OrderSidebarProps {}
+interface OrderSidebarProps {
+  showOrderMore?: boolean;
+  showPayNow?: boolean;
+  showPlaceOrder?: boolean;
+}
 
 const defaultValues = {
   name: '',
@@ -54,15 +66,36 @@ const schema = yup.object().shape({
     .required(),
 });
 
-const OrderSidebar = (props: OrderSidebarProps) => {
-  const { orders, ordered, updateOrder, removeOrder, total, subTotal, activeTable } =
-    useOrderContext();
+const OrderSidebar = ({
+  showOrderMore = false,
+  showPayNow = false,
+  showPlaceOrder = false,
+}: OrderSidebarProps) => {
+  const {
+    menuItems,
+    updateMenuItem,
+    removeMenuItem,
+    ordered,
+    orders,
+    addOrder,
+    total,
+    subTotal,
+    activeTable,
+    note,
+  } = useOrderContext();
+
+  const { setActiveTab } = useHomeContext();
 
   const { diningOption } = useDiningOptionsContext();
+
+  const { tablesMutate } = useGetTables();
 
   const [currentTab, setCurrentTab] = useState('buy');
   const [addNote, setAddNote] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
+
+  const [foodId, setFoodId] = useState('');
+  const [modal, setModal] = useState(false);
 
   const { t } = useTranslate();
 
@@ -85,11 +118,59 @@ const OrderSidebar = (props: OrderSidebarProps) => {
     setCurrentTab(newValue);
   }, []);
 
-  const onSubmit = (data: any) => {
-    // addData(data)
+  const taxTotal = Math.round(Number(subTotal * TAX) * 10) / 10;
+
+  const restaurantId = localStorage.getItem('restaurantId') || '';
+  const router = useRouter();
+
+  const onSubmit = async () => {
+    const { data } = await getMe();
+    const staffId = data.data._id;
+
+    try {
+      if (orders[0]?._id !== undefined) {
+        await updateOrderById(orders[0]._id, {
+          menuItems,
+        });
+
+        setActiveTab('tables');
+      } else {
+        const response = await createOrder({
+          customer: {
+            _id: '6581d253922a13b580a038ea',
+            name: 'asd',
+            email: 'asd@gmail.com',
+            contactNumber: '1111',
+            restaurantId,
+          },
+          staffId,
+          restaurantId,
+          menuItems,
+          price: total,
+          status: 1,
+          diningOption,
+          notes: note,
+          tableId: activeTable._id as string,
+        });
+
+        addOrder(response);
+        setActiveTab('tables');
+      }
+
+      await updateTableById(activeTable._id as string, {
+        name: activeTable?.name,
+        status: 2,
+        restaurantId: activeTable?.restaurantId,
+      });
+      tablesMutate();
+    } catch (error) {
+      console.log('create order error', error);
+    }
   };
 
-  const taxTotal = Math.round(Number(subTotal * TAX) * 10) / 10;
+  const handleClickItem = () => {
+    setActiveTab('home');
+  };
 
   return (
     <div style={{ height: '90%' }}>
@@ -180,26 +261,36 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                         disabled
                         error={Boolean(errors.code)}
                         {...(errors.code && { helperText: errors.code.message })}
+                        InputProps={{
+                          endAdornment: (
+                            <IconButton disabled>
+                              <ChevronRight />
+                            </IconButton>
+                          ),
+                        }}
                       />
                     )}
                   />
                 )}
               </div>
-              <Fab
-                onClick={() => setAddNote(true)}
-                disabled={!ordered}
-                size="small"
-                color={ordered ? 'error' : 'default'}
-                variant="soft"
-                sx={{ width: '100%', borderRadius: '58px', marginTop: '16px' }}
-              >
-                <Typography color="#9C9C9C" fontWeight={600} fontSize="16px">
-                  {t('add_note')}
-                </Typography>
-              </Fab>
+              {note ? (
+                <TextField fullWidth multiline rows={2} sx={{ mt: 2 }} label="Note" value={note} />
+              ) : (
+                <Fab
+                  onClick={() => setAddNote(true)}
+                  // disabled={!ordered}
+                  size="small"
+                  variant="outlined"
+                  sx={{ width: '100%', borderRadius: '58px', marginTop: '16px' }}
+                >
+                  <Typography color="#e06842" fontWeight={600} fontSize="16px">
+                    {t('add_note')}
+                  </Typography>
+                </Fab>
+              )}
             </form>
             <Divider sx={{ mt: 2, mb: 1 }} />
-            {ordered && orders.length > 0 && (
+            {menuItems.length > 0 && (
               <>
                 <Typography
                   fontSize={20}
@@ -212,11 +303,11 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                   style={{
                     marginLeft: '20px',
                     marginRight: '20px',
-                    overflowY: orders.length < 5 ? 'hidden' : 'scroll',
+                    overflowY: 'scroll',
                     height: xl ? '380px' : '200px',
                   }}
                 >
-                  {orders.map((order: any, index: number) => (
+                  {menuItems.map((order: any, index: number) => (
                     <div key={order._id}>
                       <div
                         style={{
@@ -225,15 +316,27 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                           paddingBottom: '10px',
                         }}
                       >
-                        <img
-                          style={{ width: '74px', borderRadius: '12px' }}
+                        <CardMedia
+                          sx={{ width: '74px', borderRadius: '12px' }}
+                          component="img"
                           height="74px"
-                          src="/assets/images/food.png"
+                          image="/assets/images/food.png"
                           alt="food"
+                          onClick={() => {
+                            setModal(true);
+                            setFoodId(order._id);
+                          }}
                         />
+
                         <div style={{ width: '100%', paddingLeft: 10 }}>
                           <Typography fontSize={16} fontWeight={600} gutterBottom component="div">
                             {order.name}
+                          </Typography>
+                          <Typography fontSize={12}>
+                            Note:{' '}
+                            {order?.notes?.length > 10
+                              ? `${order?.notes?.slice(0, 15)}...`
+                              : order?.notes}
                           </Typography>
                           <div
                             style={{
@@ -258,38 +361,42 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                                 variant="body2"
                                 color="#F15F34"
                               >
-                                $ {order.price}
+                                $ {order?.price?.toFixed(2)}
                               </Typography>
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                              <Fab
-                                onClick={() => {
-                                  updateOrder(order._id, { count: order.count - 1 });
-                                  if (order.count === 1) removeOrder(order._id);
-                                }}
-                                // disabled={order.count === 1}
-                                sx={{ width: '36px', height: '36px' }}
-                                color="default"
-                                aria-label="add"
-                              >
-                                <Iconify icon="tabler:minus" width={20} />
-                              </Fab>
-                              <Typography fontSize={16} fontWeight={600}>
-                                {order.count}
-                              </Typography>
-                              <Fab
-                                onClick={() => updateOrder(order._id, { count: order.count + 1 })}
-                                sx={{ width: '36px', height: '36px' }}
-                                color="inherit"
-                                aria-label="add"
-                              >
-                                <Iconify icon="tabler:plus" width={20} />
-                              </Fab>
-                            </div>
+                            {showPayNow && showPlaceOrder && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <Fab
+                                  onClick={() => {
+                                    updateMenuItem(order._id, { count: order.count - 1 });
+                                    if (order.count === 1) removeMenuItem(order._id);
+                                  }}
+                                  // disabled={order.count === 1}
+                                  sx={{ width: '36px', height: '36px' }}
+                                  color="default"
+                                  aria-label="add"
+                                >
+                                  <Iconify icon="tabler:minus" width={20} />
+                                </Fab>
+                                <Typography fontSize={16} fontWeight={600}>
+                                  {order.count}
+                                </Typography>
+                                <Fab
+                                  onClick={() =>
+                                    updateMenuItem(order._id, { count: order.count + 1 })
+                                  }
+                                  sx={{ width: '36px', height: '36px' }}
+                                  color="inherit"
+                                  aria-label="add"
+                                >
+                                  <Iconify icon="tabler:plus" width={20} />
+                                </Fab>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
-                      {index + 1 !== orders.length && <Divider />}
+                      {index + 1 !== menuItems.length && <Divider />}
                     </div>
                   ))}
                 </div>
@@ -297,7 +404,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
             )}
           </div>
           <div>
-            {ordered && orders.length > 0 && (
+            {menuItems.length > 0 && (
               <>
                 <Divider sx={{ mb: '12px' }} />
                 <div style={{ paddingLeft: '24px', paddingRight: '24px' }}>
@@ -317,7 +424,7 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                     </div>
                     <div>
                       <Typography fontSize={16} fontWeight={600} mb="12px">
-                        $ {subTotal}
+                        $ {subTotal?.toFixed(2)}
                       </Typography>
                       <Typography fontSize={16} fontWeight={600}>
                         $ {taxTotal}
@@ -334,16 +441,52 @@ const OrderSidebar = (props: OrderSidebarProps) => {
                       $ {total.toFixed(2)}
                     </Typography>
                   </div>
-                  <Button
-                    size="large"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setShowOrderModal(true)}
-                    sx={{ borderRadius: '58px', my: '15px', ':hover': { bgcolor: '#f26f49' } }}
-                  >
-                    {t('place_order')}
-                  </Button>
+
+                  {showOrderMore && (
+                    <Button
+                      size="large"
+                      fullWidth
+                      variant="contained"
+                      onClick={() => handleClickItem()}
+                      sx={{
+                        borderRadius: '58px',
+                        my: 1,
+                        mt: 3,
+                        bgcolor: '#FEE3D0',
+                        color: '#F15F34',
+                        ':hover': { bgcolor: '#f26f49', color: '#FFF' },
+                      }}
+                    >
+                      Order more
+                    </Button>
+                  )}
+
+                  {showPayNow && (
+                    <Button
+                      size="large"
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      onClick={() => setShowOrderModal(true)}
+                      sx={{ borderRadius: '58px', my: '5px', ':hover': { bgcolor: '#f26f49' } }}
+                    >
+                      Pay Now
+                    </Button>
+                  )}
+
+                  {showPlaceOrder && (
+                    <Button
+                      size="large"
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      // onClick={() => setShowOrderModal(true)}
+                      onClick={onSubmit}
+                      sx={{ borderRadius: '58px', my: '15px', ':hover': { bgcolor: '#f26f49' } }}
+                    >
+                      {t('place_order')}
+                    </Button>
+                  )}
                 </div>
               </>
             )}
@@ -377,6 +520,8 @@ const OrderSidebar = (props: OrderSidebarProps) => {
         showModal={showOrderModal}
         setShowModal={() => setShowOrderModal(false)}
       />
+
+      <AddOrderDialog open={modal} foodId={foodId} hide={() => setModal(false)} />
     </div>
   );
 };

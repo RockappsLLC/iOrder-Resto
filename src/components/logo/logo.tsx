@@ -42,6 +42,8 @@ const Logo = forwardRef<HTMLDivElement, LogoProps>(
         sx={{
           width: 44,
           height: 44,
+          minHeight: 40,
+          minWidth: 40,
           display: 'inline-flex',
           ...sx,
         }}
