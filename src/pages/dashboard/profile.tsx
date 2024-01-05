@@ -94,18 +94,30 @@ const EditPersonalForm = ({ usersMe }: any) => {
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  const EditProfileSchema: Yup.ObjectSchema<FormValuesProps> = Yup.object()
-    .shape({
-      firstName: Yup.string().required('Name is a required field'),
-      lastName: Yup.string().required('Email is a required field'),
-      contactNumber: Yup.string().required('Contact nummber is a required field'),
-    })
-    .defined();
+  const EditProfileSchema: Yup.ObjectSchema<FormValuesProps> = Yup.object().shape({
+    _id: Yup.string(),
+    firstName: Yup.string().required('Name is a required field'),
+    lastName: Yup.string().required('Email is a required field'),
+    email: Yup.string(),
+    contactNumber: Yup.string().required('Contact nummber is a required field'),
+    restaurantId: Yup.string(),
+    password: Yup.string(),
+    role: Yup.mixed(),
+    status: Yup.boolean(),
+    profileImage: Yup.string(),
+  });
 
   const defaultValues: FormValuesProps = {
+    _id: '',
     firstName: usersMe?.firstName || '',
+    email: '',
     lastName: usersMe?.lastName || '',
     contactNumber: usersMe?.contactNumber || '',
+    restaurantId: '',
+    password: '',
+    role: 1,
+    status: true,
+    profileImage: '',
   };
 
   const methods = useForm<FormValuesProps>({
