@@ -38,6 +38,7 @@ import {
   TableEmptyRows,
   TableHeadCustom,
   TableSelectedAction,
+  TablePaginationCustom,
 } from 'src/components/table';
 
 import SearchTableToolbar from '../../../../components/table/search-table-toolbar';
@@ -48,10 +49,8 @@ const StatusData = [
 ];
 
 const TABLE_HEAD = [
-  { id: 'nr', label: 'Staff ID', align: 'left' },
-  { id: 'name', label: 'Member Name', align: 'left' },
-  { id: 'contact', label: 'Contact Number', align: 'left' },
-  { id: 'email', label: 'Email Address', align: 'left' },
+  { id: 'id', label: 'Name', align: 'left' },
+  { id: 'percentage', label: 'Percentage', align: 'left' },
   { id: 'status', label: 'Status', align: 'left' },
   { id: 'action', label: 'Action', align: 'center' },
 ];
@@ -195,11 +194,13 @@ export default function JwtLoginView() {
               onClick={() => handleOpenModal()}
             >
               <Iconify icon="ic:baseline-plus" />
-              <Typography> Add Tax</Typography>
+              <Typography> Add New Tax</Typography>
             </Button>
           </Stack>
         </Stack>
-
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2 }}>
+          <Typography variant="h6">Taxes</Typography>
+        </Stack>
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
           <TableSelectedAction
             dense={table.dense}
@@ -246,14 +247,10 @@ export default function JwtLoginView() {
                       key={row._id}
                       // selected={table.selected.includes(row?.firstName)}
                     >
-                      {/* <TableCell padding="checkbox">
-                        <Checkbox checked={table.selected.includes(row?.firstName)} />
-                      </TableCell> */}
-                      <TableCell> {row?._id} </TableCell>
                       <TableCell> {row.firstName} </TableCell>
 
-                      <TableCell align="left">{row.contactNumber}</TableCell>
-                      <TableCell align="left">{row.email}</TableCell>
+                      <TableCell align="left">{row.percentage} 99%</TableCell>
+                      {/* <TableCell align="left">77%</TableCell> */}
 
                       <TableCell align="left">
                         <Typography color={row.status ? 'success.light' : 'error'}>
@@ -298,6 +295,15 @@ export default function JwtLoginView() {
               </TableBody>
             </Table>
           </Scrollbar>
+          <TablePaginationCustom
+            count={dataFiltered.length}
+            page={table.page}
+            rowsPerPage={table.rowsPerPage}
+            onPageChange={table.onChangePage}
+            onRowsPerPageChange={table.onChangeRowsPerPage}
+            dense={table.dense}
+            onChangeDense={table.onChangeDense}
+          />
         </TableContainer>
       </div>
 
@@ -329,7 +335,7 @@ const RenderForm = ({
   const LoginSchema = Yup.object().shape({
     firstName: Yup.string(),
     email: Yup.string(),
-    contactNumber: Yup.string(),
+    percentage: Yup.string(),
     status: Yup.boolean(),
   });
 
@@ -338,7 +344,7 @@ const RenderForm = ({
   const defaultValues = {
     firstName: oneUser?.firstName || '',
     email: oneUser?.email || '',
-    contactNumber: oneUser?.contactNumber || '',
+    percentage: oneUser?.percentage || '',
     status: oneUser?.status || true,
   };
 
@@ -359,7 +365,7 @@ const RenderForm = ({
       if (isEdit) {
         await updateUserById(openModal?.idToEdit, {
           firstName: data.firstName || '',
-          contactNumber: data.contactNumber || '',
+          percentage: data.percentage || '',
           email: data.email || '',
           status: data.status,
         });
@@ -369,7 +375,7 @@ const RenderForm = ({
             return {
               ...user,
               firstName: data.firstName || user.firstName,
-              contactNumber: data.contactNumber || user.contactNumber,
+              percentage: data.percentage || user.percentage,
               email: data.email || user.email,
               status: data.status,
             };
@@ -383,9 +389,7 @@ const RenderForm = ({
         await createUser({
           firstName: data.firstName || '',
           lastName: 'asd',
-          contactNumber: data.contactNumber || '',
-          email: data.email || '',
-          restaurantId: '653590bec665979a76591c9a',
+          percentage: data.percentage || '',
           password: 'asd',
           role: 1,
           status: data.status || true,
@@ -428,23 +432,26 @@ const RenderForm = ({
           }}
         />
 
-        <RHFTextField name="firstName" label="Enter Name" />
+        <RHFTextField name="firstName" label="Name" />
 
-        <RHFTextField name="contactNumber" label="Contact Number" />
-
-        <RHFTextField name="email" label="Email Address" />
-
-        <RHFAutocomplete
-          name="status"
-          label="Select Status"
-          options={StatusData}
-          getOptionLabel={(option: any) => option.name || option.status}
-          value={StatusData.find((option) => option.status) || null}
-          onChange={(event: any, newValue: any) => {
-            const selectedStatus = newValue.status;
-            setValue('status', selectedStatus);
-          }}
-        />
+        <Stack direction="row" gap={1.5}>
+          <Box flexShrink={1}>
+            <RHFTextField name="percentage" label="Percentage" />
+          </Box>
+          <Box flexGrow={1}>
+            <RHFAutocomplete
+              name="status"
+              label="Select Status"
+              options={StatusData}
+              getOptionLabel={(option: any) => option.name || option.status}
+              value={StatusData.find((option) => option.status) || null}
+              onChange={(event: any, newValue: any) => {
+                const selectedStatus = newValue.status;
+                setValue('status', selectedStatus);
+              }}
+            />
+          </Box>
+        </Stack>
 
         <Stack direction="row" gap={1.5}>
           <Button
@@ -498,9 +505,8 @@ function applyFilter({
     inputData = inputData.filter(
       (item) =>
         (item.firstName && item.firstName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1) ||
-        (item.email && item.email.toLowerCase().indexOf(filterName.toLowerCase()) !== -1) ||
-        (item.contactNumber &&
-          item.contactNumber.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1)
+        (item.percentage &&
+          item.percenatage.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1)
     );
   }
 
