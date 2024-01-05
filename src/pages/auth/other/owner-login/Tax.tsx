@@ -23,7 +23,7 @@ import {
 
 import { UserResponseSchema } from 'src/api/api-schemas';
 import { EyeIcon, EditIcon, TrashIcon } from 'src/assets/icons';
-import { deleteUser, createUser, useGetUsers, updateUserById } from 'src/api/users';
+import { deleteUser, useGetUsers, updateUserById } from 'src/api/users';
 
 import Iconify from 'src/components/iconify';
 import Label from 'src/components/label/label';
@@ -249,7 +249,7 @@ export default function JwtLoginView() {
                     >
                       <TableCell> {row.firstName} </TableCell>
 
-                      <TableCell align="left">{row.percentage} 99%</TableCell>
+                      <TableCell align="left"> 99%</TableCell>
                       {/* <TableCell align="left">77%</TableCell> */}
 
                       <TableCell align="left">
@@ -365,7 +365,7 @@ const RenderForm = ({
       if (isEdit) {
         await updateUserById(openModal?.idToEdit, {
           firstName: data.firstName || '',
-          percentage: data.percentage || '',
+          // percentage: data.percentage || '',
           email: data.email || '',
           status: data.status,
         });
@@ -375,7 +375,7 @@ const RenderForm = ({
             return {
               ...user,
               firstName: data.firstName || user.firstName,
-              percentage: data.percentage || user.percentage,
+              // percentage: data.percentage || user.percentage,
               email: data.email || user.email,
               status: data.status,
             };
@@ -386,15 +386,6 @@ const RenderForm = ({
         setUsersData(updatedUsersData);
         handleCloseModal();
       } else {
-        await createUser({
-          firstName: data.firstName || '',
-          lastName: 'asd',
-          percentage: data.percentage || '',
-          password: 'asd',
-          role: 1,
-          status: data.status || true,
-        });
-
         handleCloseModal();
       }
       console.log('data', data);
@@ -504,9 +495,7 @@ function applyFilter({
   if (filterName) {
     inputData = inputData.filter(
       (item) =>
-        (item.firstName && item.firstName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1) ||
-        (item.percentage &&
-          item.percenatage.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1)
+        item.firstName && item.firstName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

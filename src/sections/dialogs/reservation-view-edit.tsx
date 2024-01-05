@@ -1,5 +1,5 @@
+import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
 
 import { LoadingButton } from '@mui/lab';
 import {
@@ -19,11 +19,6 @@ import { useGetCustomers, updateCustomerById } from 'src/api/customers';
 import { useGetReservations, updateReservationById } from 'src/api/reservations';
 
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
-
-// createCustomer
-//   const { reservation, setReservation, setReservationTab } = useReservationContext();
-
-export type FormValuesProps = [];
 
 interface ReservationModalProps {
   showReservationModal: any;
@@ -133,27 +128,24 @@ const RenderForm = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matchingCustomer, reservationWithCustomer]);
 
-  const defaultValues = {
-    name: matchingCustomer?.name,
-    email: matchingCustomer?.email,
-    contactNumber: matchingCustomer?.contactNumber,
-    tag: tagName,
-    visitNote: matchingCustomer?.visitNote,
-    startTime: selectedTime,
-  };
-
-  console.log('defaultValues', defaultValues);
-
-  const methods = useForm<FormValuesProps>({
-    // resolver: yupResolver(LoginSchema),
-    defaultValues,
+  const methods = useForm({
+    // resolver: yupResolver(schema),
+    defaultValues: async () => [
+      {
+        name: matchingCustomer?.name,
+        email: matchingCustomer?.email,
+        contactNumber: matchingCustomer?.contactNumber,
+        tag: tagName,
+        visitNote: matchingCustomer?.visitNote || '' || undefined,
+        startTime: selectedTime || new Date(),
+      },
+    ],
   });
 
   const {
     reset,
     handleSubmit,
     control,
-    // setValue,
     formState: { isSubmitting, errors },
   } = methods;
 
@@ -285,30 +277,7 @@ const RenderForm = ({
           ))}
         </Grid>
 
-        <Controller
-          control={control}
-          name="visitNote"
-          render={({ field }) => (
-            <TextField
-              fullWidth
-              // name="visitNote"
-              label="Visit note"
-              placeholder="Write reservation note here..."
-              multiline
-              rows={5}
-              {...field}
-              InputProps={{
-                inputProps: {
-                  pattern: '^[A-Za-züöäÜÖÄ., ]+$',
-                  title: 'Only characters from A to Z are allowed',
-                },
-              }}
-              //   error={Boolean(errors.visitNote)}
-              //   {...(errors.visitNote && { helperText: errors.visitNote.message })}
-            />
-          )}
-        />
-
+        <RHFTextField name="visitNote" label="Visit note" multiline rows={4} />
         {/* <RHFTextField name="contactNumber" label="Contact Number" /> */}
 
         {/* 
