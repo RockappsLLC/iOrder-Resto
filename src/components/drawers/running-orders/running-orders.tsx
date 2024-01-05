@@ -311,7 +311,14 @@ const RunningOrders = ({ isBoxOpen, onHideBox }: any) => {
                                   variant="outlined"
                                   color="primary"
                                   startIcon={<Iconify icon="mdi:printer-outline" />}
-                                  sx={{ px: 3, py: 1, borderRadius: '58px', fontWeight: 600 }}
+                                  sx={{
+                                    px: 3,
+                                    py: 1,
+                                    borderRadius: '58px',
+                                    fontWeight: 600,
+                                    fontSize: 14,
+                                    whiteSpace: 'nowrap',
+                                  }}
                                 >
                                   Print bill
                                 </Button>
@@ -323,8 +330,10 @@ const RunningOrders = ({ isBoxOpen, onHideBox }: any) => {
                                     px: 3,
                                     py: 1,
                                     fontWeight: 600,
+                                    fontSize: 14,
                                     borderRadius: '58px',
                                     ':hover': { bgcolor: '#F15F34' },
+                                    whiteSpace: 'nowrap',
                                   }}
                                   onClick={() => handlePayNow(order)}
                                 >
