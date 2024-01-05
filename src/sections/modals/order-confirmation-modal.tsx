@@ -20,6 +20,7 @@ import { createPayment } from 'src/api/payments';
 import { updateOrderById } from 'src/api/orders';
 import { updateTableById } from 'src/api/tables';
 import { MoneyIcon, Mastercard } from 'src/assets/icons';
+import { createTransaction } from 'src/api/transactions';
 
 import Scrollbar from 'src/components/scrollbar';
 import { TableHeadCustom } from 'src/components/table';
@@ -131,6 +132,26 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
       }
     } catch (error) {
       console.log('handle click error', error);
+    }
+  };
+
+  const handleCreateTransaction = async () => {
+    const id = await localStorage.getItem('restaurantId');
+
+    try {
+      if (orderId) {
+        await createTransaction({
+          restaurantId: id as string,
+          type: 'cash-payment',
+          status: 'completed',
+          currency: 'CHF',
+          refno: orderId,
+        });
+      } else {
+        console.log('Transaction is not created - orderId is null');
+      }
+    } catch (error) {
+      console.log('handleCreateTransaction error', error);
     }
   };
 
@@ -297,6 +318,7 @@ const OrderConfirmationModal = ({ showOrderModal, setShowOrderModal }: OrderConf
                     handleClickLightbox();
                   } else {
                     onSubmit();
+                    handleCreateTransaction();
                   }
                 }}
               >
